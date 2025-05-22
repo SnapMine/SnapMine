@@ -17,6 +17,14 @@ class Connection
     public function readPacket(int $length = 2048): ?string
     {
         $data = @socket_read($this->socket, $length);
+
+        if ($data === false) {
+            echo "FALSE !";
+            return null;
+        }
+        
+        echo "➡️   Paquet reçu (hex) : " . bin2hex($data) . "\n";
+
         return $data ?: null;
     }
 
@@ -30,7 +38,6 @@ class Connection
 
     public function writeRaw(string $data): void
     {
-        // echo "➡️ Paquet envoyé (hex) : " . bin2hex($data) . "\n";
         socket_write($this->socket, $data);
     }
 

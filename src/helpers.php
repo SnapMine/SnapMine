@@ -1,14 +1,22 @@
 <?php
 
+use Nirbose\PhpMcServ\Network\Packet;
+use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
+
 if (!function_exists('packet_dump')) {
-    function packet_dump($data): void
+    function packet_dump(Packet $packet): void
     {
-        $output = '';
-        foreach (str_split($data, 16) as $chunk) {
-            $hex = bin2hex($chunk);
-            $ascii = preg_replace('/[^\x20-\x7E]/', '.', $chunk);
-            $output .= sprintf("%s | %s\n", strtoupper($hex), $ascii);
-        }
-        echo $output;
+        $serializer = new PacketSerializer();
+        $class = new ReflectionClass($packet);
+
+        $packetName = $class->getShortName();
+        $packetId = $packet->getId();
+        
+        $packet->write($serializer);
+
+        $packetData = bin2hex($serializer->get());
+
+        echo "$packetName (ID: $packetId) :\n";
+        echo "  - Hex : $packetData\n";
     }
 }

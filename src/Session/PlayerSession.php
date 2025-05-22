@@ -8,8 +8,8 @@ use Nirbose\PhpMcServ\Network\Connection;
 use Nirbose\PhpMcServ\Network\Packet;
 use Nirbose\PhpMcServ\Network\Protocol;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
+use Nirbose\PhpMcServ\Network\ServerState;
 use Nirbose\PhpMcServ\Packet\LoginSuccessPacket;
-use Nirbose\PhpMcServ\Packet\Play\DisconnectPacket;
 use Nirbose\PhpMcServ\Packet\Play\JoinGamePacket;
 use Nirbose\PhpMcServ\Packet\Status\PongPacket;
 use Nirbose\PhpMcServ\Packet\Status\StatusRequestPacket;
@@ -19,6 +19,7 @@ class PlayerSession
 {
     private Connection $conn;
     private PacketSerializer $serializer;
+    private ServerState $state = ServerState::HANDSHAKING;
 
     public function __construct(Connection $conn)
     {
@@ -28,11 +29,14 @@ class PlayerSession
 
     public function sendPacket(Packet $packet): void
     {
-        $this->serializer->putVarInt($packet->getId());
-        $packet->write($this->serializer);
+        $serializer = new PacketSerializer();
+        $serializer->putVarInt($packet->getId());
+        $packet->write($serializer);
+
+        packet_dump($packet);
 
         $this->conn->writePacket(
-            $this->serializer->get()
+            $serializer->get()
         );
     }
 
@@ -46,20 +50,8 @@ class PlayerSession
         }
 
         $offset = 0;
-
-        try {
-            $packetLen = $this->serializer->getVarInt($raw, $offset);
-            $packetId = $this->serializer->getVarInt($raw, $offset);
-        } catch (\Exception $e) {
-            Server::getLogger()->error("Erreur VarInt : " . $e->getMessage());
-            $this->conn->close();
-            return;
-        }
-
-        if ($packetId !== 0x00) {
-            $this->conn->close();
-            return;
-        }
+        $packetLen = $this->serializer->getVarInt($raw, $offset);
+        $packetId = $this->serializer->getVarInt($raw, $offset);
 
         $protocol = $this->serializer->getVarInt($raw, $offset);
         $addrLen = $this->serializer->getVarInt($raw, $offset);
@@ -68,6 +60,13 @@ class PlayerSession
         $port = unpack("n", substr($raw, $offset, 2))[1];
         $offset += 2;
         $nextState = ord($raw[$offset++]);
+
+        if ($this->state === ServerState::CONFIGURATION) {
+            $this->handleConfig();
+            return;
+        }
+
+        echo "Verif packet : " . bin2hex($raw) . "\n";
 
         if ($nextState === 1) {
             $this->handleStatus();
@@ -158,16 +157,18 @@ class PlayerSession
 
         Server::getLogger()->info("Login success : $name");
 
+        $this->state = ServerState::CONFIGURATION;
+
         $this->sendPacket(
             new JoinGamePacket()
         );
 
-        // $this->sendPacket(
-        //     new DisconnectPacket(json_encode([
-        //         "text" => "§aBienvenue sur le serveur !",
-        //     ]))
-        // );
+        $this->conn->readPacket(2);
+        $this->conn->readPacket(4096);
+    }
 
-        // $this->conn->close();
+    private function handleConfig(): void
+    {
+
     }
 }
