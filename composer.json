@@ -1,0 +1,22 @@
+{
+    "name": "nirbose/php-mc-serv",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Nirbose\\PhpMcServ\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Nirbose",
+            "email": "nirbose2@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "monolog/monolog": "^3.9"
+    }
+}

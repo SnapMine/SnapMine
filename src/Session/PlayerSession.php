@@ -1,0 +1,173 @@
+<?php
+
+namespace Nirbose\PhpMcServ\Session;
+
+use Exception;
+use Nirbose\PhpMcServ\Core\Server;
+use Nirbose\PhpMcServ\Network\Connection;
+use Nirbose\PhpMcServ\Network\Packet;
+use Nirbose\PhpMcServ\Network\Protocol;
+use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
+use Nirbose\PhpMcServ\Packet\LoginSuccessPacket;
+use Nirbose\PhpMcServ\Packet\Play\DisconnectPacket;
+use Nirbose\PhpMcServ\Packet\Play\JoinGamePacket;
+use Nirbose\PhpMcServ\Packet\Status\PongPacket;
+use Nirbose\PhpMcServ\Packet\Status\StatusRequestPacket;
+use Nirbose\PhpMcServ\Utils\UUID;
+
+class PlayerSession
+{
+    private Connection $conn;
+    private PacketSerializer $serializer;
+
+    public function __construct(Connection $conn)
+    {
+        $this->conn = $conn;
+        $this->serializer = new PacketSerializer();
+    }
+
+    public function sendPacket(Packet $packet): void
+    {
+        $this->serializer->putVarInt($packet->getId());
+        $packet->write($this->serializer);
+
+        $this->conn->writePacket(
+            $this->serializer->get()
+        );
+    }
+
+    public function handle(): void
+    {
+        $raw = $this->conn->readPacket();
+
+        if (!$raw) {
+            $this->conn->close();
+            return;
+        }
+
+        $offset = 0;
+
+        try {
+            $packetLen = $this->serializer->getVarInt($raw, $offset);
+            $packetId = $this->serializer->getVarInt($raw, $offset);
+        } catch (\Exception $e) {
+            Server::getLogger()->error("Erreur VarInt : " . $e->getMessage());
+            $this->conn->close();
+            return;
+        }
+
+        if ($packetId !== 0x00) {
+            $this->conn->close();
+            return;
+        }
+
+        $protocol = $this->serializer->getVarInt($raw, $offset);
+        $addrLen = $this->serializer->getVarInt($raw, $offset);
+        $addr = substr($raw, $offset, $addrLen);
+        $offset += $addrLen;
+        $port = unpack("n", substr($raw, $offset, 2))[1];
+        $offset += 2;
+        $nextState = ord($raw[$offset++]);
+
+        if ($nextState === 1) {
+            $this->handleStatus();
+        } elseif ($nextState === 2) {
+            $this->handleLogin();
+        } else {
+            Server::getLogger()->error("État non valide : $nextState");
+            $this->conn->close();
+        }
+    }
+
+    private function handleStatus(): void
+    {
+        $this->conn->readPacket();
+
+        $json = json_encode([
+            "version" => ["name" => Protocol::PROTOCOL_NAME, "protocol" => Protocol::PROTOCOL_VERSION],
+            "players" => [
+                "max" => 20,
+                "online" => 1,
+                "sample" => [["name" => "Yoooo", "id" => "00000000-0000-0000-0000-000000000000"]],
+            ],
+            "description" => ["text" => "§aServeur PHP prêt !"],
+        ]);
+
+        $this->sendPacket(
+            new StatusRequestPacket($json)
+        );
+
+        $ping = $this->conn->readPacket(512);
+
+        if (!$ping) {
+            Server::getLogger()->error("Aucun paquet ping reçu");
+            $this->conn->close();
+            return;
+        }
+
+        $off = 0;
+        try {
+            $this->serializer->getVarInt($ping, $off);
+            $pingId = $this->serializer->getVarInt($ping, $off);
+            $payload = substr($ping, $off);
+        } catch (Exception $e) {
+            Server::getLogger()->error("Erreur VarInt ping : " . $e->getMessage());
+            $this->conn->close();
+            return;
+        }
+
+        if ($pingId === 0x01) {
+            $this->sendPacket(
+                new PongPacket(intval($payload))
+            );
+        }
+
+        $this->conn->close();
+    }
+
+    private function handleLogin(): void
+    {
+        $data = $this->conn->readPacket();
+
+        if (!$data) {
+            Server::getLogger()->error("Aucun paquet de login reçu");
+            $this->conn->close();
+            return;
+        }
+
+        $offset = 0;
+
+        $this->serializer->getVarInt($data, $offset); // length
+        $packetId = $this->serializer->getVarInt($data, $offset);
+
+        if ($packetId !== 0x00) {
+            Server::getLogger()->error("Paquet de login non valide : $packetId");
+            $this->conn->close();
+            return;
+        }
+
+        $nameLen = $this->serializer->getVarInt($data, $offset);
+        $name = substr($data, $offset, $nameLen);
+
+        $uuid = UUID::generateOffline($name);
+        $name = substr($name, 0, 16); // Tronquer le nom si besoin
+
+        $this->sendPacket(
+            new LoginSuccessPacket($name, $uuid)
+        );
+
+        Server::getLogger()->info("Login success : $name");
+
+        $this->sendPacket(
+            new JoinGamePacket()
+        );
+
+        // $this->sendPacket(
+        //     new DisconnectPacket(json_encode([
+        //         "text" => "§aBienvenue sur le serveur !",
+        //     ]))
+        // );
+
+        // $this->conn->close();
+    }
+}
