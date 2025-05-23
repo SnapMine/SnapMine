@@ -12,7 +12,7 @@ use Nirbose\PhpMcServ\Network\ServerState;
 use Nirbose\PhpMcServ\Packet\LoginSuccessPacket;
 use Nirbose\PhpMcServ\Packet\Play\JoinGamePacket;
 use Nirbose\PhpMcServ\Packet\Status\PongPacket;
-use Nirbose\PhpMcServ\Packet\Status\StatusRequestPacket;
+use Nirbose\PhpMcServ\Packet\Status\StatusResponsePacket;
 use Nirbose\PhpMcServ\Utils\UUID;
 
 class PlayerSession
@@ -93,7 +93,7 @@ class PlayerSession
         ]);
 
         $this->sendPacket(
-            new StatusRequestPacket($json)
+            new StatusResponsePacket($json)
         );
 
         $ping = $this->conn->readPacket(512);

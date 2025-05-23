@@ -5,7 +5,7 @@ namespace Nirbose\PhpMcServ\Packet\Status;
 use Nirbose\PhpMcServ\Network\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 
-class StatusRequestPacket extends Packet
+class StatusResponsePacket extends Packet
 {
 
     private string $data;

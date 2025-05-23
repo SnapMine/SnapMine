@@ -3,7 +3,7 @@
 namespace Nirbose\PhpMcServ\Network;
 
 use Nirbose\PhpMcServ\Packet\Status\PongPacket;
-use Nirbose\PhpMcServ\Packet\Status\StatusRequestPacket;
+use Nirbose\PhpMcServ\Packet\Status\StatusResponsePacket;
 
 class Protocol
 {
@@ -12,7 +12,7 @@ class Protocol
 
     const PACKETS = [
         'status' => [
-            0x00 => StatusRequestPacket::class,
+            0x00 => StatusResponsePacket::class,
             0x01 => PongPacket::class,
         ],
         'login' => [
