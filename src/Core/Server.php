@@ -6,8 +6,7 @@ use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
-use Nirbose\PhpMcServ\Network\Connection;
-use Nirbose\PhpMcServ\Session\PlayerSession;
+use Nirbose\PhpMcServ\Session\Session;
 
 class Server
 {
@@ -15,6 +14,7 @@ class Server
     private int $port;
     private $socket;
     private array $clients = [];
+    private array $sessions = [];
 
     private static Logger|null $logger = null;
     private static string $logFormat = "[%datetime%] %level_name%: %message%\n";
@@ -30,26 +30,46 @@ class Server
         $this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         socket_bind($this->socket, $this->host, $this->port);
         socket_listen($this->socket);
-        socket_set_nonblock($this->socket);
         self::getLogger()->info("Serveur démarré sur {$this->host}:{$this->port}");
 
+        $write = $except = null;
+
         while (true) {
-            $client = @socket_accept($this->socket);
+            $read = array_merge([$this->socket], $this->clients);
+            socket_select($read, $write, $except, null);
 
-            if ($client !== false) {
-                $connection = new Connection($client);
-                $session = new PlayerSession($connection);
+            foreach ($read as $socket) {
+                if ($socket === $this->socket) {
+                    $client = socket_accept($this->socket);
 
-                $this->clients[] = $session;
-            }
+                    if ($client) {
+                        socket_set_nonblock($client);
+                        $this->clients[] = $client;
+                        $this->sessions[spl_object_id($client)] = new Session($client);
+                        echo "Nouveau client connecté.\n";
+                    }
+                    continue;
+                } else {
+                    $data = @socket_read($socket, 2048);
+                    $id = spl_object_id($socket);
 
-            /** @var PlayerSession $session */
-            foreach ($this->clients as $key => $session) {
-                try {
+                    if ($data === '' || $data === false) {
+                        unset($this->clients[array_search($socket, $this->clients, true)]);
+                        $this->clients = array_values($this->clients);
+                        $this->sessions[$id]->close();
+                        unset($this->sessions[$id]);
+                        continue;
+                    }
+
+                    if (!isset($this->sessions[$id])) continue;
+
+                    /** @var Session $session */
+                    $session = $this->sessions[$id];
+                    $session->buffer .= $data;
+
+                    echo "Paquet brut reçu (hex) : " . bin2hex($data) . "\n";
+
                     $session->handle();
-                } catch (\Exception $e) {
-                    self::getLogger()->error("Erreur lors du traitement de la session: " . $e->getMessage());
-                    unset($this->clients[$key]);
                 }
             }
         }

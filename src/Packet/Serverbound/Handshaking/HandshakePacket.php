@@ -1,9 +1,11 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Packet\Handshaking;
+namespace Nirbose\PhpMcServ\Packet\Serverbound\Handshaking;
 
 use Nirbose\PhpMcServ\Network\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
+use Nirbose\PhpMcServ\Network\ServerState;
+use Nirbose\PhpMcServ\Session\Session;
 
 class HandshakePacket extends Packet
 {
@@ -28,12 +30,14 @@ class HandshakePacket extends Packet
 
     public function read(PacketSerializer $serializer, string $buffer, int &$offset): void
     {
-        $serializer->getVarInt($buffer, $offset); // Skip the packet length
-        $serializer->getVarInt($buffer, $offset); // Skip the packet ID
-
         $this->protocolVersion = $serializer->getVarInt($buffer, $offset);
         $this->serverAddress = $serializer->getString($buffer, $offset);
         $this->serverPort = $serializer->getUnsignedShort($buffer, $offset);
         $this->nextState = $serializer->getVarInt($buffer, $offset);
+    }
+
+    public function handle(Session $session): void
+    {
+        $session->state = ServerState::from($this->nextState);
     }
 }

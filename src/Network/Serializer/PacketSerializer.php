@@ -172,10 +172,15 @@ class PacketSerializer
      */
     public function getLong(string $buffer, int &$offset): int
     {
-        $value = unpack('P', substr($buffer, $offset, 8))[1];
+        if (strlen($buffer) < $offset + 8) {
+            throw new \Exception("Pas assez de données pour lire un Long");
+        }
+
+        $data = substr($buffer, $offset, 8);
         $offset += 8;
 
-        return $value;
+        $parts = unpack('J', $data);
+        return $parts[1];
     }
 
     /**

@@ -1,9 +1,10 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Packet\Play;
+namespace Nirbose\PhpMcServ\Packet\Clientbound\Play;
 
 use Nirbose\PhpMcServ\Network\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
+use Nirbose\PhpMcServ\Session\Session;
 
 class JoinGamePacket extends Packet
 {
@@ -43,5 +44,9 @@ class JoinGamePacket extends Packet
         $serializer->putVarInt(0); // Portal cooldown
         $serializer->putVarInt(63); // Sea level
         $serializer->putBool(false); // Enforces Secure Chat
+    }
+
+    public function handle(Session $session): void
+    {
     }
 }
