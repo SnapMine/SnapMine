@@ -1,9 +1,10 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Packet\Play;
+namespace Nirbose\PhpMcServ\Packet\Clientbound\Play;
 
 use Nirbose\PhpMcServ\Network\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
+use Nirbose\PhpMcServ\Session\Session;
 
 class DisconnectPacket extends Packet
 {
@@ -27,5 +28,10 @@ class DisconnectPacket extends Packet
     public function read(PacketSerializer $serializer, string $buffer, int &$offset): void
     {
         $this->reason = $serializer->getString($buffer, $offset);
+    }
+
+    public function handle(Session $session): void
+    {
+        $session->close();
     }
 }

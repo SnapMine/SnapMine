@@ -172,10 +172,15 @@ class PacketSerializer
      */
     public function getLong(string $buffer, int &$offset): int
     {
-        $value = unpack('P', substr($buffer, $offset, 8))[1];
+        if (strlen($buffer) < $offset + 8) {
+            throw new \Exception("Pas assez de données pour lire un Long");
+        }
+
+        $data = substr($buffer, $offset, 8);
         $offset += 8;
 
-        return $value;
+        $parts = unpack('J', $data);
+        return $parts[1];
     }
 
     /**
@@ -381,5 +386,38 @@ class PacketSerializer
         $z = $value << 26 >> 38;
 
         return [$x, $y, $z];
+    }
+
+    /**
+     * Encode un unsigned short.
+     * 
+     * @param integer $value
+     * @return void
+     */
+    public function putUnsignedShort(int $value): void
+    {
+        if ($value < 0 || $value > 65535) {
+            throw new \Exception("Valeur de short invalide");
+        }
+        $this->put(pack('v', $value));
+    }
+
+    /**
+     * Lit un unsigned short.
+     * 
+     * @param string $buffer
+     * @param integer $offset
+     * @return integer
+     */
+    public function getUnsignedShort(string $buffer, int &$offset): int
+    {
+        $value = unpack('v', substr($buffer, $offset, 2))[1];
+        $offset += 2;
+
+        if ($value < 0 || $value > 65535) {
+            throw new \Exception("Valeur de short invalide");
+        }
+
+        return $value;
     }
 }

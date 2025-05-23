@@ -4,9 +4,9 @@ namespace Nirbose\PhpMcServ\Network;
 
 enum ServerState: int
 {
-    case HANDSHAKING = "handshaking";
-    case STATUS = "status";
-    case LOGIN = "login";
-    case CONFIGURATION = "configuration";
-    case PLAY = "play";
+    case HANDSHAKE = 0;
+    case STATUS = 1;
+    case LOGIN = 2;
+    case CONFIGURATION = 3;
+    case PLAY = 4;
 }
