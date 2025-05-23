@@ -2,6 +2,8 @@
 
 namespace Nirbose\PhpMcServ\Network;
 
+use Nirbose\PhpMcServ\Packet\Configuration\PluginMessagePacket;
+use Nirbose\PhpMcServ\Packet\LoginSuccessPacket;
 use Nirbose\PhpMcServ\Packet\Status\PongPacket;
 use Nirbose\PhpMcServ\Packet\Status\StatusResponsePacket;
 
@@ -11,15 +13,17 @@ class Protocol
     const PROTOCOL_NAME = '1.21.5';
 
     const PACKETS = [
-        'status' => [
+        ServerState::STATUS->value => [
             0x00 => StatusResponsePacket::class,
             0x01 => PongPacket::class,
         ],
-        'login' => [
-            0x00 => \Nirbose\PhpMcServ\Packet\LoginStartPacket::class,
-            0x02 => \Nirbose\PhpMcServ\Packet\LoginSuccessPacket::class,
+        ServerState::LOGIN->value => [
+            0x00 => LoginSuccessPacket::class,
         ],
-        'play' => [],
+        ServerState::CONFIGURATION->value => [
+            0x02 => PluginMessagePacket::class,
+        ],
+        ServerState::PLAY->value => [],
     ];
 
     public static function getProtocolVersion(): int

@@ -382,4 +382,37 @@ class PacketSerializer
 
         return [$x, $y, $z];
     }
+
+    /**
+     * Encode un unsigned short.
+     * 
+     * @param integer $value
+     * @return void
+     */
+    public function putUnsignedShort(int $value): void
+    {
+        if ($value < 0 || $value > 65535) {
+            throw new \Exception("Valeur de short invalide");
+        }
+        $this->put(pack('v', $value));
+    }
+
+    /**
+     * Lit un unsigned short.
+     * 
+     * @param string $buffer
+     * @param integer $offset
+     * @return integer
+     */
+    public function getUnsignedShort(string $buffer, int &$offset): int
+    {
+        $value = unpack('v', substr($buffer, $offset, 2))[1];
+        $offset += 2;
+
+        if ($value < 0 || $value > 65535) {
+            throw new \Exception("Valeur de short invalide");
+        }
+
+        return $value;
+    }
 }

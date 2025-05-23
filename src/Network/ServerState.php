@@ -2,7 +2,7 @@
 
 namespace Nirbose\PhpMcServ\Network;
 
-enum ServerState: int
+enum ServerState: string
 {
     case HANDSHAKING = "handshaking";
     case STATUS = "status";

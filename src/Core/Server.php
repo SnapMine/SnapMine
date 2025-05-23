@@ -14,6 +14,7 @@ class Server
     private string $host;
     private int $port;
     private $socket;
+    private array $clients = [];
 
     private static Logger|null $logger = null;
     private static string $logFormat = "[%datetime%] %level_name%: %message%\n";
@@ -29,16 +30,28 @@ class Server
         $this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         socket_bind($this->socket, $this->host, $this->port);
         socket_listen($this->socket);
+        socket_set_nonblock($this->socket);
         self::getLogger()->info("Serveur démarré sur {$this->host}:{$this->port}");
 
         while (true) {
-            $client = socket_accept($this->socket);
-            if (!$client) continue;
+            $client = @socket_accept($this->socket);
 
-            $connection = new Connection($client);
-            $session = new PlayerSession($connection);
+            if ($client !== false) {
+                $connection = new Connection($client);
+                $session = new PlayerSession($connection);
 
-            $session->handle();
+                $this->clients[] = $session;
+            }
+
+            /** @var PlayerSession $session */
+            foreach ($this->clients as $key => $session) {
+                try {
+                    $session->handle();
+                } catch (\Exception $e) {
+                    self::getLogger()->error("Erreur lors du traitement de la session: " . $e->getMessage());
+                    unset($this->clients[$key]);
+                }
+            }
         }
     }
 
