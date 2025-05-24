@@ -33,11 +33,8 @@ class LoginStartPacket extends Packet
     public function handle(Session $session): void
     {
         $session->username = $this->username;
-
-        var_dump("yo...." . $this->uuid);
+        $session->uuid = $this->uuid;
 
         $session->sendPacket(new LoginSuccessPacket($this->username, $this->uuid));
-
-        $session->state = ServerState::PLAY;
     }
 }

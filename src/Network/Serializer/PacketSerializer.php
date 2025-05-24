@@ -420,4 +420,87 @@ class PacketSerializer
 
         return $value;
     }
+
+    /**
+     * Encode un byte array.
+     * 
+     * @param array $data
+     * @return void
+     */
+    public function putByteArray(array $data): void
+    {
+        $this->put(
+            pack('C*', ...$data)
+        );
+    }
+
+    /**
+     * Lit un byte array.
+     * 
+     * @param string $buffer
+     * @param integer $offset
+     * @return array
+     */
+    public function getByteArray(string $buffer, int &$offset): array
+    {
+        $length = $this->getVarInt($buffer, $offset);
+        $data = substr($buffer, $offset, $length);
+        $offset += $length;
+
+        if (strlen($data) < $length) {
+            throw new \Exception("Byte array tronqué (attendu $length octets, reçu " . strlen($data) . ")");
+        }
+
+        return array_values(unpack('C*', $data));
+    }
+
+    /**
+     * Encode un unsigned byte.
+     * 
+     * @param integer $value
+     * @return void
+     */
+    public function putUnsignedByte(int $value): void
+    {
+        if ($value < 0 || $value > 255) {
+            throw new \Exception("Valeur de byte invalide");
+        }
+        $this->put(pack('C', $value));
+    }
+
+    /**
+     * Lit un unsigned byte.
+     * 
+     * @param string $buffer
+     * @param integer $offset
+     * @return integer
+     */
+    public function getUnsignedByte(string $buffer, int &$offset): int
+    {
+        $value = ord($buffer[$offset++]);
+        if ($value < 0 || $value > 255) {
+            throw new \Exception("Valeur de byte invalide");
+        }
+
+        return $value;
+    }
+
+    public function putRegistryData(array $registries): void {
+    $this->putVarInt(count($registries)); // nombre de registries
+
+    foreach ($registries as $registryName => $registry) {
+        $this->putString($registryName);
+
+        $elements = $registry['elements'] ?? [];
+        $this->putVarInt(count($elements)); // nombre d'éléments
+
+        foreach ($elements as $element) {
+            $this->putString($element['name']);
+            $this->putVarInt($element['id']);
+            $this->putString(json_encode($element['element'])); // serialize les données en JSON
+        }
+
+        $this->putString($registry['default']);
+    }
+}
 }

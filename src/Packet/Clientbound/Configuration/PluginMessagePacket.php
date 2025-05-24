@@ -9,8 +9,13 @@ use Nirbose\PhpMcServ\Session\Session;
 class PluginMessagePacket extends Packet
 {
 
-    public function __construct()
+    private string $channel;
+    private array $data;
+
+    public function __construct(string $channel, array $data)
     {
+        $this->channel = $channel;
+        $this->data = $data;
     }
 
     public function getId(): int
@@ -20,8 +25,8 @@ class PluginMessagePacket extends Packet
 
     public function write(PacketSerializer $serializer): void
     {
-        $serializer->putString("minecraft:brand");
-        $serializer->putVarInt(0);
+        $serializer->putString($this->channel);
+        $serializer->putByteArray($this->data);
     }
 
     public function read(PacketSerializer $serializer, string $buffer, int &$offset): void

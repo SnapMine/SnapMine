@@ -32,7 +32,7 @@ class LoginSuccessPacket extends Packet
     }
 
     public function write(PacketSerializer $serializer): void
-    {
+    {        
         $serializer->put($this->uuid->toBinary());
         $serializer->putString($this->username);
         $serializer->putVarInt(0);
@@ -40,22 +40,5 @@ class LoginSuccessPacket extends Packet
 
     public function handle(Session $session): void
     {
-        $session->username = $this->username;
-        $session->uuid = $this->uuid;
-        $session->sendPacket(new PluginMessagePacket());
-        $session->sendPacket(new StatusResponsePacket(json_encode([
-            "version" => [
-                "name" => Protocol::PROTOCOL_NAME,
-                "protocol" => Protocol::PROTOCOL_VERSION,
-            ],
-            "players" => [
-                "max" => 20,
-                "online" => 0,
-                "sample" => [],
-            ],
-            "description" => [
-                "text" => "Welcome to the server!",
-            ],
-        ])));
     }
 }
