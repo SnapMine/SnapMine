@@ -5,6 +5,7 @@ namespace Nirbose\PhpMcServ\Packet\Serverbound\Configuration;
 use Nirbose\PhpMcServ\Network\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Packet\Clientbound\Configuration\FinishConfigurationPacket;
+use Nirbose\PhpMcServ\Packet\Clientbound\Configuration\RegistryDataPacket;
 use Nirbose\PhpMcServ\Session\Session;
 
 class KnownPacksPacket extends Packet
@@ -40,6 +41,15 @@ class KnownPacksPacket extends Packet
 
     public function handle(Session $session): void
     {
+        $json = file_get_contents('./resources/registry_data.json');
+        $registries = json_decode($json, true);
+
+        foreach ($registries as $id => $registry) {
+            $packet = RegistryDataPacket::createRegistryDataPacket($id, $registry);
+
+            $session->sendPacket($packet);
+        }
+
         $session->sendPacket(new FinishConfigurationPacket());
     }
 }

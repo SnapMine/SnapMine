@@ -20,93 +20,79 @@ class JoinGamePacket extends Packet
 
     public function write(PacketSerializer $serializer): void
     {
-        $registries = [
-            'minecraft:dimension_type' => [
-                'type' => 'minecraft:dimension_type',
-                'default' => 'minecraft:overworld',
-                'elements' => [
-                    [
-                        'name' => 'minecraft:overworld',
-                        'id' => 0,
-                        'element' => [
-                            'piglin_safe' => false,
-                            'natural' => true,
-                            'ambient_light' => 0.0,
-                            'infiniburn' => 'minecraft:infiniburn_overworld',
-                            'respawn_anchor_works' => false,
-                            'has_skylight' => true,
-                            'bed_works' => true,
-                            'effects' => 'minecraft:overworld',
-                            'has_raids' => true,
-                            'logical_height' => 256,
-                            'coordinate_scale' => 1.0,
-                            'ultrawarm' => false,
-                            'height' => 384,
-                            'min_y' => 0
-                        ]
-                    ],
-                    // ajoute d'autres dimensions si besoin
-                ]
-            ],
-            'minecraft:worldgen/biome' => [
-                'type' => 'minecraft:worldgen/biome',
-                'default' => 'minecraft:plains',
-                'elements' => [
-                    [
-                        'name' => 'minecraft:plains',
-                        'id' => 0,
-                        'element' => [
-                            'precipitation' => 'rain',
-                            'depth' => 0.125,
-                            'temperature' => 0.8,
-                            'scale' => 0.05,
-                            'downfall' => 0.4,
-                            'effects' => [
-                                'sky_color' => 7907327,
-                                'water_fog_color' => 329011,
-                                'fog_color' => 12638463,
-                                'water_color' => 4159204,
-                                'mood_sound' => [
-                                    'sound' => 'minecraft:ambient.cave',
-                                    'tick_delay' => 6000,
-                                    'offset' => 2.0,
-                                    'block_search_extent' => 8
-                                ]
-                            ],
-                            'category' => 'plains',
-                            'depth' => 0.125,
-                            'temperature_modifier' => 'none'
-                        ]
-                    ],
-                ]
-            ],
-            // tu peux ajouter d'autres registries comme minecraft:chat_type etc.
+        // Entity ID
+        $serializer->putInt(0);
+        
+        // Is Hardcore
+        $serializer->putBool(false);
+        
+        // Dimension Names (Prefixed Array of Identifier) - NOUVEAU FORMAT
+        $dimensionNames = [
+            'minecraft:overworld',
         ];
+        $serializer->putVarInt(count($dimensionNames));
 
-
-        $serializer->putInt(0); // Entity ID
-        $serializer->putBool(false); // Is Hardcore
-        $serializer->putRegistryData($registries); // Registries
-        $serializer->putVarInt(100); // Max Playerss
-        $serializer->putVarInt(10); // View Distance
-        $serializer->putVarInt(10); // Simulation Distance
-        $serializer->putBool(false); // Reduced Debug Info
-        $serializer->putBool(true); // Enable Respawn Screen
-        $serializer->putBool(false); // Do Limited Crafting
-        // $serializer->putVarInt(0); // Dimension Type ID
-        $serializer->putString('minecraft:overworld'); // Dimension Name
-        $serializer->putLong(234345456); // Hashed seed
-        $serializer->putUnsignedByte(0); // Game Mode
-        $serializer->putByte(-1); // Previous Game Mode
-        $serializer->putBool(false); // Is Debug
-        $serializer->putBool(false); // Is Flat
-        $serializer->putBool(false); // Has death location
-        $serializer->putVarInt(0); // Portal cooldown
-        $serializer->putVarInt(63); // Sea level
-        $serializer->putBool(false); // Enforces Secure Chat
+        foreach ($dimensionNames as $dimension) {
+            $serializer->putString($dimension);
+        }
+        
+        // Max Players
+        $serializer->putVarInt(100);
+        
+        // View Distance
+        $serializer->putVarInt(10);
+        
+        // Simulation Distance
+        $serializer->putVarInt(10);
+        
+        // Reduced Debug Info
+        $serializer->putBool(false);
+        
+        // Enable Respawn Screen
+        $serializer->putBool(true);
+        
+        // Do Limited Crafting
+        $serializer->putBool(false);
+        
+        // Dimension Type (VarInt ID dans le registre minecraft:dimension_type)
+        $serializer->putVarInt(0); // ID de minecraft:overworld dans le registre
+        
+        // Dimension Name
+        $serializer->putString('minecraft:overworld');
+        
+        // Hashed Seed
+        $serializer->putLong(234345456);
+        
+        // Game Mode
+        $serializer->putUnsignedByte(0); // Survival
+        
+        // Previous Game Mode
+        $serializer->putByte(-1); // Undefined
+        
+        // Is Debug
+        $serializer->putBool(false);
+        
+        // Is Flat
+        $serializer->putBool(false);
+        
+        // Has Death Location
+        $serializer->putBool(false);
+        // Si Has Death Location était true, il faudrait ajouter :
+        // - Death Dimension Name (Optional Identifier)
+        // - Death Location (Optional Position)
+        
+        // Portal Cooldown
+        $serializer->putVarInt(0);
+        
+        // Sea Level
+        $serializer->putVarInt(63);
+        
+        // Enforces Secure Chat
+        $serializer->putBool(false);
     }
 
     public function handle(Session $session): void
     {
+        // Traitement après envoi du packet
     }
 }
