@@ -42,10 +42,10 @@ class KnownPacksPacket extends Packet
     public function handle(Session $session): void
     {
         $json = file_get_contents('./resources/registry_data.json');
-        $registries = json_decode($json, true);
+        $registries = json_decode($json);
 
         foreach ($registries as $id => $registry) {
-            $packet = RegistryDataPacket::createRegistryDataPacket($id, $registry);
+            $packet = new RegistryDataPacket($id, $registry);
 
             $session->sendPacket($packet);
         }

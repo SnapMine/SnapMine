@@ -27,21 +27,14 @@ class JoinGamePacket extends Packet
         $serializer->putBool(false);
         
         // Dimension Names (Prefixed Array of Identifier) - NOUVEAU FORMAT
-        $dimensionNames = [
-            'minecraft:overworld',
-        ];
-        $serializer->putVarInt(count($dimensionNames));
-
-        foreach ($dimensionNames as $dimension) {
-            $serializer->putString($dimension);
-        }
+        $serializer->putVarInt(0);
         
         // Max Players
         $serializer->putVarInt(100);
-        
+
         // View Distance
         $serializer->putVarInt(10);
-        
+
         // Simulation Distance
         $serializer->putVarInt(10);
         
@@ -56,7 +49,7 @@ class JoinGamePacket extends Packet
         
         // Dimension Type (VarInt ID dans le registre minecraft:dimension_type)
         $serializer->putVarInt(0); // ID de minecraft:overworld dans le registre
-        
+
         // Dimension Name
         $serializer->putString('minecraft:overworld');
         

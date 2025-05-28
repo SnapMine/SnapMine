@@ -5,11 +5,12 @@ namespace Nirbose\PhpMcServ\Packet\Clientbound\Configuration;
 use Nirbose\PhpMcServ\Network\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
+use stdClass;
 
 class RegistryDataPacket extends Packet
 {
     private string $registryId;
-    private array $entries;
+    private stdClass $entries;
 
     private static array $isDoubleTagField = [
         'offset',
@@ -17,7 +18,7 @@ class RegistryDataPacket extends Packet
         'coordinate_scale',
     ];
 
-    public function __construct(string $registryId, array $entries)
+    public function __construct(string $registryId, stdClass $entries)
     {
         $this->registryId = $registryId;
         $this->entries = $entries;
@@ -37,16 +38,17 @@ class RegistryDataPacket extends Packet
     {
         $serializer->putString($this->registryId);
 
-        $serializer->putVarInt(count($this->entries));
+        $serializer->putVarInt(count((array) $this->entries));
         
-        foreach ($this->entries as $id => $entry) {
-            $serializer->putNBTString($id);
+        foreach ((array)$this->entries as $entryId => $data) {
+            $serializer->putString($entryId);
 
-            if (isset($entry) && $entry !== null) {
+
+            if (isset($data) && $data !== null) {
                 $serializer->putBool(true);
-                $serializer->putNBT($entry, type: in_array($id, self::$isDoubleTagField) ? 6 : null);
+                $serializer->putNBT((array)$data);
             } else {
-                $serializer->putBool(false); // No data
+                $serializer->putBool(false);
             }
         }
     }
@@ -54,12 +56,5 @@ class RegistryDataPacket extends Packet
     public function handle(Session $session): void
     {
         // Ce paquet est envoyé par le serveur, pas géré côté client
-    }
-
-    // Méthodes statiques pour créer les différents types de registres
-
-    public static function createRegistryDataPacket(string $registryId, array $entries): self
-    {
-        return new self($registryId, $entries);
     }
 }

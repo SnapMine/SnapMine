@@ -2,6 +2,15 @@
 
 namespace Nirbose\PhpMcServ\Network\Serializer;
 
+use Aternos\Nbt\IO\Writer\StringWriter;
+use Aternos\Nbt\NbtFormat;
+use Aternos\Nbt\Tag\ByteTag;
+use Aternos\Nbt\Tag\CompoundTag;
+use Aternos\Nbt\Tag\FloatTag;
+use Aternos\Nbt\Tag\IntTag;
+use Aternos\Nbt\Tag\ListTag;
+use Aternos\Nbt\Tag\StringTag;
+use Aternos\Nbt\Tag\Tag;
 use Nirbose\PhpMcServ\Utils\UUID;
 
 class PacketSerializer
@@ -489,139 +498,53 @@ class PacketSerializer
      * Encode un tag NBT en fonction de son type.
      * 
      * @param mixed $value La valeur NBT à encoder
-     * @param string|null $name Le nom du tag (nullable)
-     * @param int|null $type Le type NBT (si null, type sera déduit)
      * @return void
      */
-    public function putNBT(mixed $value, ?string $name = null, ?int $type = null): void
+    public function putNBT(mixed $value): void
     {
-        if ($type === null) {
-            $type = $this->getNBTType($value);
+        $nbtTag = $this->convertToNbt($value);
+
+        if (!($nbtTag instanceof CompoundTag)) {
+            throw new \Exception("NBT root tag must be a CompoundTag. Got: " . get_class($nbtTag));
         }
 
-        // TAG_End
-        if ($type === 0) {
-            $this->putByte(0);
-            return;
-        }
+        $writer = (new StringWriter())->setFormat(NbtFormat::JAVA_EDITION);
+        $nbtTag->write($writer);
+        $nbtBinary = $writer->getStringData();
 
-        // Écrire le type
-        $this->putByte($type);
+        $this->put($nbtBinary);
+    }
 
-        // Écrire le nom du tag (string avec longueur VarInt)
-        if ($name !== null) {
-            $this->putNBTString($name);
-        }
-
-        // Écrire la valeur selon le type
-        switch ($type) {
-            case 1: // TAG_Byte
-                $this->putByte($value);
-                break;
-            case 2: // TAG_Short
-                $this->putShort($value);
-                break;
-            case 3: // TAG_Int
-                $this->putInt($value);
-                break;
-            case 4: // TAG_Long
-                $this->putLong($value);
-                break;
-            case 5: // TAG_Float
-                $this->putFloat($value);
-                break;
-            case 6: // TAG_Double
-                $this->putDouble($value);
-                break;
-            case 7: // TAG_Byte_Array
-                $this->putInt(count($value));
-                foreach ($value as $b) {
-                    $this->putByte($b);
+    private function convertToNbt($value): Tag
+    {
+        if (is_array($value) || $value instanceof \stdClass) {
+            $isAssoc = is_object($value) || array_keys($value) !== range(0, count($value) - 1);
+            if ($isAssoc) {
+                $tag = new CompoundTag();
+                foreach ((array)$value as $k => $v) {
+                    $tag->set($k, $this->convertToNbt($v));
                 }
-                break;
-            case 8: // TAG_String
-                $this->putNBTString($value);
-                break;
-            case 9: // TAG_List
-                // Tous les éléments doivent être du même type, on encode ce type ici
-                if (empty($value)) {
-                    $this->putByte(0); // TAG_End type
-                    $this->putInt(0);
-                } else {
-                    $elemType = $this->getNBTType($value[0]);
-                    $this->putByte($elemType);
-                    $this->putInt(count($value));
-                    foreach ($value as $elem) {
-                        $this->putNBT($elem, null, $elemType);
+                return $tag;
+            } else {
+                $listTag = new ListTag();
+                if (count($value) > 0) {
+
+                    foreach ((array)$value as $item) {
+                        $listTag[] = $this->convertToNbt($item);
                     }
                 }
-                break;
-            case 10: // TAG_Compound
-                foreach ($value as $k => $v) {
-                    $this->putNBT($v, $k);
-                }
-                $this->putByte(0); // TAG_End pour terminer le compound
-                break;
-            case 11: // TAG_Int_Array
-                $this->putInt(count($value));
-                foreach ($value as $i) {
-                    $this->putInt($i);
-                }
-                break;
-            case 12: // TAG_Long_Array
-                $this->putInt(count($value));
-                foreach ($value as $l) {
-                    $this->putLong($l);
-                }
-                break;
-            default:
-                throw new \Exception("Type NBT inconnu: $type");
-        }
-    }
-
-    /**
-     * Déduit le type NBT d'une valeur PHP.
-     * 
-     * @param mixed $value
-     * @return int
-     */
-    private function getNBTType(mixed $value): int
-    {
-        if (is_int($value)) {
-            // Ici on pourrait affiner selon la taille, mais par défaut TAG_Int
-            return 3;
-        }
-
-        if (is_float($value)) {
-            return 5; // TAG_Float
-        }
-
-        if (is_string($value)) {
-            return 8; // TAG_String
-        }
-
-        if (is_array($value)) {
-            // On distingue les tableaux associatifs (compound) des tableaux indexés (list)
-            $keys = array_keys($value);
-            $isAssoc = array_filter($keys, 'is_string') !== [];
-
-            if ($isAssoc) {
-                return 10; // TAG_Compound
+                return $listTag;
             }
-
-            return 9; // TAG_List
+        } elseif (is_string($value)) {
+            return (new StringTag())->setValue($value);
+        } elseif (is_int($value)) {
+            return (new IntTag())->setValue($value);
+        } elseif (is_float($value)) {
+            return (new FloatTag())->setValue($value);
+        } elseif (is_bool($value)) {
+            return (new ByteTag())->setValue($value ? 1 : 0);
+        } else {
+            return new CompoundTag();
         }
-
-        if (is_bool($value)) {
-            return 1; // TAG_Byte avec 0 ou 1
-        }
-
-        throw new \Exception("Impossible de déterminer le type NBT pour la valeur");
-    }
-
-    public function putNBTString(string $data): void
-    {
-        $this->put(pack('n', strlen($data))); // longueur sur 2 octets BE
-        $this->put($data);
     }
 }
