@@ -2,7 +2,7 @@
 
 require_once 'vendor/autoload.php';
 
-use Nirbose\PhpMcServ\Core\Server;
+use Nirbose\PhpMcServ\Server;
 
 $server = new Server("0.0.0.0", 25565);
 
