@@ -37,52 +37,84 @@ class Registry
     ];
 
     public const WORLDGEN_BIOME = [
+        "carvers" => [ListTag::class, StringTag::class],
+        'downfall' => FloatTag::class,
         'has_precipitation' => ByteTag::class,
         'temperature' => FloatTag::class,
         'temperature_modifier' => StringTag::class,
-        'downfall' => FloatTag::class,
         'effects' => [
             'fog_color' => IntTag::class,
-            'water_color' => IntTag::class,
-            'water_fog_color' => IntTag::class,
-            'sky_color' => IntTag::class,
-            'foliage_color' => IntTag::class,
-            'grass_color' => IntTag::class,
-            'grass_color_modifier' => StringTag::class,
-            'particle' => [
-                'options' => [
-                    'type' => StringTag::class,
-                ],
-                'probability' => FloatTag::class,
-            ],
-            'ambient_sound' => StringTag::class,
             'mood_sound' => [
                 'sound' => StringTag::class,
                 'tick_delay' => IntTag::class,
                 'block_search_extent' => IntTag::class,
                 'offset' => DoubleTag::class,
             ],
-            'additions_sound' => [
-                'sound' => StringTag::class,
-                'tick_chance' => DoubleTag::class,
+            'music' => [ListTag::class, [
+                'data' => [
+                    'max_delay' => IntTag::class,
+                    'min_delay' => IntTag::class,
+                    'replace_current_music' => ByteTag::class,
+                    'sound' => StringTag::class,
+                ],
+                'weight' => IntTag::class,
+            ]],
+            'music_volume' => FloatTag::class,
+            'sky_color' => IntTag::class,
+            'water_color' => IntTag::class,
+            'water_fog_color' => IntTag::class,
+            'features' => [ListTag::class, [ListTag::class, StringTag::class]],
+            'has_precipitation' => ByteTag::class,
+            'spawners' => [
+                'ambient' => [ListTag::class, [
+                    'type' => StringTag::class,
+                    'weight' => IntTag::class,
+                    'min_count' => IntTag::class,
+                    'max_count' => IntTag::class,
+                ]],
+                'axelotls' => [ListTag::class, [
+                    'type' => StringTag::class,
+                    'weight' => IntTag::class,
+                    'min_count' => IntTag::class,
+                    'max_count' => IntTag::class,
+                ]],
+                'creature' => [ListTag::class, [
+                    'type' => StringTag::class,
+                    'weight' => IntTag::class,
+                    'min_count' => IntTag::class,
+                    'max_count' => IntTag::class,
+                ]],
+                'misc' => [ListTag::class, [
+                    'type' => StringTag::class,
+                    'weight' => IntTag::class,
+                    'min_count' => IntTag::class,
+                    'max_count' => IntTag::class,
+                ]],
+                'monster' => [ListTag::class, [
+                    'type' => StringTag::class,
+                    'weight' => IntTag::class,
+                    'min_count' => IntTag::class,
+                    'max_count' => IntTag::class,
+                ]],
+                'underground_water_creature' => [ListTag::class, [
+                    'type' => StringTag::class,
+                    'weight' => IntTag::class,
+                    'min_count' => IntTag::class,
+                    'max_count' => IntTag::class,
+                ]],
             ],
-            'music' => [
-                'sound' => StringTag::class,
-                'replace_current_music' => ByteTag::class,
-                'max_delay' => IntTag::class,
-                'min_delay' => IntTag::class,
-            ],
+            'temperature' => FloatTag::class,
         ]
     ];
 
     public const CHAT_TYPE = [
         'chat' => [
             'translation_key' => StringTag::class,
-            'parameters' => ListTag::class,
+            'parameters' => [ListTag::class, StringTag::class],
         ],
         'narration' => [
             'translation_key' => StringTag::class,
-            'parameters' => ListTag::class,
+            'parameters' => [ListTag::class, StringTag::class],
         ],
     ];
 
@@ -117,10 +149,18 @@ class Registry
     ];
 
     public const WOLF_VARIANT = [
-        'wild_texture' => StringTag::class,
-        'tame_texture' => StringTag::class,
-        'angry_texture' => StringTag::class,
-        'biomes' => StringTag::class, // List of StringTag
+        'assets' => [
+            'angry' => StringTag::class,
+            'tame' => StringTag::class,
+            'wild' => StringTag::class,
+        ],
+        'spawn_conditions' => [ListTag::class, [
+            'condition' => [
+                'type' => StringTag::class,
+                'biomes' => StringTag::class,
+            ], 
+            'priority' => IntTag::class,
+        ]],
     ];
 
     public const PAINTING_VARIANT = [
