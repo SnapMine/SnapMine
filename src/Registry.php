@@ -187,7 +187,7 @@ class Registry
         'whine_sound' => StringTag::class,
     ];
 
-    public const COW_VARIANT = [
+    public const ANIMAL_VARIANT = [
         'asset_id' => StringTag::class,
         'model' => StringTag::class,
         'spawn_conditions' => [ListTag::class, [
@@ -199,68 +199,24 @@ class Registry
         ]],
     ];
 
-    public const CHICKEN_VARIANT = [
-        'asset_id' => StringTag::class,
-        'model' => StringTag::class,
-        'spawn_conditions' => [ListTag::class, [
-            'condition' => [
-                'type' => StringTag::class,
-                'biomes' => StringTag::class,
-            ], 
-            'priority' => IntTag::class,
-        ]],
-    ];
-
-    public const PIG_VARIANT = [
-        'asset_id' => StringTag::class,
-        'model' => StringTag::class,
-        'spawn_conditions' => [ListTag::class, [
-            'condition' => [
-                'type' => StringTag::class,
-                'biomes' => StringTag::class,
-            ], 
-            'priority' => IntTag::class,
-        ]],
-    ];
-
-    public const CAT_VARIANT = [
-        'asset_id' => StringTag::class,
-        'model' => StringTag::class,
-        'spawn_conditions' => [ListTag::class, [
-            'condition' => [
-                'type' => StringTag::class,
-                'biomes' => StringTag::class,
-            ], 
-            'priority' => IntTag::class,
-        ]],
-    ];
-
-    public const FROG_VARIANT = [
-        'asset_id' => StringTag::class,
-        'model' => StringTag::class,
-        'spawn_conditions' => [ListTag::class, [
-            'condition' => [
-                'type' => StringTag::class,
-                'biomes' => StringTag::class,
-            ], 
-            'priority' => IntTag::class,
-        ]],
-    ];
-
-    public static function getRegistry(string $name): array
+    public static function getRegistry(string $id): array
     {
-        $name = str_replace([
-            'minecraft:',
-            '/',
-        ], [
-            '',
-            '_',
-        ], $name);
-        $name = strtoupper($name);
-        $registry = constant("self::" . strtoupper($name));
-        if (!is_array($registry)) {
-            throw new \InvalidArgumentException("Registry '$name' does not exist or is not an array.");
-        }
-        return $registry;
+        return match ($id) {
+            'minecraft:trim_material' => self::TRIM_MATERIAL,
+            'minecraft:trim_pattern' => self::TRIM_PATTERN,
+            'minecraft:banner_pattern' => self::BANNER_PATTERN,
+            'minecraft:worldgen/biome' => self::WORLDGEN_BIOME,
+            'minecraft:chat_type' => self::CHAT_TYPE,
+            'minecraft:damage_type' => self::DAMAGE_TYPE,
+            'minecraft:dimension_type' => self::DIMENSION_TYPE,
+            'minecraft:wolf_variant' => self::WOLF_VARIANT,
+            'minecraft:painting_variant' => self::PAINTING_VARIANT,
+            'minecraft:wolf_sound_variant' => self::WOLF_SOUND_VARIANT,
+            'minecraft:cow_variant',
+            'minecraft:chicken_variant',
+            'minecraft:cat_variant',
+            'minecraft:pig_variant',
+            'minecraft:frog_variant' => self::ANIMAL_VARIANT,
+        };
     }
 }
