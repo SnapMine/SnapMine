@@ -6,21 +6,29 @@ use Nirbose\PhpMcServ\Network\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 
-class TestPacket extends Packet
+class MovePlayerPositionPacket extends Packet
 {
+    private float $x;
+    private float $feetY;
+    private float $z;
+    private bool $flags;
+
     public function getId(): int
     {
-        return 0x0B; // Replace with the actual packet ID
+        return 0x1C;
     }
 
     public function read(PacketSerializer $serializer, string $buffer, int &$offset): void
     {
+        $this->x = $serializer->getDouble($buffer, $offset);
+        $this->feetY = $serializer->getDouble($buffer, $offset);
+        $this->z = $serializer->getDouble($buffer, $offset);
+        $this->flags = $serializer->getBool($buffer, $offset);
     }
 
     public function write(PacketSerializer $serializer): void
     {
-        // Implement writing logic if necessary
-        // For example, you can send some test data here
+        throw new \Exception("MovePlayerPositionPacket cannot be sent");
     }
 
     public function handle(Session $session): void
