@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Core;
+namespace Nirbose\PhpMcServ;
 
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
