@@ -28,7 +28,7 @@ class MovePlayerPositionRotationPacket extends Packet
         $this->z = $serializer->getDouble($buffer, $offset);
         $this->yaw = $serializer->getFloat($buffer, $offset);
         $this->pitch = $serializer->getFloat($buffer, $offset);
-        $this->flags = $serializer->getBool($buffer, $offset);
+        $this->flags = $serializer->getByte($buffer, $offset);
     }
 
     public function write(PacketSerializer $serializer): void

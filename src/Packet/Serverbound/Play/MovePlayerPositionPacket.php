@@ -23,7 +23,7 @@ class MovePlayerPositionPacket extends Packet
         $this->x = $serializer->getDouble($buffer, $offset);
         $this->feetY = $serializer->getDouble($buffer, $offset);
         $this->z = $serializer->getDouble($buffer, $offset);
-        $this->flags = $serializer->getBool($buffer, $offset);
+        $this->flags = $serializer->getByte($buffer, $offset);
     }
 
     public function write(PacketSerializer $serializer): void
