@@ -35,6 +35,8 @@ class Protocol
             0x03 => AcknowledgeFinishConfigurationPacket::class,
             0x07 => KnownPacksPacket::class,
         ],
-        ServerState::PLAY->value => [],
+        ServerState::PLAY->value => [
+            0x0B => \Nirbose\PhpMcServ\Packet\Serverbound\Play\TestPacket::class,
+        ],
     ];
 }

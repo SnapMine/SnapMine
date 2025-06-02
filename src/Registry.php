@@ -119,6 +119,7 @@ class Registry
     ];
 
     public const DAMAGE_TYPE = [
+        'effects' => StringTag::class,
         'message_id' => StringTag::class,
         'scaling' => StringTag::class,
         'exhaustion' => FloatTag::class,
@@ -167,8 +168,83 @@ class Registry
         'asset_id' => StringTag::class,
         'height' => IntTag::class,
         'width' => IntTag::class,
-        'title' => StringTag::class,
-        'author' => StringTag::class,
+        'title' => [
+            'translate' => StringTag::class,
+            'color' => StringTag::class,
+        ],
+        'author' => [
+            'translate' => StringTag::class,
+            'color' => StringTag::class,
+        ],
+    ];
+
+    public const WOLF_SOUND_VARIANT = [
+        'ambient_sound' => StringTag::class,
+        'death_sound' => StringTag::class,
+        'growl_sound' => StringTag::class,
+        'hurt_sound' => StringTag::class,
+        'pant_sound' => StringTag::class,
+        'whine_sound' => StringTag::class,
+    ];
+
+    public const COW_VARIANT = [
+        'asset_id' => StringTag::class,
+        'model' => StringTag::class,
+        'spawn_conditions' => [ListTag::class, [
+            'condition' => [
+                'type' => StringTag::class,
+                'biomes' => StringTag::class,
+            ], 
+            'priority' => IntTag::class,
+        ]],
+    ];
+
+    public const CHICKEN_VARIANT = [
+        'asset_id' => StringTag::class,
+        'model' => StringTag::class,
+        'spawn_conditions' => [ListTag::class, [
+            'condition' => [
+                'type' => StringTag::class,
+                'biomes' => StringTag::class,
+            ], 
+            'priority' => IntTag::class,
+        ]],
+    ];
+
+    public const PIG_VARIANT = [
+        'asset_id' => StringTag::class,
+        'model' => StringTag::class,
+        'spawn_conditions' => [ListTag::class, [
+            'condition' => [
+                'type' => StringTag::class,
+                'biomes' => StringTag::class,
+            ], 
+            'priority' => IntTag::class,
+        ]],
+    ];
+
+    public const CAT_VARIANT = [
+        'asset_id' => StringTag::class,
+        'model' => StringTag::class,
+        'spawn_conditions' => [ListTag::class, [
+            'condition' => [
+                'type' => StringTag::class,
+                'biomes' => StringTag::class,
+            ], 
+            'priority' => IntTag::class,
+        ]],
+    ];
+
+    public const FROG_VARIANT = [
+        'asset_id' => StringTag::class,
+        'model' => StringTag::class,
+        'spawn_conditions' => [ListTag::class, [
+            'condition' => [
+                'type' => StringTag::class,
+                'biomes' => StringTag::class,
+            ], 
+            'priority' => IntTag::class,
+        ]],
     ];
 
     public static function getRegistry(string $name): array

@@ -57,7 +57,7 @@ class RegistryDataPacket extends Packet
 
             $serializer->put($nbtString);
 
-            file_put_contents("nbt/" . str_replace(['/', ':'], "_", $this->registryId) . ".txt", "\n" . $entryId . "\n" . bin2hex($serializer->get()). "\n", FILE_APPEND);
+            // file_put_contents("nbt/" . str_replace(['/', ':'], "_", $this->registryId) . ".txt", "\n" . $entryId . "\n" . bin2hex($serializer->get()). "\n", FILE_APPEND);
         }
     }
 
@@ -73,8 +73,28 @@ class RegistryDataPacket extends Packet
             $value = $entryData->{$tagName};
 
             if (is_array($tagType)) {
-                // Sous-structure (ex: description, effects, mood_sound, etc.)
-                $compound[$tagName] = $this->convertToNbtTag($tagType, $value);
+                // Type liste ou objet composite
+                if (isset($tagType[0]) && is_string($tagType[0]) && is_subclass_of($tagType[0], Tag::class)) {
+                    // C'est une liste
+                    $listTag = new ListTag();
+
+                    $elementType = $tagType[1];
+                    foreach ($value as $item) {
+                        if (is_array($elementType)) {
+                            $listTag[] = $this->convertToNbtTag($elementType, $item);
+                        } else {
+                            $element = new $elementType();
+                            $element->setValue($item);
+                            $listTag[] = $element;
+                        }
+                    }
+
+                    $compound[$tagName] = $listTag;
+                } else {
+                    // Sous-tag composé (objet JSON imbriqué)
+                    $compound[$tagName] = $this->convertToNbtTag($tagType, $value);
+                }
+
             } else {
                 if ($tagType === null) {
                     continue;
