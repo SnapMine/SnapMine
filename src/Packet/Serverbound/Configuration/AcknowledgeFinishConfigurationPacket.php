@@ -6,6 +6,7 @@ use Nirbose\PhpMcServ\Network\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Network\ServerState;
 use Nirbose\PhpMcServ\Packet\Clientbound\Play\JoinGamePacket;
+use Nirbose\PhpMcServ\Packet\Clientbound\Play\SynchronizePlayerPositionPacket;
 use Nirbose\PhpMcServ\Session\Session;
 
 class AcknowledgeFinishConfigurationPacket extends Packet
@@ -29,5 +30,6 @@ class AcknowledgeFinishConfigurationPacket extends Packet
     {
         $session->state = ServerState::PLAY;
         $session->sendPacket(new JoinGamePacket());
+        $session->sendPacket(new SynchronizePlayerPositionPacket());
     }
 }

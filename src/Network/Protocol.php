@@ -10,6 +10,7 @@ use Nirbose\PhpMcServ\Packet\Serverbound\Handshaking\HandshakePacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Login\LoginAcknowledgedPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Login\LoginStartPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Play\ClientTickEndPacket;
+use Nirbose\PhpMcServ\Packet\Serverbound\Play\ConfirmTeleportationPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Play\MovePlayerPositionPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Play\MovePlayerPositionRotationPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Status\PingPacket;
@@ -39,6 +40,7 @@ class Protocol
             0x07 => KnownPacksPacket::class,
         ],
         ServerState::PLAY->value => [
+            0x00 => ConfirmTeleportationPacket::class,
             0x0B => ClientTickEndPacket::class,
             0x1D => MovePlayerPositionRotationPacket::class,
             0x1C => MovePlayerPositionPacket::class,
