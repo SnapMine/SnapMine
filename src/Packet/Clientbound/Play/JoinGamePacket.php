@@ -57,7 +57,7 @@ class JoinGamePacket extends Packet
         $serializer->putLong(234345456);
         
         // Game Mode
-        $serializer->putUnsignedByte(0); // Survival
+        $serializer->putUnsignedByte(1); // Survival
         
         // Previous Game Mode
         $serializer->putByte(-1); // Undefined
