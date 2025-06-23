@@ -14,7 +14,7 @@ class PlayerAbilitiesPacket extends Packet {
 
     public function write(PacketSerializer $serializer): void
     {
-        $serializer->putByte(0x04);
+        $serializer->putByte(0x08 | 0x04 | 0x02 | 0x01);
         $serializer->putFloat(0.05);
         $serializer->putFloat(0.1);
     }

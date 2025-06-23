@@ -12,6 +12,7 @@ use Aternos\Nbt\Tag\ListTag;
 use Aternos\Nbt\Tag\StringTag;
 use Aternos\Nbt\Tag\Tag;
 use Nirbose\PhpMcServ\Utils\UUID;
+use Nirbose\PhpMcServ\World\Position;
 
 class PacketSerializer
 {
@@ -385,16 +386,20 @@ class PacketSerializer
      * 
      * @param string $buffer
      * @param integer $offset
-     * @return array
+     * @return Position
      */
-    public function getPosition(string $buffer, int &$offset): array
+    public function getPosition(string $buffer, int &$offset): Position
     {
         $value = $this->getLong($buffer, $offset);
         $x = $value >> 38;
         $y = $value << 52 >> 52;
         $z = $value << 26 >> 38;
 
-        return [$x, $y, $z];
+        return new Position(
+            $x,
+            $y,
+            $z
+        );
     }
 
     /**
@@ -491,60 +496,6 @@ class PacketSerializer
         }
 
         return $value;
-    }
-
-    /**
-     * Encode un tag NBT en fonction de son type.
-     * 
-     * @param mixed $value La valeur NBT à encoder
-     * @return void
-     */
-    public function putNBT(mixed $value): void
-    {
-        $nbtTag = $this->convertToNbt($value);
-
-        if (!($nbtTag instanceof CompoundTag)) {
-            throw new \Exception("NBT root tag must be a CompoundTag. Got: " . get_class($nbtTag));
-        }
-
-        $writer = (new StringWriter())->setFormat(NbtFormat::JAVA_EDITION);
-        $nbtTag->write($writer);
-        $nbtBinary = $writer->getStringData();
-
-        $this->put($nbtBinary);
-    }
-
-    private function convertToNbt($value): Tag
-    {
-        if (is_array($value) || $value instanceof \stdClass) {
-            $isAssoc = is_object($value) || array_keys($value) !== range(0, count($value) - 1);
-            if ($isAssoc) {
-                $tag = new CompoundTag();
-                foreach ((array)$value as $k => $v) {
-                    $tag->set($k, $this->convertToNbt($v));
-                }
-                return $tag;
-            } else {
-                $listTag = new ListTag();
-                if (count($value) > 0) {
-
-                    foreach ((array)$value as $item) {
-                        $listTag[] = $this->convertToNbt($item);
-                    }
-                }
-                return $listTag;
-            }
-        } elseif (is_string($value)) {
-            return (new StringTag())->setValue($value);
-        } elseif (is_int($value)) {
-            return (new IntTag())->setValue($value);
-        } elseif (is_float($value)) {
-            return (new FloatTag())->setValue($value);
-        } elseif (is_bool($value)) {
-            return (new ByteTag())->setValue($value ? 1 : 0);
-        } else {
-            return new CompoundTag();
-        }
     }
 
     public function putUnsignedLong(int $value): void
