@@ -4,6 +4,9 @@ namespace Nirbose\PhpMcServ\Packet\Serverbound\Play;
 
 use Nirbose\PhpMcServ\Network\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
+use Nirbose\PhpMcServ\Packet\Clientbound\Play\ChunkDataAndUpdateLightPacket;
+use Nirbose\PhpMcServ\Packet\Clientbound\Play\GameEventPacket;
+use Nirbose\PhpMcServ\Packet\Clientbound\Play\SetCenterChunk;
 use Nirbose\PhpMcServ\Session\Session;
 
 class ConfirmTeleportationPacket extends Packet
@@ -26,5 +29,17 @@ class ConfirmTeleportationPacket extends Packet
 
     public function handle(Session $session): void
     {
+        $session->sendPacket(
+            new GameEventPacket(3, 1)
+        );
+        $session->sendPacket(
+            new GameEventPacket(13, 0.0)
+        );
+        $session->sendPacket(
+            new SetCenterChunk()
+        );
+        $session->sendPacket(
+            new ChunkDataAndUpdateLightPacket()
+        );
     }
 }

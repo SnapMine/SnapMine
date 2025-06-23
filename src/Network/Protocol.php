@@ -13,6 +13,7 @@ use Nirbose\PhpMcServ\Packet\Serverbound\Play\ClientTickEndPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Play\ConfirmTeleportationPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Play\MovePlayerPositionPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Play\MovePlayerPositionRotationPacket;
+use Nirbose\PhpMcServ\Packet\Serverbound\Play\PlayerLoadedPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Status\PingPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Status\StatusRequestPacket;
 
@@ -44,6 +45,7 @@ class Protocol
             0x0B => ClientTickEndPacket::class,
             0x1D => MovePlayerPositionRotationPacket::class,
             0x1C => MovePlayerPositionPacket::class,
+            0x2A => PlayerLoadedPacket::class,
         ],
     ];
 }

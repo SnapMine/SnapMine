@@ -431,16 +431,15 @@ class PacketSerializer
     }
 
     /**
-     * Encode un byte array.
+     * Encode un byte array binaire (comme utilisé par NBT ou d'autres données binaires).
      * 
-     * @param array $data
+     * @param string $data Données binaires (ex: issues du writer NBT)
      * @return void
      */
-    public function putByteArray(array $data): void
+    public function putByteArray(string $data): void
     {
-        $this->put(
-            pack('C*', ...$data)
-        );
+        $this->putVarInt(strlen($data)); // Longueur d'abord
+        $this->put($data); // Puis contenu binaire brut
     }
 
     /**
@@ -546,5 +545,13 @@ class PacketSerializer
         } else {
             return new CompoundTag();
         }
+    }
+
+    public function putUnsignedLong(int $value): void
+    {
+        if ($value < 0 || $value > 0xFFFFFFFFFFFFFFFF) {
+            throw new \Exception("Valeur de long invalide");
+        }
+        $this->put(pack('P', $value));
     }
 }

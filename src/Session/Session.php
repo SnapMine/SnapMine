@@ -22,7 +22,7 @@ class Session
 
     public function sendPacket(Packet $packet): void {
         $serializer = new PacketSerializer();
-    
+
         $serializer->putVarInt($packet->getId());
         $packet->write($serializer);
 
@@ -33,7 +33,7 @@ class Session
         $serializer->putVarInt(strlen($data));
         $length = $serializer->get();
 
-        // echo "Sending packet ID: {$packet->getId()} with data: " . bin2hex($length . $data) . "\n";
+        echo "Sending packet ID: " . dechex($packet->getId()) . " (len: " . bin2hex($length) . ") with data: " . bin2hex($length . $data) . "\n";
 
         socket_write($this->socket, $length . $data);
     }
@@ -81,6 +81,7 @@ class Session
             $this->buffer = substr($this->buffer, $offset);
         } catch (\Exception $e) {
             echo "Erreur: " . $e->getMessage() . "\n";
+            echo $e->getTraceAsString();
             $this->close();
         }
     }
