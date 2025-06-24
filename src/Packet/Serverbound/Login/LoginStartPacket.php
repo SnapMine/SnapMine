@@ -5,6 +5,7 @@ namespace Nirbose\PhpMcServ\Packet\Serverbound\Login;
 use Nirbose\PhpMcServ\Network\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Network\ServerState;
+use Nirbose\PhpMcServ\Packet\Clientbound\Login\EncryptionRequestPacket;
 use Nirbose\PhpMcServ\Packet\Clientbound\Login\LoginSuccessPacket;
 use Nirbose\PhpMcServ\Session\Session;
 use Nirbose\PhpMcServ\Utils\UUID;
@@ -35,6 +36,6 @@ class LoginStartPacket extends Packet
         $session->username = $this->username;
         $session->uuid = $this->uuid;
 
-        $session->sendPacket(new LoginSuccessPacket($this->username, $this->uuid));
+        $session->sendPacket(new EncryptionRequestPacket());
     }
 }

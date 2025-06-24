@@ -7,6 +7,7 @@ use Nirbose\PhpMcServ\Packet\Serverbound\Configuration\ClientInformationPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Configuration\KnownPacksPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Configuration\PluginMessagePacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Handshaking\HandshakePacket;
+use Nirbose\PhpMcServ\Packet\Serverbound\Login\EncryptionResponsePacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Login\LoginAcknowledgedPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Login\LoginStartPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Play\ClientTickEndPacket;
@@ -37,6 +38,7 @@ class Protocol
         ],
         ServerState::LOGIN->value => [
             0x00 => LoginStartPacket::class,
+            0x01 => EncryptionResponsePacket::class,
             0x03 => LoginAcknowledgedPacket::class,
         ],
         ServerState::CONFIGURATION->value => [

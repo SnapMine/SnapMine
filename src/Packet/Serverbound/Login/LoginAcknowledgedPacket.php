@@ -29,6 +29,8 @@ class LoginAcknowledgedPacket extends Packet
     {
         $session->state = ServerState::CONFIGURATION;
 
+        // $session->disableEncryption();
+        echo "Login acknowledged, switching to configuration state.\n";
         $session->sendPacket(new KnownPacksPacket());
     }
 }

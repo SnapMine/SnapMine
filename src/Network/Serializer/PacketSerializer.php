@@ -86,7 +86,8 @@ class PacketSerializer
      */
     public function putString(string $data): void
     {
-        $this->put($this->putVarInt(strlen($data)) . $data);
+        $this->putVarInt(strlen($data));
+        $this->put($data);
     }
 
     /**
