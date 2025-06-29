@@ -4,6 +4,7 @@ namespace Nirbose\PhpMcServ\Packet\Serverbound\Play;
 
 use Nirbose\PhpMcServ\Network\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
+use Nirbose\PhpMcServ\Packet\Clientbound\Play\SynchronizePlayerPositionPacket;
 use Nirbose\PhpMcServ\Session\Session;
 
 class MovePlayerPositionRotationPacket extends Packet

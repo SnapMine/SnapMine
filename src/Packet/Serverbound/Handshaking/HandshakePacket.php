@@ -38,6 +38,6 @@ class HandshakePacket extends Packet
 
     public function handle(Session $session): void
     {
-        $session->state = ServerState::from($this->nextState);
+        $session->setState($this->nextState);
     }
 }

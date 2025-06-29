@@ -2,10 +2,12 @@
 
 namespace Nirbose\PhpMcServ\Session;
 
+use Nirbose\PhpMcServ\Entity\Player;
 use Nirbose\PhpMcServ\Network\Packet;
 use Nirbose\PhpMcServ\Network\Protocol;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Network\ServerState;
+use Nirbose\PhpMcServ\Utils\UUID;
 
 class Session
 {
@@ -14,9 +16,12 @@ class Session
     public ServerState $state;
     public $socket;
     public string $buffer = '';
+    private Player|null $player = null;
+    public int $lastKeepAliveId = 0;
     
     public function __construct($socket) {
         $this->socket = $socket;
+
         $this->state = ServerState::HANDSHAKE;
     }
 
@@ -84,5 +89,34 @@ class Session
             echo $e->getTraceAsString();
             $this->close();
         }
+    }
+
+    /**
+     * Set the session state.
+     * 
+     * @param ServerState $state
+     * @return void
+     */
+    public function setState(ServerState|int $state): void {
+        if (is_int($state)) {
+            $state = ServerState::from($state);
+        }
+
+        echo "Changement d'état de {$this->state->name} à {$state->name}\n";
+
+        if ($state === ServerState::PLAY && $this->player === null) {
+            $this->player = new Player(0, $this->username, UUID::fromString($this->uuid));
+        }
+
+        $this->state = $state;
+    }
+
+    /**
+     * Get the current player.
+     * 
+     * @return Player|null
+     */
+    public function getPlayer(): ?Player {
+        return $this->player;
     }
 }

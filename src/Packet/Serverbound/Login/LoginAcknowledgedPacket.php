@@ -27,7 +27,7 @@ class LoginAcknowledgedPacket extends Packet
 
     public function handle(Session $session): void
     {
-        $session->state = ServerState::CONFIGURATION;
+        $session->setState(ServerState::CONFIGURATION);
 
         $session->sendPacket(new KnownPacksPacket());
     }

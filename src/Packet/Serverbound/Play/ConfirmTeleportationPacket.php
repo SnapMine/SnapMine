@@ -30,17 +30,5 @@ class ConfirmTeleportationPacket extends Packet
 
     public function handle(Session $session): void
     {
-        $session->sendPacket(
-            new GameEventPacket(13, 0.0)
-        );
-        $session->sendPacket(
-            new SetCenterChunk()
-        );
-        $session->sendPacket(
-            new ChunkDataAndUpdateLightPacket()
-        );
-        $session->sendPacket(
-            new PlayerAbilitiesPacket()
-        );
     }
 }
