@@ -6,6 +6,7 @@ use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
+use Nirbose\PhpMcServ\Manager\KeepAliveManager;
 use Nirbose\PhpMcServ\Session\Session;
 
 class Server
@@ -33,8 +34,10 @@ class Server
         self::getLogger()->info("Serveur démarré sur {$this->host}:{$this->port}");
 
         $write = $except = null;
+        $keepAliveManager = new KeepAliveManager();
 
         while (true) {
+            $keepAliveManager->tick($this);
             $read = array_merge([$this->socket], $this->clients);
             socket_select($read, $write, $except, null);
 
@@ -88,5 +91,31 @@ class Server
         }
 
         return self::$logger;
+    }
+
+    /**
+     * Get all players connected to the server.
+     * 
+     * @return array
+     */
+    public function getPlayers(): array
+    {
+        $players = [];
+        foreach ($this->sessions as $session) {
+            if ($session->getPlayer() !== null) {
+                $players[] = $session->getPlayer();
+            }
+        }
+        return $players;
+    }
+
+    /**
+     * Get all sessions.
+     * 
+     * @return array
+     */
+    public function getSessions(): array
+    {
+        return $this->sessions;
     }
 }

@@ -11,11 +11,15 @@ use Nirbose\PhpMcServ\Packet\Serverbound\Login\LoginAcknowledgedPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Login\LoginStartPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Play\ClientTickEndPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Play\ConfirmTeleportationPacket;
+use Nirbose\PhpMcServ\Packet\Serverbound\Play\CustomPlayloadPacket;
+use Nirbose\PhpMcServ\Packet\Serverbound\Play\KeepAlivePacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Play\MovePlayerPositionPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Play\MovePlayerPositionRotationPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Play\MovePlayerRotationPacket;
+use Nirbose\PhpMcServ\Packet\Serverbound\Play\MovePlayerStatusOnlyPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Play\PlayerAbilitiesPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Play\PlayerActionPacket;
+use Nirbose\PhpMcServ\Packet\Serverbound\Play\PlayerCommandPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Play\PlayerInputPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Play\PlayerLoadedPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Play\SwingPacket;
@@ -52,10 +56,14 @@ class Protocol
             0x1C => MovePlayerPositionPacket::class,
             0x2A => PlayerLoadedPacket::class,
             0x3B => SwingPacket::class,
+            0x28 => PlayerCommandPacket::class,
             0x29 => PlayerInputPacket::class,
             0x27 => PlayerActionPacket::class,
             0x1E => MovePlayerRotationPacket::class,
             0x26 => PlayerAbilitiesPacket::class,
+            0x1A => KeepAlivePacket::class,
+            0x1F => MovePlayerStatusOnlyPacket::class,
+            0x14 => CustomPlayloadPacket::class,
         ],
     ];
 }

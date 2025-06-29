@@ -201,7 +201,7 @@ class PacketSerializer
      */
     public function putFloat(float $value): void
     {
-        $this->put(pack('f', $value));
+        $this->put(pack('G', $value));
     }
 
     /**
@@ -227,7 +227,7 @@ class PacketSerializer
      */
     public function putDouble(float $value): void
     {
-        $this->put(pack('d', $value));
+        $this->put(pack('E', $value));
     }
 
     /**
@@ -239,7 +239,7 @@ class PacketSerializer
      */
     public function getDouble(string $buffer, int &$offset): float
     {
-        $value = unpack('d', substr($buffer, $offset, 8))[1];
+        $value = unpack('E', substr($buffer, $offset, 8))[1];
         $offset += 8;
 
         return $value;
