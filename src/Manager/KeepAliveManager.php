@@ -5,7 +5,8 @@ namespace Nirbose\PhpMcServ\Manager;
 use Nirbose\PhpMcServ\Packet\Clientbound\Play\KeepAlivePacket;
 use Nirbose\PhpMcServ\Server;
 
-class KeepAliveManager {
+class KeepAliveManager implements Manager
+{
     private int $interval = 15; // secondes
     private int $lastSent = 0;
 
