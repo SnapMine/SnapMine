@@ -2,48 +2,57 @@
 
 namespace Nirbose\PhpMcServ;
 
+use Exception;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
+use Nirbose\PhpMcServ\Event\Event;
+use Nirbose\PhpMcServ\Event\EventBinding;
+use Nirbose\PhpMcServ\Event\EventManager;
+use Nirbose\PhpMcServ\Event\Listener;
+use Nirbose\PhpMcServ\Listener\PlayerJoinListener;
 use Nirbose\PhpMcServ\Manager\KeepAliveManager;
 use Nirbose\PhpMcServ\Session\Session;
+use ReflectionClass;
+use ReflectionMethod;
 
 class Server
 {
-    private string $host;
-    private int $port;
-    private $socket;
     private array $clients = [];
     private array $sessions = [];
+    private EventManager $eventManager;
 
     private static Logger|null $logger = null;
     private static string $logFormat = "[%datetime%] %level_name%: %message%\n";
 
-    public function __construct(string $host, int $port)
+    public function __construct(
+        private readonly string $host,
+        private readonly int $port)
     {
-        $this->host = $host;
-        $this->port = $port;
+        $this->eventManager = new EventManager();
     }
 
     public function start(): void
     {
-        $this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-        socket_bind($this->socket, $this->host, $this->port);
-        socket_listen($this->socket);
+        $socket1 = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+        socket_bind($socket1, $this->host, $this->port);
+        socket_listen($socket1);
         self::getLogger()->info("Serveur démarré sur {$this->host}:{$this->port}");
+
+        $this->registerListener(new PlayerJoinListener());
 
         $write = $except = null;
         $keepAliveManager = new KeepAliveManager();
 
         while (true) {
             $keepAliveManager->tick($this);
-            $read = array_merge([$this->socket], $this->clients);
+            $read = array_merge([$socket1], $this->clients);
             socket_select($read, $write, $except, null);
 
             foreach ($read as $socket) {
-                if ($socket === $this->socket) {
-                    $client = socket_accept($this->socket);
+                if ($socket === $socket1) {
+                    $client = socket_accept($socket1);
 
                     if ($client) {
                         socket_set_nonblock($client);
@@ -70,7 +79,7 @@ class Server
                     $session = $this->sessions[$id];
                     $session->buffer .= $data;
 
-                    echo "Paquet brut reçu (hex) : " . bin2hex($data) . "\n";
+                    // echo "Paquet brut reçu (hex) : " . bin2hex($data) . "\n";
 
                     $session->handle();
                 }
@@ -117,5 +126,39 @@ class Server
     public function getSessions(): array
     {
         return $this->sessions;
+    }
+
+    /**
+     * Register listener
+     *
+     * @param Listener $listener
+     * @return void
+     * @throws Exception
+     */
+    public function registerListener(Listener $listener): void
+    {
+        $reflexionClass = new ReflectionClass($listener);
+
+        foreach ($reflexionClass->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+            $attributes = $method->getAttributes(EventBinding::class);
+
+            if (empty($attributes)) {
+                continue;
+            }
+
+            $parameters = $method->getParameters();
+
+            if (count($parameters) > 1) {
+                throw new Exception("Require one parameter"); // TODO: Change exception
+            }
+
+            $isEventChild = get_parent_class($parameters[0]->getType()->getName()) === Event::class;
+
+            if (!$isEventChild) {
+                throw new Exception("Parameter is not instance of Event"); // TODO: Change exception
+            }
+
+            $this->eventManager->register($parameters[0]->getType()->getName(), $method->getClosure($listener));
+        }
     }
 }

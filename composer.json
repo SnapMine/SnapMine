@@ -1,23 +1,25 @@
 {
-    "name": "nirbose/php-mc-serv",
-    "type": "project",
-    "autoload": {
-        "psr-4": {
-            "Nirbose\\PhpMcServ\\": "src/"
-        },
-        "files": [
-            "src/helpers.php"
-        ]
+  "name": "nirbose/php-mc-serv",
+  "type": "project",
+  "autoload": {
+    "psr-4": {
+      "Nirbose\\PhpMcServ\\": "src/"
     },
-    "authors": [
-        {
-            "name": "Nirbose",
-            "email": "nirbose2@gmail.com"
-        }
-    ],
-    "require": {
-        "monolog/monolog": "^3.9",
-        "aternos/nbt": "^1.12",
-        "amphp/parallel": "^2.3"
+    "files": [
+      "src/helpers.php"
+    ]
+  },
+  "authors": [
+    {
+      "name": "Nirbose",
+      "email": "nirbose2@gmail.com"
     }
+  ],
+  "require": {
+    "php": "^8.2",
+    "monolog/monolog": "^3.9",
+    "aternos/nbt": "^1.12",
+    "amphp/parallel": "^2.3",
+    "ext-sockets": "*"
+  }
 }

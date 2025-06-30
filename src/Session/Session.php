@@ -105,7 +105,7 @@ class Session
         echo "Changement d'état de {$this->state->name} à {$state->name}\n";
 
         if ($state === ServerState::PLAY && $this->player === null) {
-            $this->player = new Player(0, $this->username, UUID::fromString($this->uuid));
+//            $this->player = new Player(0, $this->username, UUID::fromString($this->uuid));
         }
 
         $this->state = $state;
