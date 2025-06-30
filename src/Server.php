@@ -24,6 +24,7 @@ class Server
     private array $sessions = [];
     private array $players = [];
     private EventManager $eventManager;
+    private int $entityIdCounter = 0;
 
     private static Logger|null $logger = null;
     private static string $logFormat = "[%datetime%] %level_name%: %message%\n";
@@ -89,6 +90,10 @@ class Server
         }
     }
 
+    private function incrementAndGetId(): int
+    {
+        return $this->entityIdCounter++;
+    }
 
     public static function getLogger(): Logger
     {
@@ -112,7 +117,7 @@ class Server
      */
     public function addPlayer(Player $player): void
     {
-        $this->players[] = $player;
+        $this->players[$this->incrementAndGetId()] = $player;
     }
 
     /**
