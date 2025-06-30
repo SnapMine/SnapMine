@@ -15,8 +15,8 @@ class KeepAliveManager implements Manager
         if ($now - $this->lastSent >= $this->interval) {
             $this->lastSent = $now;
 
-            foreach ($server->getSessions() as $player) {
-                $keepAliveId = $now; // ou uniqid(), ou random_int()
+            foreach ($server->getPlayers() as $player) {
+                $keepAliveId = $now;
 
                 $packet = new KeepAlivePacket($keepAliveId);
                 $player->sendPacket($packet);
