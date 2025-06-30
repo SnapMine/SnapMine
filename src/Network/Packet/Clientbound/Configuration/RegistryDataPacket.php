@@ -79,13 +79,15 @@ class RegistryDataPacket extends Packet
                     $listTag = new ListTag();
 
                     $elementType = $tagType[1];
-                    foreach ($value as $item) {
-                        if (is_array($elementType)) {
-                            $listTag[] = $this->convertToNbtTag($elementType, $item);
-                        } else {
-                            $element = new $elementType();
-                            $element->setValue($item);
-                            $listTag[] = $element;
+                    if (!is_string($value)) {
+                        foreach ($value as $item) {
+                            if (is_array($elementType)) {
+                                $listTag[] = $this->convertToNbtTag($elementType, $item);
+                            } else {
+                                $element = new $elementType();
+                                $element->setValue($item);
+                                $listTag[] = $element;
+                            }
                         }
                     }
 

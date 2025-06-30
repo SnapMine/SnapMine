@@ -11,6 +11,7 @@ use Nirbose\PhpMcServ\World\Position;
 class Player
 {
     private Location|null $location = null;
+    public int $lastKeepAliveId = 0;
 
     public function __construct(
         private readonly Session     $session,
