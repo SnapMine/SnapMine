@@ -30,11 +30,26 @@ class ChunkDataAndUpdateLightPacket extends Packet
 
         for ($i = 0; $i < 24; $i++) {
             $dataBuf->putShort(1);
-            $dataBuf->putByte(0);
-            $dataBuf->putVarInt(1);
+//            $dataBuf->putByte(15);
+//
+//            $entry1 = 1;
+//            $entry2 = 1;
+//
+//            $long = 0;
+//            $long |= $entry1 << 15;     // bloc 1
+//            $long |= $entry2 << 30;    // bloc 2
+//            $long |= $entry1 << 45;    // bloc 3
+//            $long |= $entry2 << 60;    // bloc 4
+//            $long |= $entry2 << 60;    // bloc 5
+//
+//            for ($j = 0; $j < 1024; $j++) {
+//                $dataBuf->putLong($long);
+//            }
+             $dataBuf->putByte(0);
+             $dataBuf->putVarInt(1);
 
-            $dataBuf->putByte(0);
-            $dataBuf->putVarInt(0);
+             $dataBuf->putByte(0);
+             $dataBuf->putVarInt(0);
         }
 
         $s->putVarInt(strlen($dataBuf->get()));

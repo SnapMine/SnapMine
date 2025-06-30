@@ -38,7 +38,7 @@ class Session
         $serializer->putVarInt(strlen($data));
         $length = $serializer->get();
 
-        echo "Sending packet ID: " . dechex($packet->getId()) . " (len: " . bin2hex($length) . ") with data: " . bin2hex($length . $data) . "\n";
+        // echo "Sending packet ID: " . dechex($packet->getId()) . " (len: " . bin2hex($length) . ") with data: " . bin2hex($length . $data) . "\n";
 
         socket_write($this->socket, $length . $data);
     }
