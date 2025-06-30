@@ -4,7 +4,7 @@ namespace Nirbose\PhpMcServ\Listener;
 
 use Nirbose\PhpMcServ\Event\EventBinding;
 use Nirbose\PhpMcServ\Event\Listener;
-use Nirbose\PhpMcServ\Event\PlayerJoinEvent;
+use Nirbose\PhpMcServ\Event\Player\PlayerJoinEvent;
 
 class PlayerJoinListener implements Listener
 {

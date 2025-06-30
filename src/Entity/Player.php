@@ -2,6 +2,7 @@
 
 namespace Nirbose\PhpMcServ\Entity;
 
+use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Session\Session;
 use Nirbose\PhpMcServ\Utils\UUID;
 use Nirbose\PhpMcServ\World\Location;
@@ -77,5 +78,16 @@ class Player
             sin($pitchRad),
             sin($yawRad) * cos($pitchRad)
         );
+    }
+
+    /**
+     * Send packet
+     *
+     * @param Packet $packet
+     * @return void
+     */
+    public function sendPacket(Packet $packet): void
+    {
+        $this->session->sendPacket($packet);
     }
 }

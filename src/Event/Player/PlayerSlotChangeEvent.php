@@ -1,6 +1,8 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Event;
+namespace Nirbose\PhpMcServ\Event\Player;
+
+use Nirbose\PhpMcServ\Event\Event;
 
 class PlayerSlotChangeEvent extends Event
 {

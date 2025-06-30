@@ -1,8 +1,9 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Event;
+namespace Nirbose\PhpMcServ\Event\Player;
 
 use Nirbose\PhpMcServ\Entity\Player;
+use Nirbose\PhpMcServ\Event\Event;
 
 class PlayerJoinEvent extends Event
 {

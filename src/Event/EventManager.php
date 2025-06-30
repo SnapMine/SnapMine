@@ -18,11 +18,13 @@ class EventManager
         self::$listeners[$eventClass][] = $listener;
     }
 
-    public static function call(Event $event): void
+    public static function call(Event $event): Event
     {
         foreach (self::$listeners[get_class($event)] ?? [] as $listener) {
             call_user_func($listener, $event);
         }
+
+        return $event;
     }
 
 }

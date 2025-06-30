@@ -7,6 +7,7 @@ use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
+use Nirbose\PhpMcServ\Entity\Player;
 use Nirbose\PhpMcServ\Event\Event;
 use Nirbose\PhpMcServ\Event\EventBinding;
 use Nirbose\PhpMcServ\Event\EventManager;
@@ -21,6 +22,7 @@ class Server
 {
     private array $clients = [];
     private array $sessions = [];
+    private array $players = [];
     private EventManager $eventManager;
 
     private static Logger|null $logger = null;
@@ -28,7 +30,7 @@ class Server
 
     public function __construct(
         private readonly string $host,
-        private readonly int $port)
+        private readonly int    $port)
     {
         $this->eventManager = new EventManager();
     }
@@ -57,7 +59,7 @@ class Server
                     if ($client) {
                         socket_set_nonblock($client);
                         $this->clients[] = $client;
-                        $this->sessions[spl_object_id($client)] = new Session($client);
+                        $this->sessions[spl_object_id($client)] = new Session($this, $client);
                         echo "Nouveau client connecté.\n";
                     }
                     continue;
@@ -103,29 +105,24 @@ class Server
     }
 
     /**
+     * Add new player
+     *
+     * @param Player $player
+     * @return void
+     */
+    public function addPlayer(Player $player): void
+    {
+        $this->players[] = $player;
+    }
+
+    /**
      * Get all players connected to the server.
-     * 
+     *
      * @return array
      */
     public function getPlayers(): array
     {
-        $players = [];
-        foreach ($this->sessions as $session) {
-            if ($session->getPlayer() !== null) {
-                $players[] = $session->getPlayer();
-            }
-        }
-        return $players;
-    }
-
-    /**
-     * Get all sessions.
-     * 
-     * @return array
-     */
-    public function getSessions(): array
-    {
-        return $this->sessions;
+        return $this->players;
     }
 
     /**

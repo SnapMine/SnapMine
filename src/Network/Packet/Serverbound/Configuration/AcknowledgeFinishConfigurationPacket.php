@@ -2,10 +2,6 @@
 
 namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Configuration;
 
-use Nirbose\PhpMcServ\Entity\GameProfile;
-use Nirbose\PhpMcServ\Entity\Player;
-use Nirbose\PhpMcServ\Event\EventManager;
-use Nirbose\PhpMcServ\Event\PlayerJoinEvent;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\ChunkDataAndUpdateLightPacket;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\GameEventPacket;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\JoinGamePacket;
@@ -17,7 +13,6 @@ use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Network\ServerState;
 use Nirbose\PhpMcServ\Session\Session;
-use Nirbose\PhpMcServ\Utils\UUID;
 
 class AcknowledgeFinishConfigurationPacket extends Packet
 {
@@ -39,12 +34,6 @@ class AcknowledgeFinishConfigurationPacket extends Packet
     public function handle(Session $session): void
     {
         $session->setState(ServerState::PLAY);
-
-        EventManager::call(
-            new PlayerJoinEvent(
-                new Player($session, new GameProfile("test", UUID::generate()))
-            )
-        );
 
         $session->sendPacket(new JoinGamePacket());
         $session->sendPacket(

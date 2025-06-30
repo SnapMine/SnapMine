@@ -2,25 +2,31 @@
 
 namespace Nirbose\PhpMcServ\Session;
 
+use Nirbose\PhpMcServ\Entity\GameProfile;
 use Nirbose\PhpMcServ\Entity\Player;
+use Nirbose\PhpMcServ\Event\EventManager;
+use Nirbose\PhpMcServ\Event\Player\PlayerJoinEvent;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Protocol;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Network\ServerState;
+use Nirbose\PhpMcServ\Server;
+use Nirbose\PhpMcServ\Utils\UUID;
+use Socket;
 
 class Session
 {
     public string $uuid;
     public string $username;
     public ServerState $state;
-    public $socket;
     public string $buffer = '';
-    private Player|null $player = null;
     public int $lastKeepAliveId = 0;
     
-    public function __construct($socket) {
-        $this->socket = $socket;
-
+    public function __construct(
+        private readonly Server $server,
+        private readonly Socket $socket
+    )
+    {
         $this->state = ServerState::HANDSHAKE;
     }
 
@@ -93,7 +99,7 @@ class Session
     /**
      * Set the session state.
      * 
-     * @param ServerState $state
+     * @param ServerState|int $state
      * @return void
      */
     public function setState(ServerState|int $state): void {
@@ -103,19 +109,18 @@ class Session
 
         echo "Changement d'état de {$this->state->name} à {$state->name}\n";
 
-        if ($state === ServerState::PLAY && $this->player === null) {
-//            $this->player = new Player(0, $this->username, UUID::fromString($this->uuid));
+        if ($state === ServerState::PLAY) {
+            $player = new Player($this, new GameProfile($this->username, UUID::fromString($this->uuid)));
+
+            $event = EventManager::call(
+                new PlayerJoinEvent($player)
+            );
+
+            if (!$event->isCancelled()) {
+                $this->server->addPlayer($player);
+            }
         }
 
         $this->state = $state;
-    }
-
-    /**
-     * Get the current player.
-     * 
-     * @return Player|null
-     */
-    public function getPlayer(): ?Player {
-        return $this->player;
     }
 }
