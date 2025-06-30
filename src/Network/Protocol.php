@@ -22,6 +22,7 @@ use Nirbose\PhpMcServ\Packet\Serverbound\Play\PlayerActionPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Play\PlayerCommandPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Play\PlayerInputPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Play\PlayerLoadedPacket;
+use Nirbose\PhpMcServ\Packet\Serverbound\Play\SetCarriedItem;
 use Nirbose\PhpMcServ\Packet\Serverbound\Play\SwingPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Status\PingPacket;
 use Nirbose\PhpMcServ\Packet\Serverbound\Status\StatusRequestPacket;
@@ -64,6 +65,7 @@ class Protocol
             0x1A => KeepAlivePacket::class,
             0x1F => MovePlayerStatusOnlyPacket::class,
             0x14 => CustomPlayloadPacket::class,
+            0x33 => SetCarriedItem::class,
         ],
     ];
 }
