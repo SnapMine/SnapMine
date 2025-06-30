@@ -2,7 +2,7 @@
 
 namespace Nirbose\PhpMcServ\Manager;
 
-use Nirbose\PhpMcServ\Packet\Clientbound\Play\KeepAlivePacket;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\KeepAlivePacket;
 use Nirbose\PhpMcServ\Server;
 
 class KeepAliveManager implements Manager

@@ -3,11 +3,10 @@
 namespace Nirbose\PhpMcServ\Session;
 
 use Nirbose\PhpMcServ\Entity\Player;
-use Nirbose\PhpMcServ\Network\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Protocol;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Network\ServerState;
-use Nirbose\PhpMcServ\Utils\UUID;
 
 class Session
 {

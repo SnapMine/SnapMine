@@ -1,6 +1,6 @@
 <?php
 
-use Nirbose\PhpMcServ\Network\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 
 if (!function_exists('packet_dump')) {
