@@ -123,4 +123,9 @@ class Session
 
         $this->state = $state;
     }
+
+    public function getServer()
+    {
+        return $this->server;
+    }
 }

@@ -2,6 +2,8 @@
 
 namespace Nirbose\PhpMcServ\Utils;
 
+use Random\RandomException;
+
 class UUID
 {
     private string $uuid;
@@ -60,16 +62,25 @@ class UUID
         return new self($uuid);
     }
 
+    /**
+     * @throws RandomException
+     */
     public static function generate(): self
     {
-        $uuid = sprintf(
-            '%s-%s-%s-%s-%s',
-            bin2hex(random_bytes(4)),
-            bin2hex(random_bytes(2)),
-            '4' . bin2hex(random_bytes(1)),
-            dechex(mt_rand(8, 11)) . bin2hex(random_bytes(1)),
-            bin2hex(random_bytes(6))
-        );
+        $data = random_bytes(16);
+
+        $data[6] = chr((ord($data[6]) & 0x0f) | 0x40);
+
+        $data[8] = chr((ord($data[8]) & 0x3f) | 0x80);
+
+        $hex = bin2hex($data);
+        $uuid = vsprintf('%s-%s-%s-%s-%s', [
+            substr($hex, 0, 8),
+            substr($hex, 8, 4),
+            substr($hex, 12, 4),
+            substr($hex, 16, 4),
+            substr($hex, 20, 12),
+        ]);
 
         return new self($uuid);
     }

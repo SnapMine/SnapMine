@@ -27,7 +27,8 @@ class JoinGamePacket extends Packet
         $serializer->putBool(false);
         
         // Dimension Names (Prefixed Array of Identifier) - NOUVEAU FORMAT
-        $serializer->putVarInt(0);
+        $serializer->putVarInt(1);
+        $serializer->putString("minecraft:overworld");
         
         // Max Players
         $serializer->putVarInt(100);
@@ -46,8 +47,7 @@ class JoinGamePacket extends Packet
         
         // Do Limited Crafting
         $serializer->putBool(false);
-        
-        // Dimension Type (VarInt ID dans le registre minecraft:dimension_type)
+
         $serializer->putVarInt(0); // ID de minecraft:overworld dans le registre
 
         // Dimension Name
@@ -70,9 +70,6 @@ class JoinGamePacket extends Packet
         
         // Has Death Location
         $serializer->putBool(false);
-        // Si Has Death Location était true, il faudrait ajouter :
-        // - Death Dimension Name (Optional Identifier)
-        // - Death Location (Optional Position)
         
         // Portal Cooldown
         $serializer->putVarInt(0);

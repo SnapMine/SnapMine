@@ -7,6 +7,7 @@ use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
+use Nirbose\PhpMcServ\Entity\EntityType;
 use Nirbose\PhpMcServ\Entity\Player;
 use Nirbose\PhpMcServ\Event\Event;
 use Nirbose\PhpMcServ\Event\EventBinding;
@@ -14,7 +15,9 @@ use Nirbose\PhpMcServ\Event\EventManager;
 use Nirbose\PhpMcServ\Event\Listener;
 use Nirbose\PhpMcServ\Listener\PlayerJoinListener;
 use Nirbose\PhpMcServ\Manager\KeepAliveManager;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\AddEntityPacket;
 use Nirbose\PhpMcServ\Session\Session;
+use Nirbose\PhpMcServ\Utils\UUID;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -120,6 +123,32 @@ class Server
         $this->players[$this->incrementAndGetId()] = $player;
     }
 
+    public function testSheep(Player $player): void
+    {
+        $uuid = UUID::generate();
+        $packet = new AddEntityPacket(
+            $this->incrementAndGetId(),
+            $uuid,
+            EntityType::SHEEP,
+            0,
+            64,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        );
+
+        packet_dump($packet);
+
+        $player->sendPacket(
+            $packet
+        );
+    }
+
     /**
      * Get all players connected to the server.
      *
@@ -128,6 +157,17 @@ class Server
     public function getPlayers(): array
     {
         return $this->players;
+    }
+
+    public function getPlayerByUUID(string $uuid): ?Player
+    {
+        foreach ($this->players as $player) {
+            if ($player->getUUID() === $uuid) {
+                return $player;
+            }
+        }
+
+        return null;
     }
 
     /**

@@ -26,5 +26,8 @@ class ConfirmTeleportationPacket extends Packet
 
     public function handle(Session $session): void
     {
+        $session->getServer()->testSheep(
+            $session->getServer()->getPlayers()[0]
+        );
     }
 }
