@@ -16,6 +16,7 @@ use Nirbose\PhpMcServ\Event\Listener;
 use Nirbose\PhpMcServ\Listener\PlayerJoinListener;
 use Nirbose\PhpMcServ\Manager\KeepAliveManager;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\AddEntityPacket;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\PlayerInfoUpdatePacket;
 use Nirbose\PhpMcServ\Session\Session;
 use Nirbose\PhpMcServ\Utils\UUID;
 use ReflectionClass;
@@ -125,11 +126,14 @@ class Server
 
     public function testSheep(Player $player): void
     {
-        $uuid = UUID::generate();
+
+        $player->sendPacket(new PlayerInfoUpdatePacket());
+        $uuid = UUID::generateOffline("teste");
+
         $packet = new AddEntityPacket(
             $this->incrementAndGetId(),
             $uuid,
-            EntityType::SHEEP,
+            EntityType::PLAYER,
             0,
             64,
             0,
@@ -141,8 +145,6 @@ class Server
             0,
             0
         );
-
-        packet_dump($packet);
 
         $player->sendPacket(
             $packet

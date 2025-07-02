@@ -35,10 +35,7 @@ class AcknowledgeFinishConfigurationPacket extends Packet
     {
         $session->setState(ServerState::PLAY);
 
-        $packet = new JoinGamePacket();
-
-        packet_dump($packet);
-        $session->sendPacket($packet);
+        $session->sendPacket(new JoinGamePacket());
         $session->sendPacket(
             new PlayerAbilitiesPacket()
         );
