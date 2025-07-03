@@ -8,38 +8,17 @@ use Nirbose\PhpMcServ\Utils\UUID;
 use Nirbose\PhpMcServ\World\Location;
 use Nirbose\PhpMcServ\World\Position;
 
-class Player
+class Player extends Entity
 {
-    private Location|null $location = null;
     public int $lastKeepAliveId = 0;
 
     public function __construct(
         private readonly Session     $session,
-        private readonly GameProfile $profile
+        private readonly GameProfile $profile,
+        Location                     $location,
     )
     {
-    }
-
-    /**
-     * Get the player's current location.
-     *
-     * The location includes the player's position, yaw, and pitch.
-     *
-     * @return Location
-     */
-    public function getLocation(): Location
-    {
-        return $this->location;
-    }
-
-    /**
-     * Set the player's location.
-     *
-     * @param Location $location
-     */
-    public function setLocation(Location $location): void
-    {
-        $this->location = $location;
+        parent::__construct($this->session->getServer(), $location);
     }
 
     /**
@@ -90,5 +69,10 @@ class Player
     public function sendPacket(Packet $packet): void
     {
         $this->session->sendPacket($packet);
+    }
+
+    function getType(): EntityType
+    {
+        return EntityType::PLAYER;
     }
 }

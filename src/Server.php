@@ -95,7 +95,7 @@ class Server
         }
     }
 
-    private function incrementAndGetId(): int
+    public function incrementAndGetId(): int
     {
         return $this->entityIdCounter++;
     }
