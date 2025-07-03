@@ -45,6 +45,7 @@ class Server
         $socket1 = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         socket_bind($socket1, $this->host, $this->port);
         socket_listen($socket1);
+        Artisan::setServer($this);
         self::getLogger()->info("Serveur démarré sur {$this->host}:{$this->port}");
 
         $this->registerListener(new PlayerJoinListener());
@@ -126,9 +127,19 @@ class Server
 
     public function testSheep(Player $player): void
     {
-
-        $player->sendPacket(new PlayerInfoUpdatePacket());
         $uuid = UUID::generateOffline("teste");
+        $player->sendPacket(new PlayerInfoUpdatePacket(
+            0x01 | 0x04 | 0x10,
+            [
+                $uuid->toString() => [
+                    [
+                        'name' => 'Yaya',
+                    ],
+                    [],
+                    [],
+                ]
+            ]
+        ));
 
         $packet = new AddEntityPacket(
             $this->incrementAndGetId(),

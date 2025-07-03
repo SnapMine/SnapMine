@@ -9,8 +9,23 @@ use Nirbose\PhpMcServ\Utils\UUID;
 
 class PlayerInfoUpdatePacket extends Packet
 {
+    public const ADD_PLAYER = 0x01;
+    public const INITIALIZE_CHAT = 0x02;
+    public const UPDATE_GAMEMODE = 0x04;
+    public const UPDATE_LISTED = 0x08;
+    public const UPDATE_LATENCY = 0x10;
+    public const UPDATE_DISPLAY_NAME = 0x20;
+    public const UPDATE_LIST_PRIORITY = 0x40;
+    public const UPDATE_HAT = 0x80;
 
-    public function __construct()
+    /**
+     * @param int $actionMask
+     * @param array<string, array<int, array<string, mixed>>> $players
+     */
+    public function __construct(
+        private readonly int $actionMask,
+        private readonly array $players
+    )
     {
     }
 
@@ -21,23 +36,38 @@ class PlayerInfoUpdatePacket extends Packet
 
     public function write(PacketSerializer $serializer): void
     {
-        $actionMask = 0x01 | 0x04 | 0x10; // Add Player + Update Game Mode + Update Latency
-        $serializer->putVarInt($actionMask);
-        $serializer->putVarInt(1);
-        $serializer->putUUID(UUID::generateOffline("teste"));
+        $serializer->putVarInt($this->actionMask);
+        $serializer->putVarInt(count($this->players));
 
-// Add Player
-        $serializer->putString("teste");
-        $serializer->putVarInt(1); // 1 property
-        $serializer->putString("textures");
-        $serializer->putString("skin-value");
-        $serializer->putBool(false);
+        foreach ($this->players as $uuid => $actions) {
+            $i = 0;
+            $serializer->putUUID($uuid);
 
-// Update Game Mode
-        $serializer->putVarInt(1); // creative
+            if ($this->actionMask & self::ADD_PLAYER) {
+                $property = $actions[$i];
+                $serializer->putString($property['name']);
 
-// Update Latency
-        $serializer->putVarInt(42); // ping in ms
+                // Default test values
+                $serializer->putVarInt(1); // 1 property
+                $serializer->putString("textures");
+                $serializer->putString("skin-value");
+                $serializer->putBool(false);
+
+                $i++;
+            }
+
+            if ($this->actionMask & self::UPDATE_GAMEMODE) {
+                $serializer->putVarInt(1); // creative
+
+                $i++;
+            }
+
+            if ($this->actionMask & self::UPDATE_LATENCY) {
+                $serializer->putVarInt(42); // ping in ms
+
+                $i++;
+            }
+        }
     }
 
     public function read(PacketSerializer $serializer, string $buffer, int &$offset): void
