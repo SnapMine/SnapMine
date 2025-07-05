@@ -2,55 +2,76 @@
 
 namespace Nirbose\PhpMcServ;
 
+use Exception;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
+use Nirbose\PhpMcServ\Entity\EntityType;
+use Nirbose\PhpMcServ\Entity\Player;
+use Nirbose\PhpMcServ\Event\Event;
+use Nirbose\PhpMcServ\Event\EventBinding;
+use Nirbose\PhpMcServ\Event\EventManager;
+use Nirbose\PhpMcServ\Event\Listener;
+use Nirbose\PhpMcServ\Listener\PlayerJoinListener;
+use Nirbose\PhpMcServ\Manager\KeepAliveManager;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\AddEntityPacket;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\PlayerInfoUpdatePacket;
 use Nirbose\PhpMcServ\Session\Session;
+use Nirbose\PhpMcServ\Utils\UUID;
+use ReflectionClass;
+use ReflectionException;
+use ReflectionMethod;
 
 class Server
 {
-    private string $host;
-    private int $port;
-    private $socket;
     private array $clients = [];
     private array $sessions = [];
+    private array $players = [];
     private static $keyResource = null;
     private static string $privateKeyPem = '';
     private static string $publicKeyDer = '';
 
     private static Logger|null $logger = null;
     private static string $logFormat = "[%datetime%] %level_name%: %message%\n";
+    private int $entityIdCounter = 0;
+    private EventManager $eventManager;
 
-    public function __construct(string $host, int $port)
+    public function __construct(
+        private readonly string $host,
+        private readonly int    $port)
     {
-        $this->host = $host;
-        $this->port = $port;
+        $this->eventManager = new EventManager();
     }
 
     public function start(): void
     {
-        $this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-
         $this->generateRSAKeyPair();
-        socket_bind($this->socket, $this->host, $this->port);
-        socket_listen($this->socket);
+
+        $socket1 = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+        socket_bind($socket1, $this->host, $this->port);
+        socket_listen($socket1);
+        Artisan::setServer($this);
         self::getLogger()->info("Serveur démarré sur {$this->host}:{$this->port}");
 
+        $this->registerListener(new PlayerJoinListener());
+
         $write = $except = null;
+        $keepAliveManager = new KeepAliveManager();
 
         while (true) {
-            $read = array_merge([$this->socket], $this->clients);
+            $keepAliveManager->tick($this);
+            $read = array_merge([$socket1], $this->clients);
             socket_select($read, $write, $except, null);
 
             foreach ($read as $socket) {
-                if ($socket === $this->socket) {
-                    $client = socket_accept($this->socket);
+                if ($socket === $socket1) {
+                    $client = socket_accept($socket1);
 
                     if ($client) {
                         socket_set_nonblock($client);
                         $this->clients[] = $client;
-                        $this->sessions[spl_object_id($client)] = new Session($client);
+                        $this->sessions[spl_object_id($client)] = new Session($this, $client);
                         echo "Nouveau client connecté.\n";
                     }
                     continue;
@@ -70,6 +91,7 @@ class Server
 
                     /** @var Session $session */
                     $session = $this->sessions[$id];
+                    $session->buffer .= $data;
 
                     echo "Paquet brut reçu (hex) : " . bin2hex($data) . "\n";
 
@@ -129,6 +151,11 @@ class Server
         return self::$keyResource;
     }
 
+    public function incrementAndGetId(): int
+    {
+        return $this->entityIdCounter++;
+    }
+
     public static function getLogger(): Logger
     {
         if (self::$logger === null) {
@@ -141,5 +168,108 @@ class Server
         }
 
         return self::$logger;
+    }
+
+    /**
+     * Add new player
+     *
+     * @param Player $player
+     * @return void
+     */
+    public function addPlayer(Player $player): void
+    {
+        $this->players[$this->incrementAndGetId()] = $player;
+    }
+
+    public function testSheep(Player $player): void
+    {
+        $uuid = UUID::generateOffline("teste");
+        $player->sendPacket(new PlayerInfoUpdatePacket(
+            0x01 | 0x04 | 0x10,
+            [
+                $uuid->toString() => [
+                    [
+                        'name' => 'Yaya',
+                    ],
+                    [],
+                    [],
+                ]
+            ]
+        ));
+
+        $packet = new AddEntityPacket(
+            $this->incrementAndGetId(),
+            $uuid,
+            EntityType::PLAYER,
+            0,
+            64,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        );
+
+        $player->sendPacket(
+            $packet
+        );
+    }
+
+    /**
+     * Get all players connected to the server.
+     *
+     * @return array
+     */
+    public function getPlayers(): array
+    {
+        return $this->players;
+    }
+
+    public function getPlayerByUUID(string $uuid): ?Player
+    {
+        foreach ($this->players as $player) {
+            if ($player->getUUID() === $uuid) {
+                return $player;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Register listener
+     *
+     * @param Listener $listener
+     * @return void
+     * @throws Exception|ReflectionException
+     */
+    public function registerListener(Listener $listener): void
+    {
+        $reflexionClass = new ReflectionClass($listener);
+
+        foreach ($reflexionClass->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+            $attributes = $method->getAttributes(EventBinding::class);
+
+            if (empty($attributes)) {
+                continue;
+            }
+
+            $parameters = $method->getParameters();
+
+            if (count($parameters) > 1) {
+                throw new Exception("Require one parameter"); // TODO: Change exception
+            }
+
+            $isEventChild = get_parent_class($parameters[0]->getType()->getName()) === Event::class;
+
+            if (!$isEventChild) {
+                throw new Exception("Parameter is not instance of Event"); // TODO: Change exception
+            }
+
+            $this->eventManager->register($parameters[0]->getType()->getName(), $method->getClosure($listener));
+        }
     }
 }

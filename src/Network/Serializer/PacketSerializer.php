@@ -112,18 +112,18 @@ class PacketSerializer
     }
 
     /**
-     * Encode un entier 16 bits en utilisant le format Little Endian.
+     * Encode un entier 16 bits en utilisant le format Big Endian.
      *
      * @param integer $value
      * @return void
      */
-    public function putShort(string $value): void
+    public function putShort(int $value): void
     {
-        $this->put(pack('v', $value));
+        $this->put(pack('n', $value));
     }
 
     /**
-     * Lit un entier 16 bits en utilisant le format Little Endian.
+     * Lit un entier 16 bits en utilisant le format Big Endian.
      *
      * @param string $buffer
      * @param integer $offset
@@ -131,7 +131,7 @@ class PacketSerializer
      */
     public function getShort(string $buffer, int &$offset): int
     {
-        $value = unpack('v', substr($buffer, $offset, 2))[1];
+        $value = unpack('n', substr($buffer, $offset, 2))[1];
         $offset += 2;
 
         return $value;
@@ -202,7 +202,7 @@ class PacketSerializer
      */
     public function putFloat(float $value): void
     {
-        $this->put(pack('f', $value));
+        $this->put(pack('G', $value));
     }
 
     /**
@@ -221,18 +221,18 @@ class PacketSerializer
     }
 
     /**
-     * Encode un double en utilisant le format Little Endian.
+     * Encode un double en utilisant le format Big Endian.
      *
      * @param float $value
      * @return void
      */
     public function putDouble(float $value): void
     {
-        $this->put(pack('d', $value));
+        $this->put(pack('E', $value));
     }
 
     /**
-     * Lit un double en utilisant le format Little Endian.
+     * Lit un double en utilisant le format Big Endian.
      *
      * @param string $buffer
      * @param integer $offset
@@ -240,7 +240,7 @@ class PacketSerializer
      */
     public function getDouble(string $buffer, int &$offset): float
     {
-        $value = unpack('d', substr($buffer, $offset, 8))[1];
+        $value = unpack('E', substr($buffer, $offset, 8))[1];
         $offset += 8;
 
         return $value;
@@ -338,7 +338,7 @@ class PacketSerializer
     /**
      * Encode un UUID.
      * 
-     * @param string $uuid
+     * @param string|UUID $uuid
      * @return void
      */
     public function putUUID(string|UUID $uuid): void
@@ -347,7 +347,9 @@ class PacketSerializer
             $uuid = $uuid->toString();
         }
 
-        $this->put(pack('H*', str_replace('-', '', $uuid)));
+        $raw = pack('H*', str_replace('-', '', $uuid));
+
+        $this->put($raw);
     }
 
     /**

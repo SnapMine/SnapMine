@@ -2,33 +2,37 @@
 
 namespace Nirbose\PhpMcServ\Session;
 
-use Nirbose\PhpMcServ\Network\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Protocol;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Network\ServerState;
 use Nirbose\PhpMcServ\Utils\MinecraftAES;
-use Nirbose\PhpMcServ\Utils\UUID;
+use Nirbose\PhpMcServ\Server;
+use Socket;
 
 class Session
 {
-    public UUID $uuid;
+    public string $uuid;
     public string $username;
     public ServerState $state;
-    public $socket;
     public string $buffer = '';
-    
+    public int $lastKeepAliveId = 0;
+
     // Chiffrement AES-CFB8
     private bool $encryptionEnabled = false;
     private string $sharedSecret = '';
     private MinecraftAES $encryptCipher;
     private MinecraftAES $decryptCipher;
-    
-    public function __construct($socket) {
-        $this->socket = $socket;
-        $this->state = ServerState::HANDSHAKE;
+
+    public function __construct(
+        private readonly Server $server,
+        private readonly Socket $socket
+    )
+    {
     }
 
-    public function sendPacket(Packet $packet): void {
+    public function sendPacket(Packet $packet): void
+    {
         $serializer = new PacketSerializer();
 
         $serializer->putVarInt($packet->getId());
@@ -37,26 +41,22 @@ class Session
         $data = $serializer->get();
 
         $serializer = new PacketSerializer();
+
         $serializer->putVarInt(strlen($data));
         $length = $serializer->get();
 
-        $fullPacket = $length . $data;
-        
-        // Chiffrer si nécessaire
-        if ($this->encryptionEnabled) {
-            $fullPacket = $this->encryptCipher->encrypt($fullPacket);
-        }
+        // echo "Sending packet ID: " . dechex($packet->getId()) . " (len: " . bin2hex($length) . ") with data: " . bin2hex($length . $data) . "\n";
 
-        echo "Sending packet ID: " . dechex($packet->getId()) . " (encrypted: " . ($this->encryptionEnabled ? "yes" : "no") . ")\n";
-
-        socket_write($this->socket, $fullPacket);
+        socket_write($this->socket, $length . $data);
     }
 
-    public function close(): void {
+    public function close(): void
+    {
         socket_close($this->socket);
     }
 
-    public function handle(): void {
+    public function handle(): void
+    {
         $offset = 0;
 
         try {
@@ -82,7 +82,7 @@ class Session
                 $packetClass = $packetMap[$packetId] ?? null;
 
                 if ($packetClass === null) {
-                    throw new \Exception("Paquet inconnu ID=$packetId dans l'état {$this->state->name}");
+                    throw new \Exception("Paquet inconnu ID=$packetId dans l'état {$this->state->name} avec le buffer: " . bin2hex($packetData));
                 }
 
                 /** @var Packet $packet */
@@ -101,6 +101,14 @@ class Session
     }
 
     /**
+     * @return Server
+     */
+    public function getServer(): Server
+    {
+        return $this->server;
+    }
+
+    /**
      * Ajoute des données au buffer (déchiffre si nécessaire)
      */
     public function addToBuffer(string $data): void {
@@ -110,23 +118,23 @@ class Session
         $this->buffer .= $data;
     }
 
-    public function enableEncryption(string $sharedSecret): void 
+    public function enableEncryption(string $sharedSecret): void
     {
         $this->encryptionEnabled = true;
         $this->sharedSecret = $sharedSecret;
-        
+
         // Créer les chiffreurs avec le même secret comme clé ET IV
         $this->encryptCipher = new MinecraftAES($sharedSecret, $sharedSecret);
         $this->decryptCipher = new MinecraftAES($sharedSecret, $sharedSecret);
-        
+
         echo "🔐 Chiffrement AES-128-CFB8 activé\n";
     }
 
-    public function disableEncryption(): void 
+    public function disableEncryption(): void
     {
         $this->encryptionEnabled = false;
         $this->sharedSecret = '';
-        
+
         echo "🔓 Chiffrement désactivé\n";
     }
 }

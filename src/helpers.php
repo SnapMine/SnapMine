@@ -1,6 +1,6 @@
 <?php
 
-use Nirbose\PhpMcServ\Network\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 
 if (!function_exists('packet_dump')) {
@@ -14,7 +14,7 @@ if (!function_exists('packet_dump')) {
         
         $packet->write($serializer);
 
-        $packetData = bin2hex($serializer->get());
+        $packetData = bin2hex($packetId) . bin2hex($serializer->get());
 
         echo "$packetName (ID: $packetId) :\n";
         echo "  - Hex : $packetData\n";
