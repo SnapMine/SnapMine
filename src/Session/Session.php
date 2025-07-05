@@ -158,12 +158,17 @@ class Session
     }
 
     /**
-     * Ajoute des données au buffer (déchiffre si nécessaire)
+     * Add data
+     *
+     * @param string $data
+     * @return void
      */
-    public function addToBuffer(string $data): void {
+    public function addToBuffer(string $data): void
+    {
         if ($this->encryptionEnabled) {
             $data = $this->decryptCipher->decrypt($data);
         }
+
         $this->buffer .= $data;
     }
 
