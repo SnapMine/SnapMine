@@ -4,6 +4,7 @@ namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Configuration;
 
 use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\Configuration\PluginMessagePacket as ClientboundPluginMessagePacket;
 use Nirbose\PhpMcServ\Session\Session;
 
 class PluginMessagePacket extends Packet
@@ -32,6 +33,6 @@ class PluginMessagePacket extends Packet
         // var_dump("PluginMessagePacket: Channel: " . $this->channel);
         // var_dump("PluginMessagePacket: Data: ", $this->data);
 
-        // $session->sendPacket(new ConfigurationPluginMessagePacket($this->channel, $this->data));
+         $session->sendPacket(new ClientboundPluginMessagePacket($this->channel, $this->data));
     }
 }

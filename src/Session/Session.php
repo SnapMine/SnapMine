@@ -51,9 +51,15 @@ class Session
         $serializer->putVarInt(strlen($data));
         $length = $serializer->get();
 
+        $raw = $length . $data;
+
         echo "Sending packet ID: " . dechex($packet->getId()) . " (len: " . bin2hex($length) . ", state: " . $this->state->name . ") with data: " . bin2hex($length . $data) . "\n";
 
-        socket_write($this->socket, $length . $data);
+        if ($this->encryptionEnabled) {
+            $raw = $this->decryptCipher->encrypt($raw);
+        }
+
+        socket_write($this->socket, $raw);
     }
 
     public function close(): void

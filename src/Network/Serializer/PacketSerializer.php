@@ -434,13 +434,15 @@ class PacketSerializer
     /**
      * Encode un byte array binaire (comme utilisé par NBT ou d'autres données binaires).
      * 
-     * @param string $data Données binaires (ex: issues du writer NBT)
+     * @param array $data
      * @return void
      */
-    public function putByteArray(string $data): void
+    public function putByteArray(array $data): void
     {
-        $this->putVarInt(strlen($data)); // Longueur d'abord
-        $this->put($data); // Puis contenu binaire brut
+        $this->putVarInt(count($data));
+        foreach ($data as $item) {
+            $this->putByte($item);
+        }
     }
 
     /**

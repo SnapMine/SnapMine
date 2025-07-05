@@ -9,7 +9,6 @@ class MinecraftAES
 
     public function __construct(string $key, string $iv)
     {
-        // S'assurer que la clé fait 16 bytes (AES-128)
         $this->key = str_pad(substr($key, 0, 16), 16, "\0");
         $this->iv = str_pad(substr($iv, 0, 16), 16, "\0");
     }
@@ -18,6 +17,8 @@ class MinecraftAES
     {
         $encrypted = '';
         $register = $this->iv;
+
+        echo "Packet (before AES): " . bin2hex($data) . PHP_EOL;
 
         for ($i = 0; $i < strlen($data); $i++) {
             // Chiffrer le registre avec AES-ECB
@@ -30,6 +31,8 @@ class MinecraftAES
             // Décaler le registre et ajouter le byte chiffré
             $register = substr($register, 1) . chr($encryptedByte);
         }
+
+        echo "Packet (after AES): " . bin2hex($encrypted) . PHP_EOL;
 
         return $encrypted;
     }
@@ -52,6 +55,7 @@ class MinecraftAES
             $register = substr($register, 1) . chr($encryptedByte);
         }
 
+        echo "Decrypted packet : " . bin2hex($decrypted) . PHP_EOL;
         return $decrypted;
     }
 }

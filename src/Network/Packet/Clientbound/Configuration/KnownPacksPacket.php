@@ -15,7 +15,6 @@ class KnownPacksPacket extends Packet
 
     public function read(PacketSerializer $in, string $buffer, int &$offset): void
     {
-        // No data to read for this packet
     }
 
     public function write(PacketSerializer $out): void
