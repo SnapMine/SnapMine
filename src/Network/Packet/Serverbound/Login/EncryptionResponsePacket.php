@@ -3,9 +3,9 @@
 namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Login;
 
 use Exception;
-use Nirbose\PhpMcServ\Network\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\Login\LoginSuccessPacket;
+use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Packet\Clientbound\Login\LoginSuccessPacket;
 use Nirbose\PhpMcServ\Server;
 use Nirbose\PhpMcServ\Session\Auth;
 use Nirbose\PhpMcServ\Session\Session;

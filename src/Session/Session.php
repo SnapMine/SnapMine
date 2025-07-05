@@ -2,19 +2,25 @@
 
 namespace Nirbose\PhpMcServ\Session;
 
+use Nirbose\PhpMcServ\Entity\GameProfile;
+use Nirbose\PhpMcServ\Entity\Player;
+use Nirbose\PhpMcServ\Event\EventManager;
+use Nirbose\PhpMcServ\Event\Player\PlayerJoinEvent;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Protocol;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Network\ServerState;
 use Nirbose\PhpMcServ\Utils\MinecraftAES;
 use Nirbose\PhpMcServ\Server;
+use Nirbose\PhpMcServ\Utils\UUID;
+use Nirbose\PhpMcServ\World\Location;
 use Socket;
 
 class Session
 {
     public string $uuid;
     public string $username;
-    public ServerState $state;
+    public ServerState $state = ServerState::HANDSHAKE;
     public string $buffer = '';
     public int $lastKeepAliveId = 0;
 
@@ -45,7 +51,7 @@ class Session
         $serializer->putVarInt(strlen($data));
         $length = $serializer->get();
 
-        // echo "Sending packet ID: " . dechex($packet->getId()) . " (len: " . bin2hex($length) . ") with data: " . bin2hex($length . $data) . "\n";
+        echo "Sending packet ID: " . dechex($packet->getId()) . " (len: " . bin2hex($length) . ", state: " . $this->state->name . ") with data: " . bin2hex($length . $data) . "\n";
 
         socket_write($this->socket, $length . $data);
     }
@@ -98,6 +104,49 @@ class Session
             echo $e->getTraceAsString();
             $this->close();
         }
+    }
+
+    /**
+     * Set the session state.
+     *
+     * @param ServerState|int $state
+     * @return void
+     */
+    public function setState(ServerState|int $state): void
+    {
+        if (is_int($state)) {
+            $state = ServerState::from($state);
+        }
+
+        echo "Changement d'état de {$this->state->name} à {$state->name}\n";
+
+        if ($state === ServerState::PLAY) {
+            $player = $this->createPlayer();
+
+            $event = EventManager::call(
+                new PlayerJoinEvent($player)
+            );
+
+            if (!$event->isCancelled()) {
+                $this->server->addPlayer($player);
+            }
+        }
+
+        $this->state = $state;
+    }
+
+    /**
+     * Create new player
+     *
+     * @return Player
+     */
+    private function createPlayer(): Player
+    {
+        return new Player(
+            $this,
+            new GameProfile($this->username, UUID::fromString($this->uuid)),
+            new Location(0, 0, 0)
+        );
     }
 
     /**

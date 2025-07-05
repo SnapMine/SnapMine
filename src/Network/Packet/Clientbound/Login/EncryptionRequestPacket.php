@@ -2,7 +2,7 @@
 
 namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Login;
 
-use Nirbose\PhpMcServ\Network\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Server;
 use Nirbose\PhpMcServ\Session\Session;

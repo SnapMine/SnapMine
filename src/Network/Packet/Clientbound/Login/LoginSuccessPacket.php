@@ -9,12 +9,17 @@ use Nirbose\PhpMcServ\Utils\UUID;
 
 class LoginSuccessPacket extends Packet
 {
-    private string $username;
     private UUID $uuid;
 
-    public function __construct(string $username, UUID $uuid)
+    public function __construct(
+        private readonly string $username,
+        UUID|string $uuid
+    )
     {
-        $this->username = $username;
+        if (is_string($uuid)) {
+            $uuid = UUID::fromString($uuid);
+        }
+
         $this->uuid = $uuid;
     }
 

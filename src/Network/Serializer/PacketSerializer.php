@@ -70,9 +70,6 @@ class PacketSerializer
             if (($byte & 0x80) === 0) break;
 
             $position += 7;
-            if ($position > 35) {
-                throw new \Exception("VarInt trop longue");
-            }
         }
 
         return $value;
@@ -101,10 +98,6 @@ class PacketSerializer
     {
         $len = $this->getVarInt($buffer, $offset);
         $str = substr($buffer, $offset, $len);
-
-        if (strlen($str) < $len) {
-            throw new \Exception("Chaîne tronquée (attendu $len octets, reçu " . strlen($str) . ")");
-        }
 
         $offset += $len;
 

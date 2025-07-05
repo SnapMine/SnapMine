@@ -91,7 +91,6 @@ class Server
 
                     /** @var Session $session */
                     $session = $this->sessions[$id];
-                    $session->buffer .= $data;
 
                     echo "Paquet brut reçu (hex) : " . bin2hex($data) . "\n";
 
