@@ -57,12 +57,8 @@ class AcknowledgeFinishConfigurationPacket extends Packet
         $session->sendPacket(
             new SetCenterChunk()
         );
-        for ($i = 0; $i < 16; $i++) {
-            for ($j = 0; $j < 16; $j++) {
-                $session->sendPacket(
-                    new ChunkDataAndUpdateLightPacket($i, $j)
-                );
-            }
-        }
+        $session->sendPacket(
+            new ChunkDataAndUpdateLightPacket(0, 0)
+        );
     }
 }

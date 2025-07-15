@@ -1,25 +1,37 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Session;
+namespace Nirbose\PhpMcServ\Extras\Auth;
 
 use Nirbose\PhpMcServ\Server;
 
-class Auth {
+class MojangAuth {
     const BASE_URL = 'https://sessionserver.mojang.com/session/minecraft/hasJoined';
 
+    private static array|null $keys = null;
+
+    public static function init(): void
+    {
+        self::$keys = MojangCrypt::generateKeyPair();
+    }
+
+    public static function getPublicKey(): string
+    {
+        return self::$keys['public'];
+    }
+
+    public static function getPrivateKey()
+    {
+        return self::$keys['private'];
+    }
+
     public static function getInfo(string $username, string $sharedSecret): array {
-        // Vérification des paramètres d'entrée
         if (empty($username) || empty($sharedSecret)) {
             throw new \InvalidArgumentException("Username et sharedSecret ne peuvent pas être vides");
         }
 
-        // Construction du hash serverId selon le protocole Minecraft
-        $data = $sharedSecret . Server::getPublicKey();
-        
-        // Calcul du SHA-1
+        // hash serverId
+        $data = $sharedSecret . self::$keys['public'];
         $hash = sha1($data, true);
-        
-        // Conversion en nombre signé (Two's complement pour les valeurs négatives)
         $serverId = self::minecraftSha1Hash($hash);
 
         // Debug - à retirer en production
@@ -85,14 +97,9 @@ class Auth {
      * Implémente la logique de two's complement pour les hash négatifs
      */
     private static function minecraftSha1Hash(string $hash): string {
-        // Conversion en nombre GMP
         $gmp = gmp_import($hash);
-        
-        // Vérification si le nombre est négatif (bit de signe à 1)
-        // 0x8000000000000000000000000000000000000000 = 2^159
+
         if (gmp_cmp($gmp, gmp_init("0x8000000000000000000000000000000000000000")) >= 0) {
-            // Calcul du complément à deux pour les nombres négatifs
-            // NOT(hash) + 1, puis multiplier par -1
             $notHash = gmp_xor($gmp, gmp_init("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"));
             $gmp = gmp_mul(gmp_add($notHash, 1), -1);
         }

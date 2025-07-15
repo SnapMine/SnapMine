@@ -21,6 +21,8 @@
     "aternos/nbt": "^1.12",
     "amphp/parallel": "^2.3",
     "ext-sockets": "*",
-    "ext-openssl": "*"
+    "ext-openssl": "*",
+    "ext-curl": "*",
+    "ext-gmp": "*"
   }
 }

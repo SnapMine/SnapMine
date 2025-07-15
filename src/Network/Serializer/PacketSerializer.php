@@ -76,6 +76,41 @@ class PacketSerializer
     }
 
     /**
+     * Tente de lire un VarInt sans modifier l'offset initial si incomplet.
+     * Retourne null si le VarInt est incomplet.
+     *
+     * @param string $buffer
+     * @param int $startOffset
+     * @param int &$varintLength
+     * @return int|null
+     */
+    public function tryReadVarInt(string $buffer, int $startOffset, int &$varintLength): ?int
+    {
+        $value = 0;
+        $position = 0;
+        $offset = $startOffset;
+
+        while (true) {
+            if (!isset($buffer[$offset])) {
+                return null; // Pas assez de données
+            }
+
+            $byte = ord($buffer[$offset++]);
+            $value |= ($byte & 0x7F) << $position;
+            $position += 7;
+
+            if (($byte & 0x80) === 0) {
+                $varintLength = $offset - $startOffset;
+                return $value;
+            }
+
+            if ($position >= 35) {
+                throw new \Exception("VarInt trop long (dépassé 5 octets)");
+            }
+        }
+    }
+
+    /**
      * Encode une chaîne de caractères en utilisant le format VarString.
      *
      * @param string $data
@@ -311,7 +346,7 @@ class PacketSerializer
 
     /**
      * Lit un prefixed array.
-     * 
+     *
      * @param string $buffer
      * @param integer $offset
      * @return array
@@ -321,10 +356,8 @@ class PacketSerializer
         $length = $this->getVarInt($buffer, $offset);
         $array = [];
         for ($i = 0; $i < $length; $i++) {
-            $array[] = substr($buffer, $offset, 1);
-            $offset++;
+            $array[] = $this->getString($buffer, $offset);
         }
-
         return $array;
     }
 

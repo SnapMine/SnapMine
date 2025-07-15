@@ -2,9 +2,9 @@
 
 namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Login;
 
+use Nirbose\PhpMcServ\Extras\Auth\MojangAuth;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Server;
 use Nirbose\PhpMcServ\Session\Session;
 use Nirbose\PhpMcServ\Utils\Random;
 
@@ -17,8 +17,8 @@ class EncryptionRequestPacket extends Packet {
     public function write(PacketSerializer $serializer): void
     {
         $serializer->putString("");
-        
-        $publicKey = Server::getPublicKey();
+
+        $publicKey = MojangAuth::getPublicKey();
 
         $serializer->putString($publicKey);
         $serializer->putString(Random::str(4));

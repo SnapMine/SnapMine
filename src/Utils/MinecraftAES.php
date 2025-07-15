@@ -5,57 +5,73 @@ namespace Nirbose\PhpMcServ\Utils;
 class MinecraftAES
 {
     private string $key;
-    private string $iv;
 
-    public function __construct(string $key, string $iv)
+    // Le constructeur ne prend plus l'IV, car il sera géré par la session.
+    public function __construct(string $key)
     {
-        $this->key = str_pad(substr($key, 0, 16), 16, "\0");
-        $this->iv = str_pad(substr($iv, 0, 16), 16, "\0");
+        $this->key = str_pad(substr($key, 0, 16), 16, "\0"); // S'assure que la clé fait 16 octets
     }
 
-    public function encrypt(string $data): string
+    /**
+     * Chiffre les données et retourne le ciphertext et le nouvel IV.
+     * @param string $data Les données à chiffrer.
+     * @param string $initialIv L'IV initial pour cette opération (doit être de 16 octets).
+     * @return array [string $encryptedData, string $newIv]
+     */
+    public function encrypt(string $data, string $initialIv): array
     {
         $encrypted = '';
-        $register = $this->iv;
-
-        echo "Packet (before AES): " . bin2hex($data) . PHP_EOL;
+        // S'assure que l'IV initial est de 16 octets et l'utilise comme registre de départ.
+        $register = str_pad(substr($initialIv, 0, 16), 16, "\0");
 
         for ($i = 0; $i < strlen($data); $i++) {
-            // Chiffrer le registre avec AES-ECB
             $keystream = openssl_encrypt($register, 'AES-128-ECB', $this->key, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING);
-
-            // XOR avec le premier byte du keystream
             $encryptedByte = ord($data[$i]) ^ ord($keystream[0]);
             $encrypted .= chr($encryptedByte);
-
-            // Décaler le registre et ajouter le byte chiffré
+            // Le registre est mis à jour avec l'octet CHIFFRÉ actuel.
             $register = substr($register, 1) . chr($encryptedByte);
         }
 
-        echo "Packet (after AES): " . bin2hex($encrypted) . PHP_EOL;
+        // Le nouvel IV pour la prochaine opération est les 16 derniers octets des données chiffrées actuelles.
+        $newIv = substr($encrypted, -16);
+        // Assure que le nouvel IV a toujours 16 octets, en le complétant si nécessaire.
+        if (strlen($newIv) < 16) {
+            $newIv = str_pad($newIv, 16, "\0", STR_PAD_LEFT);
+        }
 
-        return $encrypted;
+        return [$encrypted, $newIv];
     }
 
-    public function decrypt(string $data): string
+    /**
+     * Déchiffre les données et retourne le plaintext et le nouvel IV.
+     * @param string $data Les données chiffrées à déchiffrer.
+     * @param string $initialIv L'IV initial pour cette opération (doit être de 16 octets).
+     * @return array [string $decryptedData, string $newIv]
+     */
+    public function decrypt(string $data, string $initialIv): array
     {
         $decrypted = '';
-        $register = $this->iv;
+        // S'assure que l'IV initial est de 16 octets et l'utilise comme registre de départ.
+        $register = str_pad(substr($initialIv, 0, 16), 16, "\0");
 
         for ($i = 0; $i < strlen($data); $i++) {
-            // Chiffrer le registre avec AES-ECB
             $keystream = openssl_encrypt($register, 'AES-128-ECB', $this->key, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING);
-
-            // XOR avec le premier byte du keystream
-            $encryptedByte = ord($data[$i]);
+            $encryptedByte = ord($data[$i]); // L'octet chiffré actuel de l'entrée
             $decryptedByte = $encryptedByte ^ ord($keystream[0]);
             $decrypted .= chr($decryptedByte);
-
-            // IMPORTANT: Décaler le registre avec le byte CHIFFRÉ (pas déchiffré)
+            // Le registre est mis à jour avec l'octet CHIFFRÉ actuel (celui lu depuis $data).
             $register = substr($register, 1) . chr($encryptedByte);
         }
 
         echo "Decrypted packet : " . bin2hex($decrypted) . PHP_EOL;
-        return $decrypted;
+
+        // Le nouvel IV pour la prochaine opération est les 16 derniers octets des données chiffrées ACTUELLES ($data).
+        $newIv = substr($data, -16);
+        // Assure que le nouvel IV a toujours 16 octets, en le complétant si nécessaire.
+        if (strlen($newIv) < 16) {
+            $newIv = str_pad($newIv, 16, "\0", STR_PAD_LEFT);
+        }
+
+        return [$decrypted, $newIv];
     }
 }

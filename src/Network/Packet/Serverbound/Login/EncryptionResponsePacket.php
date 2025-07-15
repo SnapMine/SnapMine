@@ -3,11 +3,11 @@
 namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Login;
 
 use Exception;
+use Nirbose\PhpMcServ\Extras\Auth\MojangAuth;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Login\LoginSuccessPacket;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Server;
-use Nirbose\PhpMcServ\Session\Auth;
 use Nirbose\PhpMcServ\Session\Session;
 use Nirbose\PhpMcServ\Utils\UUID;
 
@@ -47,7 +47,7 @@ class EncryptionResponsePacket extends Packet {
             echo "✅ VerifyToken validé\n";
             echo "SharedSecret déchiffré (hex): " . bin2hex($decryptedSharedSecret) . "\n";
             
-            $authData = Auth::getInfo($session->username, $decryptedSharedSecret);
+            $authData = MojangAuth::getInfo($session->username, $decryptedSharedSecret);
             
             if (!empty($authData)) {
                 // Authentification réussie
@@ -72,7 +72,7 @@ class EncryptionResponsePacket extends Packet {
         echo "Taille données chiffrées: " . strlen($encryptedData) . " bytes\n";
         echo "Données chiffrées (hex): " . bin2hex($encryptedData) . "\n";
         
-        $privateKeyResource = Server::getPrivateKey();
+        $privateKeyResource = MojangAuth::getPrivateKey();
         
         if (!$privateKeyResource) {
             throw new Exception("Clé privée non disponible");

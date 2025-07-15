@@ -11,7 +11,7 @@ class ChunkDataAndUpdateLightPacket extends Packet
     public function __construct(
         private int $chunkX,
         private int $chunkZ
-    ) {  
+    ) {
     }
 
     public function getId(): int

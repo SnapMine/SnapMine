@@ -3,6 +3,7 @@
 namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Login;
 
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Configuration\KnownPacksPacket;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\Configuration\PluginMessagePacket;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Network\ServerState;
@@ -29,7 +30,6 @@ class LoginAcknowledgedPacket extends Packet
     {
         $session->setState(ServerState::CONFIGURATION);
 
-        // $session->disableEncryption();
         echo "Login acknowledged, switching to configuration state.\n";
         $session->sendPacket(new KnownPacksPacket());
     }
