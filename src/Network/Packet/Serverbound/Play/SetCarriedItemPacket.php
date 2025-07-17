@@ -6,7 +6,7 @@ use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 
-class SetCarriedItem extends Packet
+class SetCarriedItemPacket extends Packet
 {
     private int $slot;
 

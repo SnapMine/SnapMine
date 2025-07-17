@@ -11,6 +11,7 @@ use Nirbose\PhpMcServ\Network\Packet\Serverbound\Login\LoginAcknowledgedPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Login\LoginStartPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\ClientTickEndPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\ConfirmTeleportationPacket;
+use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\ContainerClosePacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\CustomPlayloadPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\KeepAlivePacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\MovePlayerPositionPacket;
@@ -22,7 +23,8 @@ use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\PlayerActionPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\PlayerCommandPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\PlayerInputPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\PlayerLoadedPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\SetCarriedItem;
+use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\SetCarriedItemPacket;
+use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\SetCreativeModeSlotPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\SwingPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Status\PingPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Status\StatusRequestPacket;
@@ -53,6 +55,7 @@ class Protocol
         ServerState::PLAY->value => [
             0x00 => ConfirmTeleportationPacket::class,
             0x0B => ClientTickEndPacket::class,
+            0x11 => ContainerClosePacket::class,
             0x1D => MovePlayerPositionRotationPacket::class,
             0x1C => MovePlayerPositionPacket::class,
             0x2A => PlayerLoadedPacket::class,
@@ -65,7 +68,8 @@ class Protocol
             0x1A => KeepAlivePacket::class,
             0x1F => MovePlayerStatusOnlyPacket::class,
             0x14 => CustomPlayloadPacket::class,
-            0x33 => SetCarriedItem::class,
+            0x33 => SetCarriedItemPacket::class,
+            0x36 => SetCreativeModeSlotPacket::class,
         ],
     ];
 }
