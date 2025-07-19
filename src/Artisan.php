@@ -2,6 +2,8 @@
 
 namespace Nirbose\PhpMcServ;
 
+use Nirbose\PhpMcServ\World\Region;
+
 class Artisan
 {
     private static ?Server $server = null;
@@ -14,5 +16,10 @@ class Artisan
     public static function getPlayers(): array
     {
         return self::$server->getPlayers();
+    }
+
+    public static function getRegion(): Region
+    {
+        return self::$server->getRegion();
     }
 }

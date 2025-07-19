@@ -165,12 +165,20 @@ class PacketSerializer
     /**
      * Encode un entier 64 bits en utilisant le format Little Endian.
      *
-     * @param integer $value
+     * @param integer|string $value
      * @return void
      */
-    public function putLong(int $value): void
+    public function putLong(int|string $value): void
     {
-        $this->put(pack('P', $value));
+        if (is_string($value)) {
+            $value = gmp_init($value);
+            $bin = gmp_export($value);
+            $bin = str_pad($bin, 8, "\x00", STR_PAD_LEFT);
+        } else {
+            $bin = pack('P', $value);
+        }
+
+        $this->put($bin);
     }
 
     /**
