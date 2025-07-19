@@ -19,6 +19,8 @@ use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\AddEntityPacket;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\PlayerInfoUpdatePacket;
 use Nirbose\PhpMcServ\Session\Session;
 use Nirbose\PhpMcServ\Utils\UUID;
+use Nirbose\PhpMcServ\World\Region;
+use Nirbose\PhpMcServ\World\RegionLoader;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -32,6 +34,7 @@ class Server
 
     private static Logger|null $logger = null;
     private static string $logFormat = "[%datetime%] %level_name%: %message%\n";
+    private Region $region;
 
     public function __construct(
         private readonly string $host,
@@ -42,10 +45,14 @@ class Server
 
     public function start(): void
     {
+        Artisan::setServer($this);
+        $this->region = RegionLoader::load(ROOT_PATH . "/mca-test/r.0.0.mca");
+
+        file_put_contents("test.txt", $this->region->getChunk(1, 1)->getNbt());
+
         $socket1 = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         socket_bind($socket1, $this->host, $this->port);
         socket_listen($socket1);
-        Artisan::setServer($this);
         self::getLogger()->info("Serveur démarré sur {$this->host}:{$this->port}");
 
         $this->registerListener(new PlayerJoinListener());
@@ -125,43 +132,6 @@ class Server
         $this->players[$this->incrementAndGetId()] = $player;
     }
 
-    public function testSheep(Player $player): void
-    {
-        $uuid = UUID::generateOffline("teste");
-        $player->sendPacket(new PlayerInfoUpdatePacket(
-            0x01 | 0x04 | 0x10,
-            [
-                $uuid->toString() => [
-                    [
-                        'name' => 'Yaya',
-                    ],
-                    [],
-                    [],
-                ]
-            ]
-        ));
-
-        $packet = new AddEntityPacket(
-            $this->incrementAndGetId(),
-            $uuid,
-            EntityType::PLAYER,
-            0,
-            64,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-        );
-
-        $player->sendPacket(
-            $packet
-        );
-    }
-
     /**
      * Get all players connected to the server.
      *
@@ -181,6 +151,14 @@ class Server
         }
 
         return null;
+    }
+
+    /**
+     * @return Region
+     */
+    public function getRegion(): Region
+    {
+        return $this->region;
     }
 
     /**

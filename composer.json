@@ -20,6 +20,7 @@
     "monolog/monolog": "^3.9",
     "aternos/nbt": "^1.12",
     "amphp/parallel": "^2.3",
-    "ext-sockets": "*"
+    "ext-sockets": "*",
+    "ext-gmp": "*"
   }
 }
