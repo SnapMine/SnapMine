@@ -7,6 +7,7 @@ use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 use Nirbose\PhpMcServ\World\HeightmapType;
+use Nirbose\PhpMcServ\World\Palette;
 
 class ChunkDataAndUpdateLightPacket extends Packet
 {
@@ -42,24 +43,47 @@ class ChunkDataAndUpdateLightPacket extends Packet
         }
 
         $dataBuf = new PacketSerializer();
+        $sections = $chunk->getSections();
 
-        for ($i = 0; $i < 24; $i++) {
-            $dataBuf->putShort($chunk->getPalette()->getBlockCount());
+        foreach ($sections as $key => $section) {
+            /** @var Palette $palette */
+            $palette = $section['palette'];
 
-             $dataBuf->putByte(4);
-             $dataBuf->putVarInt(count($chunk->getPalette()->getBlocks()));
-             foreach ($chunk->getPalette()->getBlocks() as $block) {
-                 $dataBuf->putVarInt($block);
-             }
-             foreach ($chunk->getData() as $data) {
-                 $dataBuf->putLong($data);
-             }
+            if ($palette->getBlockCount() == 0) {
+                $dataBuf->putShort(0);
 
-             $dataBuf->putByte(0);
-             $dataBuf->putVarInt(0);
+                $dataBuf->putByte(0);
+                $dataBuf->putVarInt(0);
+
+                $dataBuf->putByte(0);
+                $dataBuf->putVarInt(0);
+
+                continue;
+            }
+
+            $data = $section['data'];
+
+            $dataBuf->putShort($palette->getBlockCount()); // Calculate ALL block in the chunk (by data ? current is 3)
+
+            $paletteSize = count($palette->getBlocks());
+            $bitsPerBlock = max(4, (int)ceil(log($paletteSize, 2)));
+
+            $dataBuf->putByte($bitsPerBlock);
+            $dataBuf->putVarInt(count($palette->getBlocks()));
+
+            foreach ($palette->getBlocks() as $block) {
+                $dataBuf->putVarInt($block);
+            }
+
+            foreach ($data as $long) {
+                $dataBuf->putLong($long);
+            }
+
+            // Block light + sky light placeholders
+            $dataBuf->putByte(0);
+            $dataBuf->putVarInt(0);
         }
 
-//        $s->putVarInt(0);
         $s->putVarInt(strlen($dataBuf->get()));
         $s->put($dataBuf->get());
 

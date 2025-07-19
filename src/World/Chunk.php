@@ -10,6 +10,7 @@ class Chunk
     private array $heightmaps;
     private Palette $palette;
     private array $data = [];
+    private array $sections = [];
 
     public function __construct(
         private readonly int $x,
@@ -20,6 +21,8 @@ class Chunk
 
         $this->loadHeightmaps();
         $this->loadBlocksData();
+
+        file_put_contents("oui.txt", print_r($this->sections, true));
     }
 
     /**
@@ -44,6 +47,14 @@ class Chunk
     public function getNbt(): CompoundTag
     {
         return $this->nbt;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSections(): array
+    {
+        return $this->sections;
     }
 
     private function loadHeightmaps(): void
@@ -77,16 +88,23 @@ class Chunk
 
         /** @var CompoundTag $section */
         foreach ($sections as $section) {
+            $y = $section->getByte("Y")->getValue();
+
             $blockStates = $section->getCompound("block_states");
+            if (!$blockStates) continue;
 
-            if ($blockStates) {
-                $longs = $blockStates->getLongArray("data") ?? [];
+            $data = $blockStates->getLongArray("data") ?? [];
+            $paletteList = $blockStates->getList("palette");
 
-                foreach ($longs as $long) {
-                    $this->data[] = $long;
-                }
+            $palette = new Palette();
+            $palette->addBlocks($paletteList);
 
-                $this->palette->addBlocks($blockStates->getList("palette"));
+            $this->sections[$y] = [
+                'palette' => $palette
+            ];
+
+            foreach ($data as $long) {
+                $this->sections[$y]['data'][] = $long;
             }
         }
     }
