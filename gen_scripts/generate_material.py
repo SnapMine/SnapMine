@@ -4,7 +4,7 @@ data_items = {}
 
 def create_php_enum():
 
-    cases = "" + "\n".join([f"    case {name} = {id};" for id, name in data_items.items()]) + "\n"
+    cases = "" + "\n".join([f"    case {name} = {id};" for id, name in sorted(data_items.items())]) + "\n"
 
     enum_string = f"""<?php
 
