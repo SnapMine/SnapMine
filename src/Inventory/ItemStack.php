@@ -3,34 +3,33 @@
 namespace Nirbose\PhpMcServ\Inventory;
 
 use Nirbose\PhpMcServ\Component\DataComponentType;
+use Nirbose\PhpMcServ\Material;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 
 class ItemStack
 {
-    private int $id; // TODO: Replace by Material enum
-    private int $amount;
     private array $components = [];
 
-    public function __construct(int $id, int $amount)
-    {
-        $this->id = $id;
-        $this->amount = $amount;
+    public function __construct(
+        private Material $material,
+        private int $amount
+    ) {
     }
 
     /**
-     * @return int
+     * @return Material
      */
-    public function getId(): int
+    public function getMaterial(): Material
     {
-        return $this->id;
+        return $this->material;
     }
 
     /**
-     * @param int $id
+     * @param Material $material
      */
-    public function setId(int $id): void
+    public function setMaterial(Material $material): void
     {
-        $this->id = $id;
+        $this->material = $material;
     }
 
     /**
@@ -81,7 +80,7 @@ class ItemStack
 
         $amount = $s->getVarInt($buffer, $offset);
         $id = $s->getVarInt($buffer, $offset);
-        $item = new self($id, $amount);
+        $item = new self(Material::cases()[$id], $amount);
 
         $numberComponentsAdded = $s->getVarInt($buffer, $offset);
         $numberComponentsRemoved = $s->getVarInt($buffer, $offset);
