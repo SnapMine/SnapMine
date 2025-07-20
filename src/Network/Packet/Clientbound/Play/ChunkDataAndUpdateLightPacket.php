@@ -6,7 +6,7 @@ use Nirbose\PhpMcServ\Artisan;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
-use Nirbose\PhpMcServ\World\HeightmapType;
+use Nirbose\PhpMcServ\World\Chunk\HeightmapType;
 use Nirbose\PhpMcServ\World\Palette;
 
 class ChunkDataAndUpdateLightPacket extends Packet

@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ\World;
+namespace Nirbose\PhpMcServ\World\Chunk;
 
 enum HeightmapType: int
 {

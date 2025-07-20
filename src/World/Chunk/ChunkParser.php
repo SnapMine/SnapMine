@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ\World;
+namespace Nirbose\PhpMcServ\World\Chunk;
 
 use Aternos\Nbt\IO\Reader\ZLibCompressedStringReader;
 use Aternos\Nbt\NbtFormat;

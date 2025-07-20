@@ -1,9 +1,10 @@
 <?php
 
-namespace Nirbose\PhpMcServ\World;
+namespace Nirbose\PhpMcServ\World\Chunk;
 
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\LongArrayTag;
+use Nirbose\PhpMcServ\World\Palette;
 
 class Chunk
 {

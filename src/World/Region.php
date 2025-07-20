@@ -2,6 +2,9 @@
 
 namespace Nirbose\PhpMcServ\World;
 
+use Nirbose\PhpMcServ\World\Chunk\Chunk;
+use Nirbose\PhpMcServ\World\Chunk\ChunkParser;
+
 class Region
 {
     private string $filePath;
