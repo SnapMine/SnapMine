@@ -16,6 +16,7 @@ class Palette
         'minecraft:dirt' => 10,
         'minecraft:grass_block' => 9,
     ];
+    private int $count = 50;
     private int $blockCount = 0;
 
     public function __construct()
@@ -32,7 +33,13 @@ class Palette
                 continue;
             }
 
-            $value = $this->blocksIdMap[$tag->getValue()] ?? 0;
+            $identifier = $tag->getValue();
+
+            if (!isset($this->blocksIdMap[$identifier])) {
+                $value = $this->count++;
+            } else {
+                $value = $this->blocksIdMap[$identifier];
+            }
 
             if ($value > 0) {
                 $this->blockCount++;

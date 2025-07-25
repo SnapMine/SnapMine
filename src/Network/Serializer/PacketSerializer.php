@@ -137,18 +137,18 @@ class PacketSerializer
     }
 
     /**
-     * Encode un entier 32 bits en utilisant le format Little Endian.
+     * Encode un entier 32 bits en utilisant le format Big Endian.
      *
      * @param integer $value
      * @return void
      */
     public function putInt(int $value): void
     {
-        $this->put(pack('V', $value));
+        $this->put(pack('N', $value));
     }
 
     /**
-     * Lit un entier 32 bits en utilisant le format Little Endian.
+     * Lit un entier 32 bits en utilisant le format Big Endian.
      *
      * @param string $buffer
      * @param integer $offset
@@ -156,14 +156,14 @@ class PacketSerializer
      */
     public function getInt(string $buffer, int &$offset): int
     {
-        $value = unpack('V', substr($buffer, $offset, 4))[1];
+        $value = unpack('N', substr($buffer, $offset, 4))[1];
         $offset += 4;
 
         return $value;
     }
 
     /**
-     * Encode un entier 64 bits en utilisant le format Little Endian.
+     * Encode un entier 64 bits en utilisant le format Big Endian.
      *
      * @param integer|string $value
      * @return void
@@ -175,14 +175,14 @@ class PacketSerializer
             $bin = gmp_export($value);
             $bin = str_pad($bin, 8, "\x00", STR_PAD_LEFT);
         } else {
-            $bin = pack('P', $value);
+            $bin = pack('J', $value);
         }
 
         $this->put($bin);
     }
 
     /**
-     * Lit un entier 64 bits en utilisant le format Little Endian.
+     * Lit un entier 64 bits en utilisant le format Big Endian.
      *
      * @param string $buffer
      * @param integer $offset
@@ -202,7 +202,7 @@ class PacketSerializer
     }
 
     /**
-     * Encode un float en utilisant le format Little Endian.
+     * Encode un float en utilisant le format Big Endian.
      *
      * @param float $value
      * @return void
@@ -213,7 +213,7 @@ class PacketSerializer
     }
 
     /**
-     * Lit un float en utilisant le format Little Endian.
+     * Lit un float en utilisant le format Big Endian.
      *
      * @param string $buffer
      * @param integer $offset
@@ -221,7 +221,7 @@ class PacketSerializer
      */
     public function getFloat(string $buffer, int &$offset): float
     {
-        $value = unpack('f', substr($buffer, $offset, 4))[1];
+        $value = unpack('G', substr($buffer, $offset, 4))[1];
         $offset += 4;
 
         return $value;
@@ -423,7 +423,7 @@ class PacketSerializer
         if ($value < 0 || $value > 65535) {
             throw new \Exception("Valeur de short invalide");
         }
-        $this->put(pack('v', $value));
+        $this->put(pack('n', $value));
     }
 
     /**
@@ -435,7 +435,7 @@ class PacketSerializer
      */
     public function getUnsignedShort(string $buffer, int &$offset): int
     {
-        $value = unpack('v', substr($buffer, $offset, 2))[1];
+        $value = unpack('n', substr($buffer, $offset, 2))[1];
         $offset += 2;
 
         if ($value < 0 || $value > 65535) {

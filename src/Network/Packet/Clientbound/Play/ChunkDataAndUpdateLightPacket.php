@@ -24,10 +24,8 @@ class ChunkDataAndUpdateLightPacket extends Packet
 
     public function write(PacketSerializer $s): void
     {
-//        $s->putInt($this->chunkX); // Chunk X
-//        $s->putInt($this->chunkZ); // Chunk Z
-        $s->putInt(0); // Chunk X
-        $s->putInt(0); // Chunk Z
+        $s->putInt($this->chunkX); // Chunk X
+        $s->putInt($this->chunkZ); // Chunk Z
 
         $chunk = Artisan::getRegion()->getChunk($this->chunkX, $this->chunkZ);
         $heightmaps = $chunk->getHeightmaps();
@@ -69,7 +67,9 @@ class ChunkDataAndUpdateLightPacket extends Packet
             $bitsPerBlock = max(4, (int)ceil(log($paletteSize, 2)));
 
             $dataBuf->putByte($bitsPerBlock);
-            $dataBuf->putVarInt(count($palette->getBlocks()));
+            $dataBuf->putVarInt($paletteSize);
+
+//            var_dump($this->chunkX, $this->chunkZ, $palette->getBlocks());
 
             foreach ($palette->getBlocks() as $block) {
                 $dataBuf->putVarInt($block);
@@ -79,7 +79,7 @@ class ChunkDataAndUpdateLightPacket extends Packet
                 $dataBuf->putLong($long);
             }
 
-            // Block light + sky light placeholders
+            // Biomes
             $dataBuf->putByte(0);
             $dataBuf->putVarInt(0);
         }
