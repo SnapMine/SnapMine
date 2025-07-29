@@ -4,6 +4,7 @@ namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Status;
 
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Status\StatusResponsePacket;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Protocol;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 
@@ -26,15 +27,14 @@ class StatusRequestPacket extends Packet
 
     public function handle(Session $session): void
     {
-        // Handle the status request by sending a response
         $session->sendPacket(new StatusResponsePacket(json_encode([
             "version" => [
-                "name" => \Nirbose\PhpMcServ\Network\Protocol::PROTOCOL_NAME,
-                "protocol" => \Nirbose\PhpMcServ\Network\Protocol::PROTOCOL_VERSION,
+                "name" => Protocol::PROTOCOL_NAME,
+                "protocol" => Protocol::PROTOCOL_VERSION,
             ],
             "players" => [
-                "max" => 20,
-                "online" => 0,
+                "max" => $session->getServer()->getMaxPlayer(),
+                "online" => count($session->getServer()->getPlayers()),
                 "sample" => [],
             ],
             "description" => [

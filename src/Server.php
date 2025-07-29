@@ -7,7 +7,6 @@ use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
-use Nirbose\PhpMcServ\Entity\EntityType;
 use Nirbose\PhpMcServ\Entity\Player;
 use Nirbose\PhpMcServ\Event\Event;
 use Nirbose\PhpMcServ\Event\EventBinding;
@@ -15,10 +14,7 @@ use Nirbose\PhpMcServ\Event\EventManager;
 use Nirbose\PhpMcServ\Event\Listener;
 use Nirbose\PhpMcServ\Listener\PlayerJoinListener;
 use Nirbose\PhpMcServ\Manager\KeepAliveManager;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\AddEntityPacket;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\PlayerInfoUpdatePacket;
 use Nirbose\PhpMcServ\Session\Session;
-use Nirbose\PhpMcServ\Utils\UUID;
 use Nirbose\PhpMcServ\World\Region;
 use Nirbose\PhpMcServ\World\RegionLoader;
 use ReflectionClass;
@@ -35,6 +31,7 @@ class Server
     private static Logger|null $logger = null;
     private static string $logFormat = "[%datetime%] %level_name%: %message%\n";
     private Region $region;
+    private int $maxPlayer = 20;
 
     public function __construct(
         private readonly string $host,
@@ -193,5 +190,21 @@ class Server
 
             $this->eventManager->register($parameters[0]->getType()->getName(), $method->getClosure($listener));
         }
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxPlayer(): int
+    {
+        return $this->maxPlayer;
+    }
+
+    /**
+     * @param int $maxPlayer
+     */
+    public function setMaxPlayer(int $maxPlayer): void
+    {
+        $this->maxPlayer = $maxPlayer;
     }
 }
