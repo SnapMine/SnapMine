@@ -3,7 +3,8 @@
   "type": "project",
   "autoload": {
     "psr-4": {
-      "Nirbose\\PhpMcServ\\": "src/"
+      "Nirbose\\PhpMcServ\\": "src/",
+      "Tests\\": "tests/"
     },
     "files": [
       "src/helpers.php"
@@ -22,5 +23,13 @@
     "amphp/parallel": "^2.3",
     "ext-sockets": "*",
     "ext-gmp": "*"
+  },
+  "require-dev": {
+    "pestphp/pest": "^3.8"
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
   }
 }
