@@ -3,7 +3,6 @@
 namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Configuration;
 
 use Nirbose\PhpMcServ\Artisan;
-use Nirbose\PhpMcServ\Entity\EntityType;
 use Nirbose\PhpMcServ\Entity\Player;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\AddEntityPacket;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\ChunkDataAndUpdateLightPacket;
@@ -97,10 +96,7 @@ class AcknowledgeFinishConfigurationPacket extends Packet
             }
 
             $packet = new AddEntityPacket(
-                random_int(6, 1000),
-                $player->getUuid(),
-                EntityType::PLAYER,
-                $player->getLocation(),
+                $player,
                 0,
                 0,
                 0,
