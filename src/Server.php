@@ -132,7 +132,7 @@ class Server
     /**
      * Get all players connected to the server.
      *
-     * @return array
+     * @return Player[]
      */
     public function getPlayers(): array
     {
