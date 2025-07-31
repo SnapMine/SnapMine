@@ -2,12 +2,20 @@
 
 namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Play;
 
+use Nirbose\PhpMcServ\Entity\Player;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 
 class JoinGamePacket extends Packet
 {
+    public function __construct(
+        private readonly Player $player
+    )
+    {
+
+    }
+
     public function getId(): int
     {
         return 0x2B;
@@ -22,29 +30,29 @@ class JoinGamePacket extends Packet
     {
         // Entity ID
         $serializer->putInt(0);
-        
+
         // Is Hardcore
         $serializer->putBool(false);
-        
+
         // Dimension Names (Prefixed Array of Identifier) - NOUVEAU FORMAT
         $serializer->putVarInt(1);
         $serializer->putString("minecraft:overworld");
-        
+
         // Max Players
         $serializer->putVarInt(100);
 
         // View Distance
-        $serializer->putVarInt(10);
+        $serializer->putVarInt(50);
 
         // Simulation Distance
-        $serializer->putVarInt(10);
-        
+        $serializer->putVarInt(50);
+
         // Reduced Debug Info
         $serializer->putBool(false);
-        
+
         // Enable Respawn Screen
         $serializer->putBool(true);
-        
+
         // Do Limited Crafting
         $serializer->putBool(false);
 
@@ -52,31 +60,31 @@ class JoinGamePacket extends Packet
 
         // Dimension Name
         $serializer->putString('minecraft:overworld');
-        
+
         // Hashed Seed
         $serializer->putLong(234345456);
-        
+
         // Game Mode
-        $serializer->putUnsignedByte(1); // Survival
-        
+        $serializer->putUnsignedByte($this->player->getGameMode()->value); // Survival
+
         // Previous Game Mode
-        $serializer->putByte(-1); // Undefined
-        
+        $serializer->putByte($this->player->getPreviousGameMode()?->value ?? -1); // Undefined
+
         // Is Debug
         $serializer->putBool(false);
-        
+
         // Is Flat
         $serializer->putBool(false);
-        
+
         // Has Death Location
         $serializer->putBool(false);
-        
+
         // Portal Cooldown
         $serializer->putVarInt(0);
-        
+
         // Sea Level
         $serializer->putVarInt(63);
-        
+
         // Enforces Secure Chat
         $serializer->putBool(false);
     }

@@ -11,6 +11,8 @@ use Nirbose\PhpMcServ\World\Position;
 class Player extends Entity
 {
     public int $lastKeepAliveId = 0;
+    private GameMode $gameMode = GameMode::SURVIVAL;
+    private ?GameMode $previousGameMode = null;
 
     public function __construct(
         private readonly Session     $session,
@@ -69,6 +71,38 @@ class Player extends Entity
     public function sendPacket(Packet $packet): void
     {
         $this->session->sendPacket($packet);
+    }
+
+    /**
+     * @return GameMode
+     */
+    public function getGameMode(): GameMode
+    {
+        return $this->gameMode;
+    }
+
+    /**
+     * @param GameMode $gameMode
+     */
+    public function setGameMode(GameMode $gameMode): void
+    {
+        $this->gameMode = $gameMode;
+    }
+
+    /**
+     * @return GameMode|null
+     */
+    public function getPreviousGameMode(): ?GameMode
+    {
+        return $this->previousGameMode;
+    }
+
+    /**
+     * @param GameMode|null $previousGameMode
+     */
+    public function setPreviousGameMode(?GameMode $previousGameMode): void
+    {
+        $this->previousGameMode = $previousGameMode;
     }
 
     function getType(): EntityType

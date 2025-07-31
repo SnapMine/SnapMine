@@ -21,45 +21,6 @@ class PlayerJoinListener implements Listener
     {
         $newPlayer = $event->getPlayer();
         $this->broadcastNewPlayer($newPlayer);
-
-        $infos = [];
-
-        /** @var Player $player */
-        foreach (Artisan::getPlayers() as $player) {
-            if ($newPlayer->getUuid() === $player->getUuid()) {
-                continue;
-            }
-
-            $infos[$player->getUuid()->toString()] = [
-                [
-                    'name' => $player->getName(),
-                ]
-            ];
-        }
-
-        $newPlayer->sendPacket(new PlayerInfoUpdatePacket(0x01, $infos));
-
-        foreach ($infos as $uuid => $playerInfo) {
-            $packet = new AddEntityPacket(
-                random_int(6, 1000),
-                UUID::fromString($uuid),
-                EntityType::PLAYER,
-                0,
-                64,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0
-            );
-
-            $player->sendPacket(
-                $packet
-            );
-        }
     }
 
     private function broadcastNewPlayer(Player $newPlayer): void
@@ -67,6 +28,7 @@ class PlayerJoinListener implements Listener
         /** @var Player $player */
         foreach (Artisan::getPlayers() as $player) {
             $uuid = $newPlayer->getUuid();
+            $loc = $newPlayer->getLocation();
 
             $player->sendPacket(new PlayerInfoUpdatePacket(0x01,
                 [
@@ -82,16 +44,12 @@ class PlayerJoinListener implements Listener
                 random_int(6, 1000),
                 $uuid,
                 EntityType::PLAYER,
-                0,
-                64,
-                0,
+                $loc,
                 0,
                 0,
                 0,
                 0,
                 0,
-                0,
-                0
             );
 
             $player->sendPacket(

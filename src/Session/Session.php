@@ -22,6 +22,7 @@ class Session
     public ServerState $state;
     public string $buffer = '';
     public int $lastKeepAliveId = 0;
+    private ?Player $player = null;
 
     public function __construct(
         private readonly Server $server,
@@ -115,7 +116,7 @@ class Session
         echo "Changement d'état de {$this->state->name} à {$state->name}\n";
 
         if ($state === ServerState::PLAY) {
-            $player = $this->createPlayer();
+            $player = $this->getPlayer();
 
             $event = EventManager::call(
                 new PlayerJoinEvent($player)
@@ -146,5 +147,17 @@ class Session
     public function getServer(): Server
     {
         return $this->server;
+    }
+
+    /**
+     * @return Player
+     */
+    public function getPlayer(): Player
+    {
+        if ($this->player === null) {
+            $this->player = $this->createPlayer();
+        }
+
+        return $this->player;
     }
 }

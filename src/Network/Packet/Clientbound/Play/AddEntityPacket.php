@@ -7,6 +7,7 @@ use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 use Nirbose\PhpMcServ\Utils\UUID;
+use Nirbose\PhpMcServ\World\Location;
 
 class AddEntityPacket extends Packet
 {
@@ -14,11 +15,7 @@ class AddEntityPacket extends Packet
         private readonly int $entityId,
         private readonly UUID $uuid,
         private readonly EntityType $type,
-        private readonly float $x,
-        private readonly float $y,
-        private readonly float $z,
-        private readonly int $pitch,
-        private readonly int $yaw,
+        private readonly Location $loc,
         private readonly int $headYam,
         private readonly int $data,
         private readonly int $velocityX,
@@ -38,11 +35,11 @@ class AddEntityPacket extends Packet
         $serializer->putVarInt($this->entityId + 1);
         $serializer->putUUID($this->uuid);
         $serializer->putVarInt($this->type->value);
-        $serializer->putDouble($this->x);
-        $serializer->putDouble($this->y);
-        $serializer->putDouble($this->z);
-        $serializer->putByte($this->pitch * 256 / 360);
-        $serializer->putByte($this->yaw * 256 / 360);
+        $serializer->putDouble($this->loc->getX());
+        $serializer->putDouble($this->loc->getY());
+        $serializer->putDouble($this->loc->getZ());
+        $serializer->putByte($this->loc->getPitch() * 256 / 360);
+        $serializer->putByte($this->loc->getYaw() * 256 / 360);
         $serializer->putByte($this->headYam * 256 / 360);
         $serializer->putVarInt($this->data);
         $serializer->putShort($this->velocityX);
