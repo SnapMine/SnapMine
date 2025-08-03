@@ -3,6 +3,7 @@
 namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
 
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\MoveEntityRotPacket;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\RotateHeadPacket;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
@@ -35,6 +36,7 @@ class MovePlayerRotationPacket extends Packet {
         $loc->setPitch($this->pitch);
 
         $packet = new MoveEntityRotPacket($player, false);
+        $headRotatePacket = new RotateHeadPacket($player);
 
         foreach ($session->getServer()->getPlayers() as $player) {
             if ($player === $session->getPlayer()) {
@@ -42,6 +44,7 @@ class MovePlayerRotationPacket extends Packet {
             }
 
             $player->sendPacket($packet);
+            $player->sendPacket($headRotatePacket);
         }
     }
 }
