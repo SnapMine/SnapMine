@@ -2,24 +2,15 @@
 
 namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Play;
 
-use Nirbose\PhpMcServ\Entity\EntityType;
+use Nirbose\PhpMcServ\Entity\Entity;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
-use Nirbose\PhpMcServ\Utils\UUID;
 
 class AddEntityPacket extends Packet
 {
     public function __construct(
-        private readonly int $entityId,
-        private readonly UUID $uuid,
-        private readonly EntityType $type,
-        private readonly float $x,
-        private readonly float $y,
-        private readonly float $z,
-        private readonly int $pitch,
-        private readonly int $yaw,
-        private readonly int $headYam,
+        private readonly Entity $entity,
         private readonly int $data,
         private readonly int $velocityX,
         private readonly int $velocityY,
@@ -35,15 +26,17 @@ class AddEntityPacket extends Packet
 
     public function write(PacketSerializer $serializer): void
     {
-        $serializer->putVarInt($this->entityId + 1);
-        $serializer->putUUID($this->uuid);
-        $serializer->putVarInt($this->type->value);
-        $serializer->putDouble($this->x);
-        $serializer->putDouble($this->y);
-        $serializer->putDouble($this->z);
-        $serializer->putByte($this->pitch * 256 / 360);
-        $serializer->putByte($this->yaw * 256 / 360);
-        $serializer->putByte($this->headYam * 256 / 360);
+        $loc = $this->entity->getLocation();
+
+        $serializer->putVarInt($this->entity->getId());
+        $serializer->putUUID($this->entity->getUUID());
+        $serializer->putVarInt($this->entity->getType()->value);
+        $serializer->putDouble($loc->getX());
+        $serializer->putDouble($loc->getY());
+        $serializer->putDouble($loc->getZ());
+        $serializer->putByte(round($loc->getPitch() * 256 / 360));
+        $serializer->putByte(round($loc->getYaw() * 256 / 360));
+        $serializer->putByte(round($loc->getYaw() * 256 / 360));
         $serializer->putVarInt($this->data);
         $serializer->putShort($this->velocityX);
         $serializer->putShort($this->velocityY);

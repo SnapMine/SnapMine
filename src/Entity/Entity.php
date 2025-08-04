@@ -21,17 +21,23 @@ abstract class Entity
     }
 
     /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->internalId;
+    }
+
+    /**
      * Get entity uuid
      * @return UUID
      */
-    public
-    function getUuid(): UUID
+    public function getUuid(): UUID
     {
         return $this->uuid;
     }
 
-    public
-    function getLocation(): Location
+    public function getLocation(): Location
     {
         return $this->location;
     }

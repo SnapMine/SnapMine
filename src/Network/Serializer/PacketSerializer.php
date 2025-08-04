@@ -301,12 +301,7 @@ class PacketSerializer
      */
     public function getByte(string $buffer, int &$offset): int
     {
-        $value = ord($buffer[$offset++]);
-        if ($value < 0 || $value > 255) {
-            throw new \Exception("Valeur de byte invalide");
-        }
-
-        return $value;
+        return ord($buffer[$offset++]);
     }
 
     /**
@@ -514,5 +509,17 @@ class PacketSerializer
             throw new \Exception("Valeur de long invalide");
         }
         $this->put(pack('P', $value));
+    }
+
+    public function putAngle(float $degrees): void
+    {
+        $degrees = fmod($degrees, 360.0);
+        if ($degrees < 0) {
+            $degrees += 360.0;
+        }
+
+        $encoded = (int) round(($degrees / 360.0) * 256) & 0xFF;
+
+        $this->putByte($encoded);
     }
 }

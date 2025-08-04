@@ -1,29 +1,32 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
+namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Play;
 
-use Nirbose\PhpMcServ\Artisan;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\AddEntityPacket;
+use Nirbose\PhpMcServ\Entity\Entity;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 
-class ConfirmTeleportationPacket extends Packet
+class RotateHeadPacket extends Packet
 {
-    private int $teleportId;
+    public function __construct(
+        private readonly Entity $entity,
+    ) {
+    }
 
     public function getId(): int
     {
-        return 0x00;
+        return 0x4C;
     }
 
     public function write(PacketSerializer $serializer): void
     {
+        $serializer->putVarInt($this->entity->getId());
+        $serializer->putAngle($this->entity->getLocation()->getYaw());
     }
 
     public function read(PacketSerializer $serializer, string $buffer, int &$offset): void
     {
-        $this->teleportId = $serializer->getVarInt($buffer, $offset);
     }
 
     public function handle(Session $session): void

@@ -2,23 +2,29 @@
 
 namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Play;
 
+use Nirbose\PhpMcServ\Entity\Player;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 
 class SynchronizePlayerPositionPacket extends Packet
 {
+    const RELATIVE_X = 0x0001;
+    const RELATIVE_Y = 0x0002;
+    const RELATIVE_Z = 0x0004;
+    const RELATIVE_YAW = 0x0008;
+    const RELATIVE_PITCH = 0x0010;
+    const RELATIVE_VELOCITY_X = 0x0020;
+    const RELATIVE_VELOCITY_Y = 0x0040;
+    const RELATIVE_VELOCITY_Z = 0x0080;
+    const ROTATE_VELOCITY = 0x0100;
+
     public function __construct(
-        private int $entityId,
-        private float $x,
-        private float $y,
-        private float $z,
+        private Player $player,
         private float $velocityX,
         private float $velocityY,
         private float $velocityZ,
-        private float $yaw,
-        private float $pitch,
-        private int $flags = 0x0001 | 0x0002 | 0x0004 | 0x0008 | 0x0010 | 0x0020 | 0x0040 | 0x0080
+        private int $flags = 0
     ) {}
 
     public function getId(): int
@@ -32,15 +38,17 @@ class SynchronizePlayerPositionPacket extends Packet
 
     public function write(PacketSerializer $serializer): void
     {
-        $serializer->putVarInt($this->entityId);
-        $serializer->putDouble($this->x); // x
-        $serializer->putDouble($this->y); // y
-        $serializer->putDouble($this->z); // z
+        $loc = $this->player->getLocation();
+
+        $serializer->putVarInt($this->player->getId());
+        $serializer->putDouble($loc->getX()); // x
+        $serializer->putDouble($loc->getY()); // y
+        $serializer->putDouble($loc->getZ()); // z
         $serializer->putDouble($this->velocityX); // velocityX
         $serializer->putDouble($this->velocityY); // velocityY
         $serializer->putDouble($this->velocityZ); // velocityZ
-        $serializer->putFloat($this->yaw); // yaw
-        $serializer->putFloat($this->pitch); // pitch
+        $serializer->putFloat($loc->getYaw()); // yaw
+        $serializer->putFloat($loc->getPitch()); // pitch
         $serializer->putInt($this->flags); // flags
     }
 
