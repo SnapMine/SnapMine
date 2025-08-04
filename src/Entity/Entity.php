@@ -2,6 +2,7 @@
 
 namespace Nirbose\PhpMcServ\Entity;
 
+use Nirbose\PhpMcServ\Component\TextComponent;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Server;
 use Nirbose\PhpMcServ\Utils\UUID;
@@ -13,6 +14,11 @@ abstract class Entity
     protected UUID $uuid;
     protected PacketSerializer $buffer;
     private int $state = 0;
+    private ?TextComponent $customName = null;
+    private bool $customNameVisible = false;
+    private bool $silent = false;
+    private bool $gravity = false;
+    private Pose $pose = Pose::STANDING;
 
     public function __construct(
         protected Server   $server,
@@ -116,6 +122,60 @@ abstract class Entity
         } else {
             $this->state &= ~$bit;
         }
+    }
+
+    public function setCustomName(TextComponent|string $customName): void
+    {
+        if (is_string($customName)) {
+            $customName = TextComponent::text($customName);
+        }
+
+        $this->customName = $customName;
+    }
+
+    public function getCustomName(): ?TextComponent
+    {
+        return $this->customName;
+    }
+
+    public function isCustomNameVisible(): bool
+    {
+        return $this->customNameVisible;
+    }
+
+    public function setCustomNameVisible(bool $visible): void
+    {
+        $this->customNameVisible = $visible;
+    }
+
+    public function isSilent(): bool
+    {
+        return $this->silent;
+    }
+
+    public function setSilent(bool $silent): void
+    {
+        $this->silent = $silent;
+    }
+
+    public function hasGravity(): bool
+    {
+        return $this->gravity;
+    }
+
+    public function setGravity(bool $gravity): void
+    {
+        $this->gravity = $gravity;
+    }
+
+    public function getPose(): Pose
+    {
+        return $this->pose;
+    }
+
+    public function setPose(Pose $pose): void
+    {
+        $this->pose = $pose;
     }
 
     /**

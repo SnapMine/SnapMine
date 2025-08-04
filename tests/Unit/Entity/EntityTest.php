@@ -1,7 +1,9 @@
 <?php
 
+use Nirbose\PhpMcServ\Component\TextComponent;
 use Nirbose\PhpMcServ\Entity\Entity;
 use Nirbose\PhpMcServ\Entity\EntityType;
+use Nirbose\PhpMcServ\Entity\Pose;
 use Nirbose\PhpMcServ\Server;
 use Nirbose\PhpMcServ\World\Location;
 
@@ -78,6 +80,47 @@ describe('Test Entity class', function () {
         $this->entity->setGlowing(true);
 
         expect($this->entity->isGlowing())->toBeTrue();
+    });
+
+    it('Test customName', function () {
+        expect($this->entity->getCustomName())->toBe(null);
+
+        $customName = TextComponent::text("hello");
+
+        $this->entity->setCustomName($customName);
+        expect($this->entity->getCustomName())->toBe($customName);
+    });
+
+    it('Test customName visibility', function () {
+        expect($this->entity->isCustomNameVisible())->toBeFalse();
+
+        $this->entity->setCustomNameVisible(true);
+
+        expect($this->entity->isCustomNameVisible())->toBeTrue();
+    });
+
+    it('Test silent', function () {
+        expect($this->entity->isSilent())->toBeFalse();
+
+        $this->entity->setSilent(true);
+
+        expect($this->entity->isSilent())->toBeTrue();
+    });
+
+    it('Test hasGravity', function () {
+        expect($this->entity->hasGravity())->toBeFalse();
+
+        $this->entity->setGravity(true);
+
+        expect($this->entity->hasGravity())->toBeTrue();
+    });
+
+    it('Test entity pose', function () {
+        expect($this->entity->getPose())->toBe(Pose::STANDING);
+
+        $this->entity->setPose(Pose::DYING);
+
+        expect($this->entity->getPose())->toBe(Pose::DYING);
     });
 
     it('Test getType', function () {
