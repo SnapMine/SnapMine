@@ -45,8 +45,6 @@ class Server
         Artisan::setServer($this);
         $this->region = RegionLoader::load(ROOT_PATH . "/mca-test/r.0.0.mca");
 
-        file_put_contents("test.txt", $this->region->getChunk(4, 4)->getNbt());
-
         $socket1 = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         socket_bind($socket1, $this->host, $this->port);
         socket_listen($socket1);

@@ -115,18 +115,6 @@ class Session
 
         echo "Changement d'état de {$this->state->name} à {$state->name}\n";
 
-        if ($state === ServerState::PLAY) {
-            $player = $this->getPlayer();
-
-            $event = EventManager::call(
-                new PlayerJoinEvent($player)
-            );
-
-            if (!$event->isCancelled()) {
-                $this->server->addPlayer($player);
-            }
-        }
-
         $this->state = $state;
     }
 

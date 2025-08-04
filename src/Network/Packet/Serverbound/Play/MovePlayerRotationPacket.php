@@ -39,7 +39,7 @@ class MovePlayerRotationPacket extends Packet {
         $headRotatePacket = new RotateHeadPacket($player);
 
         foreach ($session->getServer()->getPlayers() as $player) {
-            if ($player === $session->getPlayer()) {
+            if ($player->getUuid() === $session->getPlayer()->getUuid()) {
                 continue;
             }
 

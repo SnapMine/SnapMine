@@ -22,32 +22,27 @@ class PlayerJoinListener implements Listener
 
     private function broadcastNewPlayer(Player $newPlayer): void
     {
+        $playerInfoPacket = new PlayerInfoUpdatePacket(0x01,
+            [
+                $newPlayer->getUuid()->toString() => [
+                    [
+                        'name' => $newPlayer->getName(),
+                    ],
+                ]
+            ]
+        );
+        $addEntityPacket = new AddEntityPacket(
+            $newPlayer,
+            0,
+            0,
+            0,
+            0,
+        );
+
         /** @var Player $player */
         foreach (Artisan::getPlayers() as $player) {
-            $uuid = $newPlayer->getUuid();
-
-            $player->sendPacket(new PlayerInfoUpdatePacket(0x01,
-                [
-                    $uuid->toString() => [
-                        [
-                            'name' => $newPlayer->getName(),
-                        ],
-                    ]
-                ]
-            ));
-
-            $packet = new AddEntityPacket(
-                $newPlayer,
-                0,
-                0,
-                0,
-                0,
-                0,
-            );
-
-            $player->sendPacket(
-                $packet
-            );
+            $player->sendPacket($playerInfoPacket);
+            $player->sendPacket($addEntityPacket);
         }
     }
 }

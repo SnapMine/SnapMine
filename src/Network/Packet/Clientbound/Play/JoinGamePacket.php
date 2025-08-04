@@ -29,7 +29,7 @@ class JoinGamePacket extends Packet
     public function write(PacketSerializer $serializer): void
     {
         // Entity ID
-        $serializer->putInt(0);
+        $serializer->putInt($this->player->getId());
 
         // Is Hardcore
         $serializer->putBool(false);

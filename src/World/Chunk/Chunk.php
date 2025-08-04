@@ -22,8 +22,6 @@ class Chunk
 
         $this->loadHeightmaps();
         $this->loadBlocksData();
-
-        file_put_contents("oui.txt", print_r($this->sections, true));
     }
 
     /**

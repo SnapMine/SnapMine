@@ -9,13 +9,22 @@ use Nirbose\PhpMcServ\Session\Session;
 
 class SynchronizePlayerPositionPacket extends Packet
 {
+    const RELATIVE_X = 0x0001;
+    const RELATIVE_Y = 0x0002;
+    const RELATIVE_Z = 0x0004;
+    const RELATIVE_YAW = 0x0008;
+    const RELATIVE_PITCH = 0x0010;
+    const RELATIVE_VELOCITY_X = 0x0020;
+    const RELATIVE_VELOCITY_Y = 0x0040;
+    const RELATIVE_VELOCITY_Z = 0x0080;
+    const ROTATE_VELOCITY = 0x0100;
+
     public function __construct(
-        private int $entityId,
         private Player $player,
         private float $velocityX,
         private float $velocityY,
         private float $velocityZ,
-        private int $flags = 0x0001 | 0x0002 | 0x0004 | 0x0008 | 0x0010 | 0x0020 | 0x0040 | 0x0080
+        private int $flags = 0
     ) {}
 
     public function getId(): int
@@ -31,7 +40,7 @@ class SynchronizePlayerPositionPacket extends Packet
     {
         $loc = $this->player->getLocation();
 
-        $serializer->putVarInt($this->entityId);
+        $serializer->putVarInt($this->player->getId());
         $serializer->putDouble($loc->getX()); // x
         $serializer->putDouble($loc->getY()); // y
         $serializer->putDouble($loc->getZ()); // z

@@ -2,6 +2,8 @@
 
 namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
 
+use Nirbose\PhpMcServ\Artisan;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\AddEntityPacket;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
@@ -26,8 +28,5 @@ class ConfirmTeleportationPacket extends Packet
 
     public function handle(Session $session): void
     {
-//        $session->getServer()->testSheep(
-//            $session->getServer()->getPlayers()[0]
-//        );
     }
 }
