@@ -24,10 +24,9 @@ class SetEntityDataPacket extends Packet
     {
         $serializer->putVarInt($this->entityId);
 
-        $metadata = $this->data;
-        $metadata->putUnsignedByte(0xFF);
+        $this->data->putUnsignedByte(0xFF);
 
-        $serializer->put($metadata->get());
+        $serializer->put($this->data->get());
     }
 
     public function read(PacketSerializer $serializer, string $buffer, int &$offset): void

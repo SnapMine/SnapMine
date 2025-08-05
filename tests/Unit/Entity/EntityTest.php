@@ -82,8 +82,16 @@ describe('Test Entity class', function () {
         expect($this->entity->isGlowing())->toBeTrue();
     });
 
+    it('Test air ticks', function () {
+        expect($this->entity->getAirTicks())->toBe(300);
+
+        $this->entity->setAirTicks(400);
+
+        expect($this->entity->getAirTicks())->toBe(400);
+    });
+
     it('Test customName', function () {
-        expect($this->entity->getCustomName())->toBe(null);
+        expect($this->entity->getCustomName())->toBeNull();
 
         $customName = TextComponent::text("hello");
 
