@@ -5,6 +5,7 @@ namespace Nirbose\PhpMcServ\Network\Serializer;
 use Aternos\Nbt\IO\Writer\StringWriter;
 use Aternos\Nbt\NbtFormat;
 use Aternos\Nbt\Tag\Tag;
+use Nirbose\PhpMcServ\Utils\BitSet;
 use Nirbose\PhpMcServ\Utils\UUID;
 use Nirbose\PhpMcServ\World\Position;
 
@@ -517,5 +518,26 @@ class PacketSerializer
         $tag->writeData($writer, false);
 
         $this->put($writer->getStringData());
+    }
+
+    public function putBitSet(BitSet $bitset): void
+    {
+        $bitCount = $bitset->getSize();
+        $longCount = intdiv($bitCount + 63, 64);
+
+        $this->putVarInt($longCount);
+
+        for ($i = 0; $i < $longCount; $i++) {
+            $value = 0;
+            for ($j = 0; $j < 64; $j++) {
+                $bitIndex = $i * 64 + $j;
+                if ($bitIndex >= $bitCount) break;
+                if ($bitset->get($bitIndex)) {
+                    $value |= (1 << $j);
+                }
+            }
+
+            $this->putLong($value);
+        }
     }
 }

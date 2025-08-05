@@ -6,14 +6,15 @@ use Nirbose\PhpMcServ\Artisan;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
+use Nirbose\PhpMcServ\Utils\BitSet;
 use Nirbose\PhpMcServ\World\Chunk\HeightmapType;
 use Nirbose\PhpMcServ\World\Palette;
 
 class ChunkDataAndUpdateLightPacket extends Packet
 {
     public function __construct(
-        private int $chunkX,
-        private int $chunkZ
+        private readonly int $chunkX,
+        private readonly int $chunkZ
     ) {  
     }
 
@@ -89,11 +90,24 @@ class ChunkDataAndUpdateLightPacket extends Packet
 
         $s->putVarInt(0);
 
+        $skyLight = new BitSet(26);
+        for ($i = 0; $i < 26; $i++) {
+            $skyLight->set($i, true);
+        }
+
+        $s->putBitSet($skyLight);
         $s->putVarInt(0);
         $s->putVarInt(0);
         $s->putVarInt(0);
-        $s->putVarInt(0);
-        $s->putVarInt(0);
+
+        $s->putVarInt(26);
+        for ($i = 0; $i < 26; $i++) {
+            $s->putVarInt(2048);
+            for ($j = 0; $j < 2048; $j++) {
+                $s->putByte(0xff);
+            }
+        }
+
         $s->putVarInt(0);
     }
 
