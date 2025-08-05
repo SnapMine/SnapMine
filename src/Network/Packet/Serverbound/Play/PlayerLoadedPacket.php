@@ -3,13 +3,12 @@
 namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
 
 use Nirbose\PhpMcServ\Artisan;
-use Nirbose\PhpMcServ\Entity\Sheep;
 use Nirbose\PhpMcServ\Event\EventManager;
 use Nirbose\PhpMcServ\Event\Player\PlayerJoinEvent;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\AddEntityPacket;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\PlayerInfoUpdatePacket;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\RotateHeadPacket;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 
 class PlayerLoadedPacket extends Packet {
@@ -17,10 +16,10 @@ class PlayerLoadedPacket extends Packet {
         return 0x2A;
     }
 
-    public function write(\Nirbose\PhpMcServ\Network\Serializer\PacketSerializer $serializer): void {
+    public function write(PacketSerializer $serializer): void {
     }
 
-    public function read(\Nirbose\PhpMcServ\Network\Serializer\PacketSerializer $serializer, string $buffer, int &$offset): void {
+    public function read(PacketSerializer $serializer, string $buffer, int &$offset): void {
     }
 
     public function handle(Session $session): void

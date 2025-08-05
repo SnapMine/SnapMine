@@ -2,6 +2,8 @@
 
 namespace Nirbose\PhpMcServ\Component;
 
+use Aternos\Nbt\Tag\CompoundTag;
+use Aternos\Nbt\Tag\StringTag;
 use JsonSerializable;
 use Nirbose\PhpMcServ\Utils\DyeColor;
 
@@ -128,5 +130,14 @@ class TextComponent implements JsonSerializable
         $data = array_merge($data, $this->options);
 
         return array_filter($data, fn ($item) => $item !== null);
+    }
+
+    public function toNBT(): StringTag
+    {
+        $tag = new StringTag();
+
+        $tag->setValue($this->options["text"]);
+
+        return $tag;
     }
 }

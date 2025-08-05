@@ -25,7 +25,8 @@
     "ext-gmp": "*"
   },
   "require-dev": {
-    "pestphp/pest": "^3.8"
+    "pestphp/pest": "^3.8",
+    "mockery/mockery": "^1.6"
   },
   "config": {
     "allow-plugins": {

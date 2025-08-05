@@ -4,12 +4,6 @@ namespace Nirbose\PhpMcServ\Network\Serializer;
 
 use Aternos\Nbt\IO\Writer\StringWriter;
 use Aternos\Nbt\NbtFormat;
-use Aternos\Nbt\Tag\ByteTag;
-use Aternos\Nbt\Tag\CompoundTag;
-use Aternos\Nbt\Tag\FloatTag;
-use Aternos\Nbt\Tag\IntTag;
-use Aternos\Nbt\Tag\ListTag;
-use Aternos\Nbt\Tag\StringTag;
 use Aternos\Nbt\Tag\Tag;
 use Nirbose\PhpMcServ\Utils\UUID;
 use Nirbose\PhpMcServ\World\Position;
@@ -480,9 +474,6 @@ class PacketSerializer
      */
     public function putUnsignedByte(int $value): void
     {
-        if ($value < 0 || $value > 255) {
-            throw new \Exception("Valeur de byte invalide");
-        }
         $this->put(pack('C', $value));
     }
 
@@ -495,12 +486,7 @@ class PacketSerializer
      */
     public function getUnsignedByte(string $buffer, int &$offset): int
     {
-        $value = ord($buffer[$offset++]);
-        if ($value < 0 || $value > 255) {
-            throw new \Exception("Valeur de byte invalide");
-        }
-
-        return $value;
+        return ord($buffer[$offset++]);
     }
 
     public function putUnsignedLong(int $value): void
@@ -521,5 +507,15 @@ class PacketSerializer
         $encoded = (int) round(($degrees / 360.0) * 256) & 0xFF;
 
         $this->putByte($encoded);
+    }
+
+    public function putNBT(Tag $tag): void
+    {
+        $writer = (new StringWriter())
+            ->setFormat(NbtFormat::JAVA_EDITION);
+
+        $tag->writeData($writer, false);
+
+        $this->put($writer->getStringData());
     }
 }
