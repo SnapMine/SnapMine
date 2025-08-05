@@ -3,14 +3,17 @@
 namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
 
 use Nirbose\PhpMcServ\Artisan;
+use Nirbose\PhpMcServ\Entity\EntityType;
 use Nirbose\PhpMcServ\Entity\Sheep;
 use Nirbose\PhpMcServ\Event\EventManager;
 use Nirbose\PhpMcServ\Event\Player\PlayerJoinEvent;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\AddEntityPacket;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\PlayerInfoUpdatePacket;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\RotateHeadPacket;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\SetEntityDataPacket;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Session\Session;
+use Nirbose\PhpMcServ\World\Location;
 
 class PlayerLoadedPacket extends Packet {
     public function getId() : int {
@@ -67,5 +70,15 @@ class PlayerLoadedPacket extends Packet {
                 $newPlayer->sendPacket($packetAddEntity);
             }
         }
+
+        $this->test($session);
+    }
+
+    private function test(Session $session)
+    {
+        $sheep = $session->getServer()->spawnEntity(EntityType::SHEEP);
+        $sheep->setOnFire(true);
+
+        $sheep->update();
     }
 }

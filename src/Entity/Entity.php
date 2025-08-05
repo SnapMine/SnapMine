@@ -3,6 +3,7 @@
 namespace Nirbose\PhpMcServ\Entity;
 
 use Nirbose\PhpMcServ\Component\TextComponent;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\SetEntityDataPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Server;
 use Nirbose\PhpMcServ\Utils\UUID;
@@ -176,6 +177,29 @@ abstract class Entity
     public function setPose(Pose $pose): void
     {
         $this->pose = $pose;
+    }
+
+    protected function getMetadataPacket(): PacketSerializer
+    {
+        // State flags
+        $this->buffer->putUnsignedByte(0);
+        $this->buffer->putVarInt(0);
+        $this->buffer->putByte($this->state);
+
+        return $this->buffer;
+    }
+
+    /**
+     * @return Server
+     */
+    public function getServer(): Server
+    {
+        return $this->server;
+    }
+
+    public function update(): void
+    {
+        $this->server->broadcastPacket(new SetEntityDataPacket($this->getId(), $this->getMetadataPacket()));
     }
 
     /**
