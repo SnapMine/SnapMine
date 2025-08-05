@@ -18,6 +18,7 @@ use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\MovePlayerPositionPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\MovePlayerPositionRotationPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\MovePlayerRotationPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\MovePlayerStatusOnlyPacket;
+use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\PickItemFromBlockPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\PlayerAbilitiesPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\PlayerActionPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\PlayerCommandPacket;
@@ -58,6 +59,7 @@ class Protocol
             0x11 => ContainerClosePacket::class,
             0x1D => MovePlayerPositionRotationPacket::class,
             0x1C => MovePlayerPositionPacket::class,
+            0x22 => PickItemFromBlockPacket::class,
             0x2A => PlayerLoadedPacket::class,
             0x3B => SwingPacket::class,
             0x28 => PlayerCommandPacket::class,
