@@ -2,11 +2,11 @@
 
 namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Configuration;
 
-use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 
-class PluginMessagePacket extends Packet
+class PluginMessagePacket extends ClientboundPacket
 {
 
     private string $channel;
@@ -32,9 +32,5 @@ class PluginMessagePacket extends Packet
     public function read(PacketSerializer $serializer, string $buffer, int &$offset): void
     {
         throw new \Exception("Not implemented");
-    }
-
-    public function handle(Session $session): void
-    {
     }
 }

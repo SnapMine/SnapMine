@@ -9,23 +9,19 @@ use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\PlayerAbilitiesPacket;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\SetCenterChunk;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\SetDefaultSpawnPositionPacket;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\SynchronizePlayerPositionPacket;
-use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Network\ServerState;
 use Nirbose\PhpMcServ\Session\Session;
 
-class AcknowledgeFinishConfigurationPacket extends Packet
+class AcknowledgeFinishConfigurationPacket extends ServerboundPacket
 {
     public function getId(): int
     {
         return 0x03;
     }
 
-    public function read(PacketSerializer $in, string $buffer, int &$offset): void
-    {
-    }
-
-    public function write(PacketSerializer $out): void
+    public function read(PacketSerializer $serializer): void
     {
     }
 

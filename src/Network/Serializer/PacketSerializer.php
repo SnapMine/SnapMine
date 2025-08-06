@@ -11,25 +11,40 @@ use Nirbose\PhpMcServ\World\Position;
 class PacketSerializer
 {
 
-    private string $payload = "";
+    private string $buffer; // Stores packet payload. Used for both reading and writing
+    private int $offset; // Offset for reading
 
+    public function __construct(string $payload, int $offset = 0) {
+        $this->buffer = $payload;
+        $this->offset = $offset;
+    }
+
+
+    public function clear(): void
+    {
+        $this->buffer = substr($this->buffer, $this->offset);
+        $this->offset = 0;
+    }
     public function put(string $data): void
     {
-        $this->payload .= $data;
+        $this->buffer .= $data;
     }
 
     public function get(): string
     {
-        return $this->payload;
+        return $this->buffer;
     }
 
-    /**
-     * Encode un entier en utilisant le format VarInt.
-     *
-     * @param integer $value
-     * @return void
-     */
-    public function putVarInt(int $value): void
+    public function getLengthPrefixedData(): string
+    {
+        return $this->varInt(strlen($this->buffer)) . $this->buffer;
+    }
+
+    public function getOffset(): int {
+        return $this->offset;
+    }
+
+    private function varInt(int $value): string
     {
         $out = '';
         do {
@@ -39,26 +54,37 @@ class PacketSerializer
             $out .= chr($temp);
         } while ($value !== 0);
 
-        $this->put($out);
+        return $out;
+    }
+
+    /**
+     * Encode un entier en utilisant le format VarInt.
+     *
+     * @param integer $value
+     * @return PacketSerializer $this
+     */
+    public function putVarInt(int $value): PacketSerializer
+    {
+        $this->put($this->varInt($value));
+        return $this;
     }
 
     /**
      * Lit un entier en utilisant le format VarInt.
      *
-     * @param string $buffer
-     * @param integer $offset
      * @return integer
+     * @throws \Exception
      */
-    public function getVarInt(string $buffer, int &$offset): int
+    public function getVarInt(): int
     {
         $value = 0;
         $position = 0;
         while (true) {
-            if (!isset($buffer[$offset])) {
+            if (!isset($this->buffer[$this->offset])) {
                 throw new \Exception("Fin du buffer pendant lecture VarInt");
             }
 
-            $byte = ord($buffer[$offset++]);
+            $byte = ord($this->buffer[$this->offset++]);
             $value |= ($byte & 0x7F) << $position;
 
             if (($byte & 0x80) === 0) break;
@@ -76,56 +102,51 @@ class PacketSerializer
      * Encode une chaîne de caractères en utilisant le format VarString.
      *
      * @param string $data
-     * @return void
+     * @return PacketSerializer $this
      */
-    public function putString(string $data): void
+    public function putString(string $data): PacketSerializer
     {
-        $this->put($this->putVarInt(strlen($data)) . $data);
+        $this->putVarInt(strlen($data))
+            ->put($data);
+
+        return $this;
     }
 
     /**
      * Lit une chaîne de caractères en utilisant le format VarString.
      *
-     * @param string $buffer
-     * @param integer $offset
      * @return string
+     * @throws \Exception
      */
-    public function getString(string $buffer, int &$offset): string
+    public function getString(): string
     {
-        $len = $this->getVarInt($buffer, $offset);
-        $str = substr($buffer, $offset, $len);
+        $len = $this->getVarInt();
 
-        if (strlen($str) < $len) {
-            throw new \Exception("Chaîne tronquée (attendu $len octets, reçu " . strlen($str) . ")");
-        }
-
-        $offset += $len;
-
-        return $str;
+        return $this->getNBytes($len);
     }
+
 
     /**
      * Encode un entier 16 bits en utilisant le format Big Endian.
      *
      * @param integer $value
-     * @return void
+     * @return PacketSerializer $this
      */
-    public function putShort(int $value): void
+    public function putShort(int $value): PacketSerializer
     {
         $this->put(pack('n', $value));
+        return $this;
     }
 
     /**
      * Lit un entier 16 bits en utilisant le format Big Endian.
      *
-     * @param string $buffer
-     * @param integer $offset
      * @return integer
      */
-    public function getShort(string $buffer, int &$offset): int
+    public function getShort(): int
     {
-        $value = unpack('n', substr($buffer, $offset, 2))[1];
-        $offset += 2;
+        $value = unpack('n', substr($this->buffer, $this->offset, 2))[1];
+        $this->offset += 2;
 
         return $value;
     }
@@ -134,24 +155,23 @@ class PacketSerializer
      * Encode un entier 32 bits en utilisant le format Big Endian.
      *
      * @param integer $value
-     * @return void
+     * @return PacketSerializer
      */
-    public function putInt(int $value): void
+    public function putInt(int $value): PacketSerializer
     {
         $this->put(pack('N', $value));
+        return $this;
     }
 
     /**
      * Lit un entier 32 bits en utilisant le format Big Endian.
      *
-     * @param string $buffer
-     * @param integer $offset
      * @return integer
      */
-    public function getInt(string $buffer, int &$offset): int
+    public function getInt(): int
     {
-        $value = unpack('N', substr($buffer, $offset, 4))[1];
-        $offset += 4;
+        $value = unpack('N', substr($this->buffer, $this->offset, 4))[1];
+        $this->offset += 4;
 
         return $value;
     }
@@ -160,9 +180,9 @@ class PacketSerializer
      * Encode un entier 64 bits en utilisant le format Big Endian.
      *
      * @param integer|string $value
-     * @return void
+     * @return PacketSerializer $this
      */
-    public function putLong(int|string $value): void
+    public function putLong(int|string $value): PacketSerializer
     {
         if (is_string($value)) {
             $value = gmp_init($value);
@@ -173,23 +193,23 @@ class PacketSerializer
         }
 
         $this->put($bin);
+        return $this;
     }
 
     /**
      * Lit un entier 64 bits en utilisant le format Big Endian.
      *
-     * @param string $buffer
-     * @param integer $offset
      * @return integer
+     * @throws \Exception
      */
-    public function getLong(string $buffer, int &$offset): int
+    public function getLong(): int
     {
-        if (strlen($buffer) < $offset + 8) {
+        if (strlen($this->buffer) < $this->offset + 8) {
             throw new \Exception("Pas assez de données pour lire un Long");
         }
 
-        $data = substr($buffer, $offset, 8);
-        $offset += 8;
+        $data = substr($this->buffer, $this->offset, 8);
+        $this->offset += 8;
 
         $parts = unpack('J', $data);
         return $parts[1];
@@ -199,24 +219,23 @@ class PacketSerializer
      * Encode un float en utilisant le format Big Endian.
      *
      * @param float $value
-     * @return void
+     * @return PacketSerializer $this
      */
-    public function putFloat(float $value): void
+    public function putFloat(float $value): PacketSerializer
     {
         $this->put(pack('G', $value));
+        return $this;
     }
 
     /**
      * Lit un float en utilisant le format Big Endian.
      *
-     * @param string $buffer
-     * @param integer $offset
      * @return float
      */
-    public function getFloat(string $buffer, int &$offset): float
+    public function getFloat(): float
     {
-        $value = unpack('G', substr($buffer, $offset, 4))[1];
-        $offset += 4;
+        $value = unpack('G', substr($this->buffer, $this->offset, 4))[1];
+        $this->offset += 4;
 
         return $value;
     }
@@ -225,24 +244,23 @@ class PacketSerializer
      * Encode un double en utilisant le format Big Endian.
      *
      * @param float $value
-     * @return void
+     * @return PacketSerializer $this
      */
-    public function putDouble(float $value): void
+    public function putDouble(float $value): PacketSerializer
     {
         $this->put(pack('E', $value));
+        return $this;
     }
 
     /**
      * Lit un double en utilisant le format Big Endian.
      *
-     * @param string $buffer
-     * @param integer $offset
      * @return float
      */
-    public function getDouble(string $buffer, int &$offset): float
+    public function getDouble(): float
     {
-        $value = unpack('E', substr($buffer, $offset, 8))[1];
-        $offset += 8;
+        $value = unpack('E', substr($this->buffer, $this->offset, 8))[1];
+        $this->offset += 8;
 
         return $value;
     }
@@ -251,26 +269,22 @@ class PacketSerializer
      * Encode un booléen.
      *
      * @param boolean $value
-     * @return void
+     * @return PacketSerializer $this
      */
-    public function putBool(bool $value): void
+    public function putBool(bool $value): PacketSerializer
     {
         $this->put($value ? "\x01" : "\x00");
+        return $this;
     }
 
     /**
      * Lit un booléen.
      *
-     * @param string $buffer
-     * @param integer $offset
      * @return boolean
      */
-    public function getBool(string $buffer, int &$offset): bool
+    public function getBool(): bool
     {
-        $value = ord($buffer[$offset++]);
-        if ($value !== 0 && $value !== 1) {
-            throw new \Exception("Valeur booléenne invalide");
-        }
+        $value = ord($this->buffer[$this->offset++]);
 
         return (bool)$value;
     }
@@ -279,53 +293,51 @@ class PacketSerializer
      * Encode un byte.
      * 
      * @param integer $value
-     * @return void
+     * @return PacketSerializer $this
      */
-    public function putByte(int $value): void
+    public function putByte(int $value): PacketSerializer
     {
         $this->put(chr($value));
+        return $this;
     }
 
     /**
      * Lit un byte.
-     * 
-     * @param string $buffer
-     * @param integer $offset
+     *
      * @return integer
      */
-    public function getByte(string $buffer, int &$offset): int
+    public function getByte(): int
     {
-        return ord($buffer[$offset++]);
+        return ord($this->buffer[$this->offset++]);
     }
 
     /**
      * Encode un prefixed array.
      * 
      * @param array $array
-     * @return void
+     * @return PacketSerializer $this
      */
-    public function putPrefixedArray(array $array): void
+    public function putPrefixedArray(array $array): PacketSerializer
     {
         $this->putVarInt(count($array));
         foreach ($array as $item) {
             $this->putString($item);
         }
+        return $this;
     }
 
     /**
      * Lit un prefixed array.
-     * 
-     * @param string $buffer
-     * @param integer $offset
+     *
      * @return array
+     * @throws \Exception
      */
-    public function getPrefixedArray(string $buffer, int &$offset): array
+    public function getPrefixedArray(): array
     {
-        $length = $this->getVarInt($buffer, $offset);
+        $length = $this->getVarInt();
         $array = [];
         for ($i = 0; $i < $length; $i++) {
-            $array[] = substr($buffer, $offset, 1);
-            $offset++;
+            $array[] = $this->buffer[$this->offset++];
         }
 
         return $array;
@@ -335,9 +347,9 @@ class PacketSerializer
      * Encode un UUID.
      * 
      * @param string|UUID $uuid
-     * @return void
+     * @return PacketSerializer $this
      */
-    public function putUUID(string|UUID $uuid): void
+    public function putUUID(string|UUID $uuid): PacketSerializer
     {
         if ($uuid instanceof UUID) {
             $uuid = $uuid->toString();
@@ -346,19 +358,18 @@ class PacketSerializer
         $raw = pack('H*', str_replace('-', '', $uuid));
 
         $this->put($raw);
+        return $this;
     }
 
     /**
      * Lit un UUID.
-     * 
-     * @param string $buffer
-     * @param integer $offset
+     *
      * @return string
      */
-    public function getUUID(string $buffer, int &$offset): UUID
+    public function getUUID(): UUID
     {
-        $uuid = substr($buffer, $offset, 16);
-        $offset += 16;
+        $uuid = substr($this->buffer, $this->offset, 16);
+        $this->offset += 16;
 
         return UUID::fromString($uuid);
     }
@@ -370,26 +381,27 @@ class PacketSerializer
      * @param integer $x
      * @param integer $y
      * @param integer $z
-     * @return void
+     * @return PacketSerializer $this
      */
-    public function putPosition(int $x, int $y, int $z): void
+    public function putPosition(int $x, int $y, int $z): PacketSerializer
     {
         $this->putLong(
             (($x & 0x3FFFFFF) << 38) | (($z & 0x3FFFFFF) << 12) | ($y & 0xFFF)
         );
+
+        return $this;
     }
 
     /**
      * Lit une Position code sur 64 bits.
      * x (-33554432 to 33554431), z (-33554432 to 33554431), y (-2048 to 2047)
-     * 
-     * @param string $buffer
-     * @param integer $offset
+     *
      * @return Position
+     * @throws \Exception
      */
-    public function getPosition(string $buffer, int &$offset): Position
+    public function getPosition(): Position
     {
-        $value = $this->getLong($buffer, $offset);
+        $value = $this->getLong();
         $x = $value >> 38;
         $y = $value << 52 >> 52;
         $z = $value << 26 >> 38;
@@ -403,33 +415,29 @@ class PacketSerializer
 
     /**
      * Encode un unsigned short.
-     * 
+     *
      * @param integer $value
-     * @return void
+     * @return PacketSerializer $this
+     * @throws \Exception
      */
-    public function putUnsignedShort(int $value): void
+    public function putUnsignedShort(int $value): PacketSerializer
     {
         if ($value < 0 || $value > 65535) {
             throw new \Exception("Valeur de short invalide");
         }
         $this->put(pack('n', $value));
+        return $this;
     }
 
     /**
      * Lit un unsigned short.
-     * 
-     * @param string $buffer
-     * @param integer $offset
+     *
      * @return integer
      */
-    public function getUnsignedShort(string $buffer, int &$offset): int
+    public function getUnsignedShort(): int
     {
-        $value = unpack('n', substr($buffer, $offset, 2))[1];
-        $offset += 2;
-
-        if ($value < 0 || $value > 65535) {
-            throw new \Exception("Valeur de short invalide");
-        }
+        $value = unpack('n', substr($this->buffer, $this->offset, 2))[1];
+        $this->offset += 2;
 
         return $value;
     }
@@ -438,30 +446,26 @@ class PacketSerializer
      * Encode un byte array binaire (comme utilisé par NBT ou d'autres données binaires).
      * 
      * @param string $data Données binaires (ex: issues du writer NBT)
-     * @return void
+     * @return PacketSerializer $this
      */
-    public function putByteArray(string $data): void
+    public function putByteArray(string $data): PacketSerializer
     {
         $this->putVarInt(strlen($data)); // Longueur d'abord
         $this->put($data); // Puis contenu binaire brut
+        return $this;
     }
 
     /**
      * Lit un byte array.
-     * 
-     * @param string $buffer
-     * @param integer $offset
+     *
      * @return array
+     * @throws \Exception
      */
-    public function getByteArray(string $buffer, int &$offset): array
+    public function getByteArray(): array
     {
-        $length = $this->getVarInt($buffer, $offset);
-        $data = substr($buffer, $offset, $length);
-        $offset += $length;
-
-        if (strlen($data) < $length) {
-            throw new \Exception("Byte array tronqué (attendu $length octets, reçu " . strlen($data) . ")");
-        }
+        $length = $this->getVarInt();
+        $data = substr($this->buffer, $this->offset, $length);
+        $this->offset += $length;
 
         return array_values(unpack('C*', $data));
     }
@@ -470,34 +474,36 @@ class PacketSerializer
      * Encode un unsigned byte.
      * 
      * @param integer $value
-     * @return void
+     * @return PacketSerializer $this
      */
-    public function putUnsignedByte(int $value): void
+    public function putUnsignedByte(int $value): PacketSerializer
     {
         $this->put(pack('C', $value));
+        return $this;
     }
 
     /**
      * Lit un unsigned byte.
-     * 
-     * @param string $buffer
-     * @param integer $offset
+     *
      * @return integer
      */
-    public function getUnsignedByte(string $buffer, int &$offset): int
+    public function getUnsignedByte(): int
     {
-        return ord($buffer[$offset++]);
+        return ord($this->buffer[$this->offset++]);
     }
 
-    public function putUnsignedLong(int $value): void
+    /**
+     * @param int $value
+     * @return PacketSerializer $this
+     */
+    public function putUnsignedLong(int $value): PacketSerializer
     {
-        if ($value < 0 || $value > 0xFFFFFFFFFFFFFFFF) {
-            throw new \Exception("Valeur de long invalide");
-        }
         $this->put(pack('P', $value));
+
+        return $this;
     }
 
-    public function putAngle(float $degrees): void
+    public function putAngle(float $degrees): PacketSerializer
     {
         $degrees = fmod($degrees, 360.0);
         if ($degrees < 0) {
@@ -507,9 +513,10 @@ class PacketSerializer
         $encoded = (int) round(($degrees / 360.0) * 256) & 0xFF;
 
         $this->putByte($encoded);
+        return $this;
     }
 
-    public function putNBT(Tag $tag): void
+    public function putNBT(Tag $tag): PacketSerializer
     {
         $writer = (new StringWriter())
             ->setFormat(NbtFormat::JAVA_EDITION);
@@ -517,5 +524,14 @@ class PacketSerializer
         $tag->writeData($writer, false);
 
         $this->put($writer->getStringData());
+        return $this;
+    }
+
+    public function getNBytes(int $len): string
+    {
+        $n_bytes = substr($this->buffer, $this->offset, $len);
+        $this->offset += $len;
+
+        return $n_bytes;
     }
 }

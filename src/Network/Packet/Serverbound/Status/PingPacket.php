@@ -4,10 +4,11 @@ namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Status;
 
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Status\PongPacket;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 
-class PingPacket extends Packet
+class PingPacket extends ServerboundPacket
 {
     public int $payload;
 
@@ -16,12 +17,14 @@ class PingPacket extends Packet
         return 0x01;
     }
 
-    public function read(PacketSerializer $in, string $buffer, int &$offset): void
+    /**
+     * @throws \Exception
+     */
+    public function read(PacketSerializer $in): void
     {
-        $this->payload = $in->getLong($buffer, $offset);
+        $this->payload = $in->getLong();
     }
 
-    public function write(PacketSerializer $out): void {}
 
     public function handle(Session $session): void
     {

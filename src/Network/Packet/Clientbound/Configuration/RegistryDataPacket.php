@@ -8,13 +8,13 @@ use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\ListTag;
 use Aternos\Nbt\Tag\StringTag;
 use Aternos\Nbt\Tag\Tag;
-use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Registry;
 use Nirbose\PhpMcServ\Session\Session;
 use stdClass;
 
-class RegistryDataPacket extends Packet
+class RegistryDataPacket extends ClientboundPacket
 {
     private string $registryId;
     private stdClass $entries;
@@ -30,23 +30,16 @@ class RegistryDataPacket extends Packet
         return 0x07;
     }
 
-    public function read(PacketSerializer $serializer, string $buffer, int &$offset): void
-    {
-        throw new \Exception("RegistryDataPacket ne peut pas être reçu");
-    }
-
     public function write(PacketSerializer $serializer): void
     {
-        $serializer->putString($this->registryId);
-
-        $serializer->putVarInt(count((array) $this->entries));
+        $serializer->putString($this->registryId)
+            ->putVarInt(count((array) $this->entries));
 
         $nbtTags = Registry::getRegistry($this->registryId);
 
         foreach ($this->entries as $entryId => $entryData) {
-            $serializer->putString($entryId);
-
-            $serializer->putBool(true);
+            $serializer->putString($entryId)
+                ->putBool(true);
 
             $component = $this->convertToNbtTag($nbtTags, $entryData);
 
@@ -127,11 +120,5 @@ class RegistryDataPacket extends Packet
         }
 
         return $compound;
-    }
-
-
-    public function handle(Session $session): void
-    {
-        // Ce paquet est envoyé par le serveur, pas géré côté client
     }
 }

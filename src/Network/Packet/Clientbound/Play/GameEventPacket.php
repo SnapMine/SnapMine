@@ -2,11 +2,10 @@
 
 namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Play;
 
-use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Session\Session;
 
-class GameEventPacket extends Packet {
+class GameEventPacket extends ClientboundPacket {
 
     private int $eventId;
     private float $value;
@@ -24,15 +23,7 @@ class GameEventPacket extends Packet {
 
     public function write(PacketSerializer $serializer): void
     {
-        $serializer->putUnsignedByte($this->eventId);
-        $serializer->putFloat($this->value);
-    }
-
-    public function read(PacketSerializer $serializer, string $buffer, int &$offset): void
-    {
-    }
-
-    public function handle(Session $session): void
-    {
+        $serializer->putUnsignedByte($this->eventId)
+            ->putFloat($this->value);
     }
 }

@@ -2,11 +2,11 @@
 
 namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Configuration;
 
-use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 
-class PluginMessagePacket extends Packet
+class PluginMessagePacket extends ServerboundPacket
 {
     public string $channel;
     public array $data;
@@ -16,22 +16,10 @@ class PluginMessagePacket extends Packet
         return 0x02;
     }
 
-    public function read(PacketSerializer $in, string $buffer, int &$offset): void
+    public function read(PacketSerializer $serializer): void
     {
-        $this->channel = $in->getString($buffer, $offset);
-        $this->data = $in->getByteArray($buffer, $offset);
+        $this->channel = $serializer->getString();
+        $this->data = $serializer->getByteArray();
     }
 
-    public function write(PacketSerializer $out): void
-    {
-        // Not implemented
-    }
-
-    public function handle(Session $session): void
-    {
-        // var_dump("PluginMessagePacket: Channel: " . $this->channel);
-        // var_dump("PluginMessagePacket: Data: ", $this->data);
-
-        // $session->sendPacket(new ConfigurationPluginMessagePacket($this->channel, $this->data));
-    }
 }

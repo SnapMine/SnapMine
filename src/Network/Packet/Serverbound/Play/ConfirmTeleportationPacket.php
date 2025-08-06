@@ -5,10 +5,11 @@ namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
 use Nirbose\PhpMcServ\Artisan;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\AddEntityPacket;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 
-class ConfirmTeleportationPacket extends Packet
+class ConfirmTeleportationPacket extends ServerboundPacket
 {
     private int $teleportId;
 
@@ -17,16 +18,10 @@ class ConfirmTeleportationPacket extends Packet
         return 0x00;
     }
 
-    public function write(PacketSerializer $serializer): void
+    public function read(PacketSerializer $serializer): void
     {
+        $this->teleportId = $serializer->getVarInt();
     }
 
-    public function read(PacketSerializer $serializer, string $buffer, int &$offset): void
-    {
-        $this->teleportId = $serializer->getVarInt($buffer, $offset);
-    }
 
-    public function handle(Session $session): void
-    {
-    }
 }

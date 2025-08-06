@@ -82,7 +82,6 @@ class Server
                         $this->sessions[spl_object_id($client)] = new Session($this, $client);
                         echo "Nouveau client connecté.\n";
                     }
-                    continue;
                 } else {
                     $data = @socket_read($socket, 2048);
                     $id = spl_object_id($socket);
@@ -99,9 +98,9 @@ class Server
 
                     /** @var Session $session */
                     $session = $this->sessions[$id];
-                    $session->buffer .= $data;
+                    $session->serializer->put($data);
 
-                    // echo "Paquet brut reçu (hex) : " . bin2hex($data) . "\n";
+                     echo "Paquet brut reçu (hex) : " . bin2hex($data) . "\n";
 
                     $session->handle();
                 }

@@ -2,11 +2,11 @@
 
 namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Configuration;
 
-use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 
-class ClientInformationPacket extends Packet
+class ClientInformationPacket extends ServerboundPacket
 {
 
     private string $locale;
@@ -24,26 +24,16 @@ class ClientInformationPacket extends Packet
         return 0x00;
     }
 
-    public function read(PacketSerializer $in, string $buffer, int &$offset): void
+    public function read(PacketSerializer $serializer): void
     {
-        $this->locale = $in->getString($buffer, $offset);
-        $this->viewDistance = $in->getByte($buffer, $offset);
-        $this->chatMode = $in->getVarInt($buffer, $offset);
-        $this->chatColors = $in->getBool($buffer, $offset);
-        $this->displayedSkinParts = $in->getUnsignedByte($buffer, $offset);
-        $this->mainHand = $in->getVarInt($buffer, $offset);
-        $this->enableTextFiltering = $in->getBool($buffer, $offset);
-        $this->allowServerListings = $in->getBool($buffer, $offset);
-        $this->particleStatus = $in->getVarInt($buffer, $offset);
-    }
-
-    public function write(PacketSerializer $out): void
-    {
-        // Not implemented
-    }
-
-    public function handle(Session $session): void
-    {
-        // Not implemented
+        $this->locale = $serializer->getString();
+        $this->viewDistance = $serializer->getByte();
+        $this->chatMode = $serializer->getVarInt();
+        $this->chatColors = $serializer->getBool();
+        $this->displayedSkinParts = $serializer->getUnsignedByte();
+        $this->mainHand = $serializer->getVarInt();
+        $this->enableTextFiltering = $serializer->getBool();
+        $this->allowServerListings = $serializer->getBool();
+        $this->particleStatus = $serializer->getVarInt();
     }
 }

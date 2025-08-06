@@ -2,11 +2,11 @@
 
 namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Status;
 
-use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 
-class StatusResponsePacket extends Packet
+class StatusResponsePacket extends ClientboundPacket
 {
 
     private string $data;
@@ -24,15 +24,5 @@ class StatusResponsePacket extends Packet
     public function write(PacketSerializer $serializer): void
     {
         $serializer->putString($this->data);
-    }
-
-    public function read(PacketSerializer $serializer, string $buffer, int &$offset): void
-    {
-        $this->data = $serializer->getString($buffer, $offset);
-    }
-
-    public function handle(Session $session): void
-    {
-        // No action needed for StatusResponse packet
     }
 }

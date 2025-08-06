@@ -4,11 +4,11 @@ namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Configuration;
 
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Configuration\FinishConfigurationPacket;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Configuration\RegistryDataPacket;
-use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 
-class KnownPacksPacket extends Packet
+class KnownPacksPacket extends ServerboundPacket
 {
 
     private array $packs;
@@ -18,25 +18,20 @@ class KnownPacksPacket extends Packet
         return 0x07;
     }
 
-    public function read(PacketSerializer $in, string $buffer, int &$offset): void
+    public function read(PacketSerializer $serializer): void
     {
         $this->packs = [];
-        $packCount = $in->getVarInt($buffer, $offset);
+        $packCount = $serializer->getVarInt();
 
         for ($i = 0; $i < $packCount; $i++) {
-            $namespace = $in->getString($buffer, $offset);
-            $packName = $in->getString($buffer, $offset);
-            $packVersion = $in->getString($buffer, $offset);
+            $namespace = $serializer->getString();
+            $packName = $serializer->getString();
+            $packVersion = $serializer->getString();
             $this->packs[$namespace] = [
                 'name' => $packName,
                 'version' => $packVersion,
             ];
         }
-    }
-
-    public function write(PacketSerializer $out): void
-    {
-        // No data to write for this packet
     }
 
     public function handle(Session $session): void
