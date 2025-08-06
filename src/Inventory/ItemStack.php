@@ -80,7 +80,7 @@ class ItemStack
 
         $amount = $s->getVarInt($buffer, $offset);
         $id = $s->getVarInt($buffer, $offset);
-        $item = new self(Material::cases()[$id], $amount);
+        $item = new self(Material::getMaterial($id), $amount);
 
         $numberComponentsAdded = $s->getVarInt($buffer, $offset);
         $numberComponentsRemoved = $s->getVarInt($buffer, $offset);
