@@ -1416,19 +1416,18 @@ enum Material: int
         return !$this->isBlock();
     }
 
-    public function getId(): int
+    public function getItemId(): int
     {
         return $this->value & 0xFFFF;
     }
 
-    public static function getMaterial(int $id): ?Material
+    public function getBlockId(): int
     {
-        foreach (self::cases() as $material) {
-            if ($material->getId() == $id) {
-                return $material;
-            }
-        }
+        return ($this->value >> 16) & 0xFFFF;
+    }
 
-        return null;
+    public static function getMaterial(int $id): Material
+    {
+        return self::cases()[$id];
     }
 }

@@ -17,4 +17,9 @@ describe('Test material', function () {
         expect(Material::STONE_PICKAXE->isBlock())->toBeTrue()
             ->and(Material::STONE_PICKAXE->isItem())->toBeFalse();
     });
+
+    it('Test get itemId and blockId', function () {
+        expect(Material::NOTE_BLOCK->getItemId())->toBe(581)
+            ->and(Material::NOTE_BLOCK->getBlockId())->toBe(711);
+    });
 });

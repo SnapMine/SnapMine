@@ -56,6 +56,7 @@ class Protocol
         ServerState::PLAY->value => [
             0x00 => ConfirmTeleportationPacket::class,
             0x0B => ClientTickEndPacket::class,
+            0x0C => ClientInformationPacket::class,
             0x11 => ContainerClosePacket::class,
             0x1D => MovePlayerPositionRotationPacket::class,
             0x1C => MovePlayerPositionPacket::class,
