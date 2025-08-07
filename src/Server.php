@@ -89,10 +89,18 @@ class Server
                         $this->sessions[spl_object_id($client)] = new Session($this, $client);
                         echo "Nouveau client connecté.\n";
                     }
-                    continue;
                 } else {
-                    $data = @socket_read($socket, 2048);
                     $id = spl_object_id($socket);
+
+                    if (!isset($this->sessions[$id])) {
+                        $key = array_search($socket, $this->clients, true);
+                        if ($key !== false) {
+                            unset($this->clients[$key]);
+                        }
+                        continue;
+                    }
+
+                    $data = @socket_read($socket, 2048);
 
                     if ($data === '' || $data === false) {
                         $this->clients = array_values($this->clients);
@@ -121,14 +129,17 @@ class Server
 
             unset($this->clients[$id]);
 
-            if (isset($this->players[$session->getPlayer()->getUuid()->toString()])) {
-                unset($this->players[$session->getPlayer()->getUuid()->toString()]);
+            if ($session->getPlayer() !== null) {
+                if (isset($this->players[$session->getPlayer()->getUuid()->toString()])) {
+                    unset($this->players[$session->getPlayer()->getUuid()->toString()]);
+                }
             }
 
             unset($this->sessions[$id]);
 
             socket_close($socket);
-        } catch (Exception) {}
+        } catch (Exception) {
+        }
     }
 
     public function incrementAndGetId(): int
