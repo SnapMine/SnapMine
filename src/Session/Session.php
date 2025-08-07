@@ -53,7 +53,7 @@ class Session
 
     public function close(): void
     {
-        socket_close($this->socket);
+        $this->server->closeSession($this, $this->socket);
     }
 
     public function handle(): void
