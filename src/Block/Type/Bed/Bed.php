@@ -3,6 +3,7 @@
 namespace Nirbose\PhpMcServ\Block\Type\Bed;
 
 use Nirbose\PhpMcServ\Block\Data\Directional;
+use Nirbose\PhpMcServ\Block\Direction;
 use Nirbose\PhpMcServ\Material;
 
 abstract class Bed implements Directional
@@ -12,11 +13,13 @@ abstract class Bed implements Directional
 
     private bool $occupied = false;
     private int $part = Bed::FOOT;
+    private Direction $facing;
 
     protected function __construct(
         private readonly Material $material
     )
     {
+        $this->facing = $this->getFacing()[0];
     }
 
     public function getMaterial(): Material
@@ -26,7 +29,22 @@ abstract class Bed implements Directional
 
     public function getFaces(): array
     {
-        return [];
+        return [
+            Direction::EAST,
+            Direction::NORTH,
+            Direction::SOUTH,
+            Direction::WEST,
+        ];
+    }
+
+    public function getFacing(): Direction
+    {
+        return $this->facing;
+    }
+
+    public function setFacing(Direction $direction): void
+    {
+        $this->facing = $direction;
     }
 
     public function isOccupied(): bool

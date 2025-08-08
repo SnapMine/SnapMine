@@ -13,4 +13,6 @@ interface Directional extends BlockData
     public function getFaces(): array;
 
     public function getFacing(): Direction;
+
+    public function setFacing(Direction $direction): void;
 }
