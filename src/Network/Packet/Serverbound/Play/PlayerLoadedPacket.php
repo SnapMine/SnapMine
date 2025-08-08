@@ -3,9 +3,6 @@
 namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
 
 use Nirbose\PhpMcServ\Artisan;
-use Nirbose\PhpMcServ\Component\TextComponent;
-use Nirbose\PhpMcServ\Entity\EntityType;
-use Nirbose\PhpMcServ\Entity\Sheep;
 use Nirbose\PhpMcServ\Event\EventManager;
 use Nirbose\PhpMcServ\Event\Player\PlayerJoinEvent;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\AddEntityPacket;
@@ -13,7 +10,6 @@ use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\PlayerInfoUpdatePacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
-use Nirbose\PhpMcServ\World\Location;
 
 class PlayerLoadedPacket extends ServerboundPacket {
     public function getId() : int {
