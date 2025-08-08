@@ -3,11 +3,12 @@
 namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
 
 use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 use Nirbose\PhpMcServ\World\Position;
 
-class PlayerActionPacket extends Packet {
+class PlayerActionPacket extends ServerboundPacket {
     private int $status;
     private Position $position;
     private int $face;
@@ -22,12 +23,12 @@ class PlayerActionPacket extends Packet {
     {
     }
 
-    public function read(PacketSerializer $serializer, string $buffer, int &$offset): void
+    public function read(PacketSerializer $serializer): void
     {
-        $this->status = $serializer->getVarInt($buffer, $offset);
-        $this->position = $serializer->getPosition($buffer, $offset);
-        $this->face = $serializer->getByte($buffer, $offset);
-        $this->sequence = $serializer->getVarInt($buffer, $offset);
+        $this->status = $serializer->getVarInt();
+        $this->position = $serializer->getPosition();
+        $this->face = $serializer->getByte();
+        $this->sequence = $serializer->getVarInt();
     }
 
     public function handle(Session $session): void

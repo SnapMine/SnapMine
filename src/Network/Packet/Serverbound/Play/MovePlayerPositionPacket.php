@@ -4,10 +4,11 @@ namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
 
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\MoveEntityPosPacket;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 
-class MovePlayerPositionPacket extends Packet
+class MovePlayerPositionPacket extends ServerboundPacket
 {
     private float $x;
     private float $feetY;
@@ -19,17 +20,12 @@ class MovePlayerPositionPacket extends Packet
         return 0x1C;
     }
 
-    public function read(PacketSerializer $serializer, string $buffer, int &$offset): void
+    public function read(PacketSerializer $serializer): void
     {
-        $this->x = $serializer->getDouble($buffer, $offset);
-        $this->feetY = $serializer->getDouble($buffer, $offset);
-        $this->z = $serializer->getDouble($buffer, $offset);
-        $this->flags = $serializer->getByte($buffer, $offset);
-    }
-
-    public function write(PacketSerializer $serializer): void
-    {
-        throw new \Exception("MovePlayerPositionPacket cannot be sent");
+        $this->x = $serializer->getDouble();
+        $this->feetY = $serializer->getDouble();
+        $this->z = $serializer->getDouble();
+        $this->flags = $serializer->getByte();
     }
 
     public function handle(Session $session): void

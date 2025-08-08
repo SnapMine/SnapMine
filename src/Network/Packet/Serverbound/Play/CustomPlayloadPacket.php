@@ -3,10 +3,11 @@
 namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
 
 use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 
-class CustomPlayloadPacket extends Packet {
+class CustomPlayloadPacket extends ServerboundPacket {
     private string $channel;
     private string $data;
 
@@ -15,17 +16,7 @@ class CustomPlayloadPacket extends Packet {
         return 0x14;
     }
 
-    public function read(PacketSerializer $serializer, string $buffer, int &$offset): void
-    {
-        
-    }
-
-    public function write(PacketSerializer $serializer): void
-    {
-        
-    }
-
-    public function handle(Session $session): void
+    public function read(PacketSerializer $serializer): void
     {
         
     }

@@ -3,17 +3,15 @@
 namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Play;
 
 use Nirbose\PhpMcServ\Entity\Player;
-use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Session\Session;
 
-class JoinGamePacket extends Packet
+class JoinGamePacket extends ClientboundPacket
 {
     public function __construct(
         private readonly Player $player
     )
     {
-
     }
 
     public function getId(): int
@@ -21,76 +19,29 @@ class JoinGamePacket extends Packet
         return 0x2B;
     }
 
-    public function read(PacketSerializer $serializer, string $buffer, int &$offset): void
-    {
-        throw new \Exception("JoinGamePacket ne peut pas être reçu");
-    }
-
     public function write(PacketSerializer $serializer): void
     {
-        // Entity ID
-        $serializer->putInt($this->player->getId());
+        $serializer->putInt($this->player->getId()) // Entity ID
+            ->putBool(false) // Hardcore
+            ->putVarInt(1) // Dimension Names (Prefixed Array of Identifier)
+            ->putString("minecraft:overworld")
 
-        // Is Hardcore
-        $serializer->putBool(false);
-
-        // Dimension Names (Prefixed Array of Identifier) - NOUVEAU FORMAT
-        $serializer->putVarInt(1);
-        $serializer->putString("minecraft:overworld");
-
-        // Max Players
-        $serializer->putVarInt(100);
-
-        // View Distance
-        $serializer->putVarInt(50);
-
-        // Simulation Distance
-        $serializer->putVarInt(50);
-
-        // Reduced Debug Info
-        $serializer->putBool(false);
-
-        // Enable Respawn Screen
-        $serializer->putBool(true);
-
-        // Do Limited Crafting
-        $serializer->putBool(false);
-
-        $serializer->putVarInt(0); // ID de minecraft:overworld dans le registre
-
-        // Dimension Name
-        $serializer->putString('minecraft:overworld');
-
-        // Hashed Seed
-        $serializer->putLong(234345456);
-
-        // Game Mode
-        $serializer->putUnsignedByte($this->player->getGameMode()->value); // Survival
-
-        // Previous Game Mode
-        $serializer->putByte($this->player->getPreviousGameMode()?->value ?? -1); // Undefined
-
-        // Is Debug
-        $serializer->putBool(false);
-
-        // Is Flat
-        $serializer->putBool(false);
-
-        // Has Death Location
-        $serializer->putBool(false);
-
-        // Portal Cooldown
-        $serializer->putVarInt(0);
-
-        // Sea Level
-        $serializer->putVarInt(63);
-
-        // Enforces Secure Chat
-        $serializer->putBool(false);
-    }
-
-    public function handle(Session $session): void
-    {
-        // Traitement après envoi du packet
+            ->putVarInt($this->player->getServer()->getMaxPlayer()) // Max player
+            ->putVarInt(50) // View distance
+            ->putVarInt(50) // Simulation Distance
+            ->putBool(false) // Reduced Debug Info
+            ->putBool(true) // Enable Respawn Screen
+            ->putBool(false) // Do Limit Crafting
+            ->putVarInt(0) // ID of minecraft:overworld
+            ->putString('minecraft:overworld') // Dimension Name
+            ->putLong(234345456) // Hashed Seed
+            ->putUnsignedByte($this->player->getGameMode()->value) // Game Mode
+            ->putByte($this->player->getPreviousGameMode()?->value ?? -1) // Previous Game Mode (-1 undefined)
+            ->putBool(false) // Is Debug
+            ->putBool(false) // Is Flat
+            ->putBool(false) // Has Death Location
+            ->putVarInt(0) // Portal Cooldown
+            ->putVarInt(63) // Sea Level
+            ->putBool(false); // Enforces Secure Chat
     }
 }

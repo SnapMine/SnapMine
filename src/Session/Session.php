@@ -2,11 +2,11 @@
 
 namespace Nirbose\PhpMcServ\Session;
 
+use Exception;
 use Nirbose\PhpMcServ\Entity\GameProfile;
 use Nirbose\PhpMcServ\Entity\Player;
-use Nirbose\PhpMcServ\Event\EventManager;
-use Nirbose\PhpMcServ\Event\Player\PlayerJoinEvent;
-use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
+use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Protocol;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Network\ServerState;
@@ -17,12 +17,13 @@ use Socket;
 
 class Session
 {
-    public string $uuid;
+    public UUID $uuid;
     public string $username;
     public ServerState $state;
-    public string $buffer = '';
     public int $lastKeepAliveId = 0;
     private ?Player $player = null;
+
+    public PacketSerializer $serializer;
 
     public function __construct(
         private readonly Server $server,
@@ -30,71 +31,69 @@ class Session
     )
     {
         $this->state = ServerState::HANDSHAKE;
+
+        $this->serializer = new PacketSerializer("");
     }
 
-    public function sendPacket(Packet $packet): void
+    public function sendPacket(ClientboundPacket $packet): void
     {
-        $serializer = new PacketSerializer();
+        $serializer = new PacketSerializer("", 0);
 
         $serializer->putVarInt($packet->getId());
         $packet->write($serializer);
 
-        $data = $serializer->get();
-
-        $serializer = new PacketSerializer();
-
-        $serializer->putVarInt(strlen($data));
-        $length = $serializer->get();
-
         // echo "Sending packet ID: " . dechex($packet->getId()) . " (len: " . bin2hex($length) . ") with data: " . bin2hex($length . $data) . "\n";
 
-        socket_write($this->socket, $length . $data);
+        socket_write($this->socket, $serializer->getLengthPrefixedData());
     }
 
     public function close(): void
     {
-        socket_close($this->socket);
+        $this->server->closeSession($this, $this->socket);
     }
 
     public function handle(): void
     {
-        $offset = 0;
-
         try {
-            while (strlen($this->buffer) > $offset) {
-                $lengthSerializer = new PacketSerializer();
-                $packetLength = $lengthSerializer->getVarInt($this->buffer, $offset);
+            while (strlen($this->serializer->get()) > $this->serializer->getOffset()) {
+                $initialOffset = $this->serializer->getOffset();
 
-                if (strlen($this->buffer) < $offset + $packetLength) {
-                    // On attend encore le reste du paquet
+                if (strlen($this->serializer->get()) - $initialOffset < 1) {
                     break;
                 }
 
-                // Extraire juste les bytes du paquet
-                $packetData = substr($this->buffer, $offset, $packetLength);
-                $offset += $packetLength;
+                $packetLength = $this->serializer->getVarInt();
 
-                $packetSerializer = new PacketSerializer();
-                $packetOffset = 0;
+                if (strlen($this->serializer->get()) < $this->serializer->getOffset() + $packetLength) {
+                    // Waiting for the rest of the packet
+                    $this->serializer->setOffset($initialOffset);
+                    break;
+                }
 
-                $packetId = $packetSerializer->getVarInt($packetData, $packetOffset);
+                $packetData = $this->serializer->getNBytes($packetLength);
+                $packetSerializer = new PacketSerializer($packetData);
+
+                $packetId = $packetSerializer->getVarInt();
 
                 $packetMap = Protocol::PACKETS[$this->state->value] ?? [];
                 $packetClass = $packetMap[$packetId] ?? null;
 
                 if ($packetClass === null) {
-                    throw new \Exception("Paquet inconnu ID=$packetId dans l'état {$this->state->name} avec le buffer: " . bin2hex($packetData));
+                    // Handle unknown packet gracefully
+                    echo "Paquet inconnu ID=$packetId dans l'état {$this->state->name}. Déconnexion du client.\n";
+                    $this->close();
+                    return;
                 }
 
-                /** @var Packet $packet */
+                /** @var ServerboundPacket $packet */
                 $packet = new $packetClass();
-                $packet->read($packetSerializer, $packetData, $packetOffset);
+                $packet->read($packetSerializer);
                 $packet->handle($this);
+                $this->serializer->clear();
             }
 
-            // Conserver les données restantes
-            $this->buffer = substr($this->buffer, $offset);
-        } catch (\Exception $e) {
+            $this->serializer->clear();
+        } catch (Exception $e) {
             echo "Erreur: " . $e->getMessage() . "\n";
             echo $e->getTraceAsString();
             $this->close();
@@ -121,10 +120,14 @@ class Session
     /**
      * Create new player
      *
-     * @return Player
+     * @return ?Player
      */
-    private function createPlayer(): Player
+    private function createPlayer(): ?Player
     {
+        if (empty($this->username) || empty($this->uuid)) {
+            return null;
+        }
+
         return new Player(
             $this,
             new GameProfile($this->username, UUID::fromString($this->uuid)),
@@ -138,9 +141,9 @@ class Session
     }
 
     /**
-     * @return Player
+     * @return ?Player
      */
-    public function getPlayer(): Player
+    public function getPlayer(): ?Player
     {
         if ($this->player === null) {
             $this->player = $this->createPlayer();
