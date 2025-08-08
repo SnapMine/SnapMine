@@ -3,11 +3,10 @@
 namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Play;
 
 use Nirbose\PhpMcServ\Entity\Entity;
-use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Session\Session;
 
-class RotateHeadPacket extends Packet
+class RotateHeadPacket extends ClientboundPacket
 {
     public function __construct(
         private readonly Entity $entity,
@@ -21,15 +20,7 @@ class RotateHeadPacket extends Packet
 
     public function write(PacketSerializer $serializer): void
     {
-        $serializer->putVarInt($this->entity->getId());
-        $serializer->putAngle($this->entity->getLocation()->getYaw());
-    }
-
-    public function read(PacketSerializer $serializer, string $buffer, int &$offset): void
-    {
-    }
-
-    public function handle(Session $session): void
-    {
+        $serializer->putVarInt($this->entity->getId())
+            ->putAngle($this->entity->getLocation()->getYaw());
     }
 }

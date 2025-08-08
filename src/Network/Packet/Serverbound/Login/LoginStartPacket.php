@@ -3,37 +3,33 @@
 namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Login;
 
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Login\LoginSuccessPacket;
-use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 use Nirbose\PhpMcServ\Utils\UUID;
 
-class LoginStartPacket extends Packet
+class LoginStartPacket extends ServerboundPacket
 {
     private string $username;
-    private UUID $uuid;
 
     public function getId(): int
     {
         return 0x00;
     }
 
-    public function write(PacketSerializer $serializer): void
+    /**
+     * @throws \Exception
+     */
+    public function read(PacketSerializer $serializer): void
     {
-        // Not implemented
-    }
-
-    public function read(PacketSerializer $serializer, string $buffer, int &$offset): void
-    {
-        $this->username = $serializer->getString($buffer, $offset);
-        $this->uuid = UUID::generateOffline($this->username);
+        $this->username = $serializer->getString();
     }
 
     public function handle(Session $session): void
     {
         $session->username = $this->username;
-        $session->uuid = $this->uuid;
+        $session->uuid = UUID::generateOffline($this->username);
 
-        $session->sendPacket(new LoginSuccessPacket($this->username, $this->uuid));
+        $session->sendPacket(new LoginSuccessPacket($this->username, $session->uuid));
     }
 }

@@ -3,17 +3,16 @@
 namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Play;
 
 use Nirbose\PhpMcServ\Artisan;
-use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Session\Session;
 use Nirbose\PhpMcServ\World\Chunk\HeightmapType;
 use Nirbose\PhpMcServ\World\Palette;
 
-class ChunkDataAndUpdateLightPacket extends Packet
+class ChunkDataAndUpdateLightPacket extends ClientboundPacket
 {
     public function __construct(
-        private int $chunkX,
-        private int $chunkZ
+        private readonly int $chunkX,
+        private readonly int $chunkZ
     ) {  
     }
 
@@ -22,25 +21,25 @@ class ChunkDataAndUpdateLightPacket extends Packet
         return 0x27;
     }
 
-    public function write(PacketSerializer $s): void
+    public function write(PacketSerializer $serializer): void
     {
-        $s->putInt($this->chunkX); // Chunk X
-        $s->putInt($this->chunkZ); // Chunk Z
+        $serializer->putInt($this->chunkX) // Chunk X
+            ->putInt($this->chunkZ); // Chunk Z
 
         $chunk = Artisan::getRegion()->getChunk($this->chunkX, $this->chunkZ);
         $heightmaps = $chunk->getHeightmaps();
-        $s->putVarInt(count($heightmaps)); // Nombre de heightmaps
+        $serializer->putVarInt(count($heightmaps)); // Nombre de heightmaps
 
         foreach ($heightmaps as $key => $longArray) {
-            $s->putVarInt(HeightmapType::of($key)->value);
-            $s->putVarInt(count($longArray));
+            $serializer->putVarInt(HeightmapType::of($key)->value)
+                ->putVarInt(count($longArray));
 
             foreach ($longArray as $longValue) {
-                $s->putLong($longValue);
+                $serializer->putLong($longValue);
             }
         }
 
-        $dataBuf = new PacketSerializer();
+        $dataBuf = new PacketSerializer('');
         $sections = $chunk->getSections();
 
         foreach ($sections as $key => $section) {
@@ -48,13 +47,11 @@ class ChunkDataAndUpdateLightPacket extends Packet
             $palette = $section['palette'];
 
             if ($palette->getBlockCount() == 0) {
-                $dataBuf->putShort(0);
-
-                $dataBuf->putByte(0);
-                $dataBuf->putVarInt(0);
-
-                $dataBuf->putByte(0);
-                $dataBuf->putVarInt(0);
+                $dataBuf->putShort(0)
+                    ->putByte(0)
+                    ->putVarInt(0)
+                    ->putByte(0)
+                    ->putVarInt(0);
 
                 continue;
             }
@@ -66,10 +63,8 @@ class ChunkDataAndUpdateLightPacket extends Packet
             $paletteSize = count($palette->getBlocks());
             $bitsPerBlock = max(4, (int)ceil(log($paletteSize, 2)));
 
-            $dataBuf->putByte($bitsPerBlock);
-            $dataBuf->putVarInt($paletteSize);
-
-//            var_dump($this->chunkX, $this->chunkZ, $palette->getBlocks());
+            $dataBuf->putByte($bitsPerBlock)
+                ->putVarInt($paletteSize);
 
             foreach ($palette->getBlocks() as $block) {
                 $dataBuf->putVarInt($block);
@@ -80,23 +75,19 @@ class ChunkDataAndUpdateLightPacket extends Packet
             }
 
             // Biomes
-            $dataBuf->putByte(0);
-            $dataBuf->putVarInt(0);
+            $dataBuf->putByte(0)
+                ->putVarInt(0);
         }
 
-        $s->putVarInt(strlen($dataBuf->get()));
-        $s->put($dataBuf->get());
+        $serializer->putVarInt(strlen($dataBuf->get()))
+            ->put($dataBuf->get());
 
-        $s->putVarInt(0);
-
-        $s->putVarInt(0);
-        $s->putVarInt(0);
-        $s->putVarInt(0);
-        $s->putVarInt(0);
-        $s->putVarInt(0);
-        $s->putVarInt(0);
+        $serializer->putVarInt(0)
+            ->putVarInt(0)
+            ->putVarInt(0)
+            ->putVarInt(0)
+            ->putVarInt(0)
+            ->putVarInt(0)
+            ->putVarInt(0);
     }
-
-    public function read(PacketSerializer $serializer, string $buffer, int &$offset): void {}
-    public function handle(Session $session): void {}
 }

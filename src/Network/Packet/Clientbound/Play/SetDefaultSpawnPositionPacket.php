@@ -2,11 +2,11 @@
 
 namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Play;
 
-use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Session\Session;
 
-class SetDefaultSpawnPositionPacket extends Packet {
+class SetDefaultSpawnPositionPacket extends ClientboundPacket
+{
     public function getId(): int
     {
         return 0x5A;
@@ -14,15 +14,8 @@ class SetDefaultSpawnPositionPacket extends Packet {
 
     public function write(PacketSerializer $serializer): void
     {
-        $serializer->putPosition(0, 64, 0);
-        $serializer->putFloat(0.0);
+        $serializer->putPosition(0, 64, 0)
+            ->putFloat(0.0);
     }
 
-    public function read(PacketSerializer $serializer, string $buffer, int &$offset): void
-    {
-    }
-
-    public function handle(Session $session): void
-    {
-    }
 }

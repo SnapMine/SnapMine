@@ -2,12 +2,10 @@
 
 namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Play;
 
-use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Session\Session;
-use Nirbose\PhpMcServ\Utils\UUID;
 
-class PlayerInfoUpdatePacket extends Packet
+class PlayerInfoUpdatePacket extends ClientboundPacket
 {
     public const ADD_PLAYER = 0x01;
     public const INITIALIZE_CHAT = 0x02;
@@ -23,7 +21,7 @@ class PlayerInfoUpdatePacket extends Packet
      * @param array<string, array<int, array<string, mixed>>> $players
      */
     public function __construct(
-        private readonly int $actionMask,
+        private readonly int   $actionMask,
         private readonly array $players
     )
     {
@@ -36,8 +34,8 @@ class PlayerInfoUpdatePacket extends Packet
 
     public function write(PacketSerializer $serializer): void
     {
-        $serializer->putVarInt($this->actionMask);
-        $serializer->putVarInt(count($this->players));
+        $serializer->putVarInt($this->actionMask)
+            ->putVarInt(count($this->players));
 
         foreach ($this->players as $uuid => $actions) {
             $i = 0;
@@ -48,10 +46,10 @@ class PlayerInfoUpdatePacket extends Packet
                 $serializer->putString($property['name']);
 
                 // Default test values
-                $serializer->putVarInt(1); // 1 property
-                $serializer->putString("textures");
-                $serializer->putString("skin-value");
-                $serializer->putBool(false);
+                $serializer->putVarInt(1)
+                    ->putString("textures")
+                    ->putString("skin-value")
+                    ->putBool(false);
 
                 $i++;
             }
@@ -68,15 +66,5 @@ class PlayerInfoUpdatePacket extends Packet
                 $i++;
             }
         }
-    }
-
-    public function read(PacketSerializer $serializer, string $buffer, int &$offset): void
-    {
-        // TODO: Implement read() method.
-    }
-
-    public function handle(Session $session): void
-    {
-        // TODO: Implement handle() method.
     }
 }

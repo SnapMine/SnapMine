@@ -4,10 +4,11 @@ namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
 
 use Nirbose\PhpMcServ\Inventory\ItemStack;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 
-class SetCreativeModeSlotPacket extends Packet
+class SetCreativeModeSlotPacket extends ServerboundPacket
 {
     private int $slot;
     private ItemStack $itemStack;
@@ -17,22 +18,15 @@ class SetCreativeModeSlotPacket extends Packet
         return 0x36;
     }
 
-    public function write(PacketSerializer $serializer): void
+
+    /**
+     * @throws \Exception
+     */
+    public function read(PacketSerializer $serializer): void
     {
-        // TODO: Implement write() method.
+        $this->slot = $serializer->getShort();
+
+        $this->itemStack = ItemStack::decode($serializer);
     }
 
-    public function read(PacketSerializer $serializer, string $buffer, int &$offset): void
-    {
-        $this->slot = $serializer->getShort($buffer, $offset);
-
-        $buffer = substr($buffer, $offset);
-
-        $this->itemStack = ItemStack::decode($buffer);
-    }
-
-    public function handle(Session $session): void
-    {
-        // TODO: Implement handle() method.
-    }
 }
