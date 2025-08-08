@@ -3,6 +3,8 @@
 namespace Nirbose\PhpMcServ\Entity;
 
 use Nirbose\PhpMcServ\Component\TextComponent;
+use Nirbose\PhpMcServ\Entity\Metadata\Metadata;
+use Nirbose\PhpMcServ\Entity\Metadata\MetadataType;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\SetEntityDataPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Server;
@@ -21,6 +23,8 @@ abstract class Entity
     private bool $silent = false;
     private bool $gravity = false;
     private Pose $pose = Pose::STANDING;
+
+    use Metadata;
 
     public function __construct(
         protected Server   $server,
@@ -124,6 +128,8 @@ abstract class Entity
         } else {
             $this->state &= ~$bit;
         }
+
+        $this->setMetadata(0, MetadataType::BYTE, $this->state);
     }
 
     /**
@@ -140,15 +146,20 @@ abstract class Entity
     public function setAirTicks(int $airTicks): void
     {
         $this->airTicks = $airTicks;
+
+        $this->setMetadata(1, MetadataType::VAR_INT, $this->airTicks);
     }
 
-    public function setCustomName(TextComponent|string $customName): void
+    public function setCustomName(TextComponent|string $customName, bool $visible = true): void
     {
         if (is_string($customName)) {
             $customName = TextComponent::text($customName);
         }
 
         $this->customName = $customName;
+
+        $this->setMetadata(2, MetadataType::OPTIONAL_TEXT_COMPONENT, $this->customName);
+        $this->setCustomNameVisible($visible);
     }
 
     public function getCustomName(): ?TextComponent
@@ -164,6 +175,8 @@ abstract class Entity
     public function setCustomNameVisible(bool $visible): void
     {
         $this->customNameVisible = $visible;
+
+        $this->setMetadata(3, MetadataType::BOOLEAN, $this->customNameVisible);
     }
 
     public function isSilent(): bool
@@ -174,6 +187,8 @@ abstract class Entity
     public function setSilent(bool $silent): void
     {
         $this->silent = $silent;
+
+        $this->setMetadata(4, MetadataType::BOOLEAN, $this->silent);
     }
 
     public function hasGravity(): bool
@@ -184,6 +199,8 @@ abstract class Entity
     public function setGravity(bool $gravity): void
     {
         $this->gravity = $gravity;
+
+        $this->setMetadata(5, MetadataType::BOOLEAN, !$this->gravity);
     }
 
     public function getPose(): Pose
@@ -194,53 +211,8 @@ abstract class Entity
     public function setPose(Pose $pose): void
     {
         $this->pose = $pose;
-    }
 
-    protected function getMetadataPacket(): PacketSerializer
-    {
-        // State flags
-        $this->buffer->putUnsignedByte(0);
-        $this->buffer->putVarInt(0);
-        $this->buffer->putByte($this->state);
-
-        // Air ticks
-        $this->buffer->putUnsignedByte(1);
-        $this->buffer->putVarInt(1);
-        $this->buffer->putVarInt($this->airTicks);
-
-        // Custom name
-        $this->buffer->putUnsignedByte(2);
-        $this->buffer->putVarInt(6);
-        if (is_null($this->customName)) {
-            $this->buffer->putBool(false);
-        } else {
-            $this->buffer->putBool(true);
-            $this->buffer->putNBT($this->customName->toNBT());
-        }
-
-        // Custom name visible
-        $this->buffer->putUnsignedByte(3);
-        $this->buffer->putVarInt(8);
-        $this->buffer->putBool($this->customNameVisible);
-
-        // Silent
-        $this->buffer->putUnsignedByte(4);
-        $this->buffer->putVarInt(8);
-        $this->buffer->putBool($this->silent);
-
-        // Gravity
-        $this->buffer->putUnsignedByte(5);
-        $this->buffer->putVarInt(8);
-        $this->buffer->putBool($this->gravity);
-
-        // Pose
-        $this->buffer->putUnsignedByte(6);
-        $this->buffer->putVarInt(21);
-        $this->buffer->putVarInt($this->pose->value);
-
-        // Ticks frozen in powder snow
-
-        return $this->buffer;
+        $this->setMetadata(6, MetadataType::POSE, $this->pose);
     }
 
     /**
@@ -253,7 +225,7 @@ abstract class Entity
 
     public function update(): void
     {
-        $this->server->broadcastPacket(new SetEntityDataPacket($this->getId(), $this->getMetadataPacket()));
+        $this->server->broadcastPacket(new SetEntityDataPacket($this));
     }
 
     /**
