@@ -16,9 +16,6 @@ class PlayerLoadedPacket extends ServerboundPacket {
         return 0x2A;
     }
 
-    public function write(PacketSerializer $serializer): void {
-    }
-
     public function read(PacketSerializer $serializer): void {
     }
 
