@@ -5,10 +5,11 @@ namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\MoveEntityRotPacket;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\RotateHeadPacket;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 
-class MovePlayerRotationPacket extends Packet {
+class MovePlayerRotationPacket extends ServerboundPacket {
     private float $yaw;
     private float $pitch;
 
@@ -17,14 +18,10 @@ class MovePlayerRotationPacket extends Packet {
         return 0x1E;
     }
 
-    public function write(PacketSerializer $serializer): void
+    public function read(PacketSerializer $serializer): void
     {
-    }
-
-    public function read(PacketSerializer $serializer, string $buffer, int &$offset): void
-    {
-        $this->yaw = $serializer->getFloat($buffer, $offset);
-        $this->pitch = $serializer->getFloat($buffer, $offset);
+        $this->yaw = $serializer->getFloat();
+        $this->pitch = $serializer->getFloat();
     }
 
     public function handle(Session $session): void

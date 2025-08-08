@@ -3,10 +3,11 @@
 namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
 
 use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 
-class PlayerCommandPacket extends Packet {
+class PlayerCommandPacket extends ServerboundPacket {
     private int $entityId;
     private int $actionId;
     private int $jumpBoost;
@@ -16,17 +17,16 @@ class PlayerCommandPacket extends Packet {
         return 0x28;
     }
 
-    public function read(PacketSerializer $serializer, string $buffer, int &$offset): void
+    /**
+     * @throws \Exception
+     */
+    public function read(PacketSerializer $serializer): void
     {
-        $this->entityId = $serializer->getVarInt($buffer, $offset);
-        $this->actionId = $serializer->getVarInt($buffer, $offset);
-        $this->jumpBoost = $serializer->getVarInt($buffer, $offset);
+        $this->entityId = $serializer->getVarInt();
+        $this->actionId = $serializer->getVarInt();
+        $this->jumpBoost = $serializer->getVarInt();
     }
 
-    public function write(PacketSerializer $serializer): void
-    {
-        
-    }
 
     public function handle(Session $session): void
     {

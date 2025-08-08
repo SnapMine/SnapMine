@@ -3,27 +3,20 @@
 namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
 
 use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 
-class KeepAlivePacket extends Packet {
+class KeepAlivePacket extends ServerboundPacket {
     private int $keepAliveId;
 
     public function getId(): int {
         return 0x1A;
     }
 
-    public function read(PacketSerializer $serializer, string $buffer, int &$offset): void
+    public function read(PacketSerializer $serializer): void
     {
-        $this->keepAliveId = $serializer->getLong($buffer, $offset);
+        $this->keepAliveId = $serializer->getLong();
     }
 
-    public function write(PacketSerializer $serializer): void
-    {
-    }
-
-    public function handle(Session $session): void
-    {
-        
-    }
 }

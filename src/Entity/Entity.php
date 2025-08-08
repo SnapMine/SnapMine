@@ -29,7 +29,7 @@ abstract class Entity
     {
         $this->internalId = $this->server->incrementAndGetId();
         $this->uuid = UUID::generate();
-        $this->buffer = new PacketSerializer();
+        $this->buffer = new PacketSerializer("");
     }
 
     /**

@@ -3,26 +3,20 @@
 namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Status;
 
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Status\StatusResponsePacket;
-use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Protocol;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 
-class StatusRequestPacket extends Packet
+class StatusRequestPacket extends ServerboundPacket
 {
     public function getId(): int
     {
         return 0x00;
     }
 
-    public function read(PacketSerializer $serializer, string $buffer, int &$offset): void
+    public function read(PacketSerializer $serializer): void
     {
-        // No data to read for StatusRequestPacket
-    }
-
-    public function write(PacketSerializer $serializer): void
-    {
-        // No data to write for StatusRequestPacket
     }
 
     public function handle(Session $session): void

@@ -7,11 +7,11 @@ use Nirbose\PhpMcServ\Event\EventManager;
 use Nirbose\PhpMcServ\Event\Player\PlayerJoinEvent;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\AddEntityPacket;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\PlayerInfoUpdatePacket;
-use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 
-class PlayerLoadedPacket extends Packet {
+class PlayerLoadedPacket extends ServerboundPacket {
     public function getId() : int {
         return 0x2A;
     }
@@ -19,7 +19,7 @@ class PlayerLoadedPacket extends Packet {
     public function write(PacketSerializer $serializer): void {
     }
 
-    public function read(PacketSerializer $serializer, string $buffer, int &$offset): void {
+    public function read(PacketSerializer $serializer): void {
     }
 
     public function handle(Session $session): void

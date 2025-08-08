@@ -73,20 +73,21 @@ class ItemStack
         return $this->components[1];
     }
 
-    public static function decode(string $buffer): ItemStack
+    /**
+     * @throws \Exception
+     */
+    public static function decode(PacketSerializer $in): ItemStack
     {
-        $offset = 0;
-        $s = new PacketSerializer();
 
-        $amount = $s->getVarInt($buffer, $offset);
-        $id = $s->getVarInt($buffer, $offset);
+        $amount = $in->getVarInt();
+        $id = $in->getVarInt();
         $item = new self(Material::getMaterial($id), $amount);
 
-        $numberComponentsAdded = $s->getVarInt($buffer, $offset);
-        $numberComponentsRemoved = $s->getVarInt($buffer, $offset);
+        $numberComponentsAdded = $in->getVarInt();
+        $numberComponentsRemoved = $in->getVarInt();
 
         for ($i = 0; $i < $numberComponentsAdded; $i++) {
-            $index = $s->getVarInt($buffer, $offset);
+            $index = $in->getVarInt();
 
             $class = DataComponentType::cases()[$index]->handlerClass();
 
@@ -95,7 +96,7 @@ class ItemStack
             }
 
             if (enum_exists($class)) {
-                $s->getVarInt($buffer, $offset);
+                $in->getVarInt();
             } else {
                 // TODO: DECODE
             }
