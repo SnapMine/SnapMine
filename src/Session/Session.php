@@ -49,7 +49,7 @@ class Session
 
     public function close(): void
     {
-        socket_close($this->socket);
+        $this->server->closeSession($this, $this->socket);
     }
 
     public function handle(): void
@@ -111,10 +111,14 @@ class Session
     /**
      * Create new player
      *
-     * @return Player
+     * @return ?Player
      */
-    private function createPlayer(): Player
+    private function createPlayer(): ?Player
     {
+        if (empty($this->username) || empty($this->uuid)) {
+            return null;
+        }
+
         return new Player(
             $this,
             new GameProfile($this->username, UUID::fromString($this->uuid)),
@@ -128,9 +132,9 @@ class Session
     }
 
     /**
-     * @return Player
+     * @return ?Player
      */
-    public function getPlayer(): Player
+    public function getPlayer(): ?Player
     {
         if ($this->player === null) {
             $this->player = $this->createPlayer();

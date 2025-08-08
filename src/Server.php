@@ -30,6 +30,8 @@ use Nirbose\PhpMcServ\World\Region;
 use Nirbose\PhpMcServ\World\RegionLoader;
 use ReflectionClass;
 use ReflectionMethod;
+use Socket;
+use Throwable;
 
 class Server
 {
@@ -70,7 +72,12 @@ class Server
         while (true) {
             $keepAliveManager->tick($this);
             $read = array_merge([$socket1], $this->clients);
-            socket_select($read, $write, $except, null);
+
+            try {
+                socket_select($read, $write, $except, null);
+            } catch (Throwable) {
+                $read = array_merge([$socket1], $this->clients);
+            }
 
             foreach ($read as $socket) {
                 if ($socket === $socket1) {
@@ -83,14 +90,21 @@ class Server
                         echo "Nouveau client connecté.\n";
                     }
                 } else {
-                    $data = @socket_read($socket, 2048);
                     $id = spl_object_id($socket);
 
+                    if (!isset($this->sessions[$id])) {
+                        $key = array_search($socket, $this->clients, true);
+                        if ($key !== false) {
+                            unset($this->clients[$key]);
+                        }
+                        continue;
+                    }
+
+                    $data = @socket_read($socket, 2048);
+
                     if ($data === '' || $data === false) {
-                        unset($this->clients[array_search($socket, $this->clients, true)]);
                         $this->clients = array_values($this->clients);
                         $this->sessions[$id]->close();
-                        unset($this->sessions[$id]);
                         continue;
                     }
 
@@ -105,6 +119,26 @@ class Server
                     $session->handle();
                 }
             }
+        }
+    }
+
+    public function closeSession(Session $session, Socket $socket): void
+    {
+        try {
+            $id = spl_object_id($socket);
+
+            unset($this->clients[$id]);
+
+            if ($session->getPlayer() !== null) {
+                if (isset($this->players[$session->getPlayer()->getUuid()->toString()])) {
+                    unset($this->players[$session->getPlayer()->getUuid()->toString()]);
+                }
+            }
+
+            unset($this->sessions[$id]);
+
+            socket_close($socket);
+        } catch (Exception) {
         }
     }
 
@@ -135,7 +169,7 @@ class Server
      */
     public function addPlayer(Player $player): void
     {
-        $this->players[$this->incrementAndGetId()] = $player;
+        $this->players[$player->getUuid()->toString()] = $player;
     }
 
     /**
@@ -150,13 +184,7 @@ class Server
 
     public function getPlayerByUUID(string $uuid): ?Player
     {
-        foreach ($this->players as $player) {
-            if ($player->getUUID() === $uuid) {
-                return $player;
-            }
-        }
-
-        return null;
+        return $this->players[$uuid] ?? null;
     }
 
     /**
