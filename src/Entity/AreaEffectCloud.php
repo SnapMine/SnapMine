@@ -2,8 +2,8 @@
 
 namespace Nirbose\PhpMcServ\Entity;
 
+use Nirbose\PhpMcServ\Entity\Metadata\MetadataType;
 use Nirbose\PhpMcServ\Exception\UnimplementException;
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 
 class AreaEffectCloud extends Entity
 {
@@ -18,6 +18,8 @@ class AreaEffectCloud extends Entity
     public function setRadius(float $radius): void
     {
         $this->radius = $radius;
+
+        $this->setMetadata(8, MetadataType::FLOAT, $this->radius);
     }
 
     public function isIgnoreRadius(): bool
@@ -28,6 +30,8 @@ class AreaEffectCloud extends Entity
     public function setIgnoreRadius(bool $ignoreRadius): void
     {
         $this->ignoreRadius = $ignoreRadius;
+
+        $this->setMetadata(9, MetadataType::BOOLEAN, $this->ignoreRadius);
     }
 
     public function getParticle()
@@ -38,25 +42,6 @@ class AreaEffectCloud extends Entity
     public function setParticle()
     {
         throw new UnimplementException();
-    }
-
-    protected function getMetadataPacket(): PacketSerializer
-    {
-        $packet = parent::getMetadataPacket();
-
-        // Radius
-        $packet->putUnsignedByte(8);
-        $packet->putVarInt(3);
-        $packet->putFloat($this->radius);
-
-        // Ignore radius
-        $packet->putUnsignedByte(9);
-        $packet->putVarInt(8);
-        $packet->putFloat($this->radius);
-
-        // Particle
-
-        return $packet;
     }
 
     /**

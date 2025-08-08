@@ -386,13 +386,19 @@ class PacketSerializer
      * Encode une Position code sur 64 bits.
      * x (-33554432 to 33554431), z (-33554432 to 33554431), y (-2048 to 2047)
      * 
-     * @param integer $x
-     * @param integer $y
-     * @param integer $z
+     * @param integer|Position $x
+     * @param ?integer $y
+     * @param ?integer $z
      * @return PacketSerializer $this
      */
-    public function putPosition(int $x, int $y, int $z): PacketSerializer
+    public function putPosition(int|Position $x, ?int $y = 0, ?int $z = 0): PacketSerializer
     {
+        if ($x instanceof Position) {
+            $y = $x->getY();
+            $z = $x->getZ();
+            $x = $x->getX();
+        }
+
         $this->putLong(
             (($x & 0x3FFFFFF) << 38) | (($z & 0x3FFFFFF) << 12) | ($y & 0xFFF)
         );
