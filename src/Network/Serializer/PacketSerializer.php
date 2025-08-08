@@ -457,10 +457,19 @@ class PacketSerializer
      * @param string $data Données binaires (ex: issues du writer NBT)
      * @return PacketSerializer $this
      */
-    public function putByteArray(string $data): PacketSerializer
+    public function putByteArray(string|array $data): PacketSerializer
     {
-        $this->putVarInt(strlen($data)); // Longueur d'abord
-        $this->put($data); // Puis contenu binaire brut
+        if (is_string($data)) {
+            $this->putVarInt(strlen($data)); // Longueur d'abord
+            $this->put($data); // Puis contenu binaire brut
+
+        } else if (is_array($data)) {
+            $this->putVarInt(count($data));
+            foreach ($data as $item) {
+                $this->putByte($item);
+            }
+        }
+
         return $this;
     }
 

@@ -83,25 +83,50 @@ class ChunkDataAndUpdateLightPacket extends ClientboundPacket
         $serializer->putVarInt(strlen($dataBuf->get()))
             ->put($dataBuf->get());
 
-        $serializer->putVarInt(0);
+        $serializer->putVarInt(0); // Block entities
 
-        $skyLight = new BitSet(26);
-        for ($i = 0; $i < 26; $i++) {
-            $skyLight->set($i, true);
-        }
+        $skyLightMask = new BitSet(24);
+        $blockLightMask = new BitSet(24);
+        $emptySkyLightMask = new BitSet(24);
+        $emptyBlockLightMask = new BitSet(24);
+        $skyLightData = [];
+        $blockLightData = [];
 
-        $serializer->putBitSet($skyLight)
-            ->putVarInt(0)
-            ->putVarInt(0)
-            ->putVarInt(0)
-            ->putVarInt(26);
-        for ($i = 0; $i < 26; $i++) {
-            $serializer->putVarInt(2048);
-            for ($j = 0; $j < 2048; $j++) {
-                $serializer->putByte(0xff);
+        $sections = $chunk->getSections();
+        foreach ($sections as $y => $section) {
+            $hasSkyLight = !empty($section['skyLight']);
+            $hasBlockLight = !empty($section['blockLight']);
+
+            if ($hasSkyLight) {
+                $skyLightMask->set($y + 5, true);
+                $skyLightData[] = $section['skyLight'];
+            }
+            if ($hasBlockLight) {
+                $blockLightMask->set($y + 5, true);
+                $blockLightData[] = $section['blockLight'];
+            }
+
+            if (!$hasSkyLight) {
+                $emptySkyLightMask->set($y + 5, true);
+            }
+            if (!$hasBlockLight) {
+                $emptyBlockLightMask->set($y + 5, true);
             }
         }
 
-        $serializer->putVarInt(0);
+        $serializer->putBitSet($skyLightMask)
+            ->putBitSet($blockLightMask)
+            ->putBitSet($emptySkyLightMask)
+            ->putBitSet($emptyBlockLightMask)
+
+            ->putVarInt(count($skyLightData));
+        foreach ($skyLightData as $data) {
+            $serializer->putByteArray($data);
+        }
+
+        $serializer->putVarInt(count($blockLightData));
+        foreach ($blockLightData as $data) {
+            $serializer->putByteArray($data);
+        }
     }
 }
