@@ -2,6 +2,7 @@
 
 namespace Nirbose\PhpMcServ\Entity;
 
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Session\Session;
 use Nirbose\PhpMcServ\Utils\UUID;
@@ -65,10 +66,10 @@ class Player extends Entity
     /**
      * Send packet
      *
-     * @param Packet $packet
+     * @param ClientboundPacket $packet
      * @return void
      */
-    public function sendPacket(Packet $packet): void
+    public function sendPacket(ClientboundPacket $packet): void
     {
         $this->session->sendPacket($packet);
     }

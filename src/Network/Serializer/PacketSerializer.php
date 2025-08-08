@@ -44,6 +44,14 @@ class PacketSerializer
         return $this->offset;
     }
 
+    /**
+     * @param int $offset
+     */
+    public function setOffset(int $offset): void
+    {
+        $this->offset = $offset;
+    }
+
     private function varInt(int $value): string
     {
         $out = '';

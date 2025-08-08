@@ -114,7 +114,7 @@ class Server
                     $session = $this->sessions[$id];
                     $session->serializer->put($data);
 
-                     echo "Paquet brut reçu (hex) : " . bin2hex($data) . "\n";
+//                     echo "Paquet brut reçu (hex) : " . bin2hex($data) . "\n";
 
                     $session->handle();
                 }

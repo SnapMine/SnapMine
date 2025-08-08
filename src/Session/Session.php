@@ -56,33 +56,42 @@ class Session
     {
         try {
             while (strlen($this->serializer->get()) > $this->serializer->getOffset()) {
-                $packetLength = $this->serializer->getVarInt();
+                $initialOffset = $this->serializer->getOffset();
 
-                if (strlen($this->serializer->get()) < $this->serializer->getOffset() + $packetLength) {
-                    // On attend encore le reste du paquet
+                if (strlen($this->serializer->get()) - $initialOffset < 1) {
                     break;
                 }
 
-                $packetId = $this->serializer->getVarInt();
+                $packetLength = $this->serializer->getVarInt();
+
+                if (strlen($this->serializer->get()) < $this->serializer->getOffset() + $packetLength) {
+                    // Waiting for the rest of the packet
+                    $this->serializer->setOffset($initialOffset);
+                    break;
+                }
+
+                $packetData = $this->serializer->getNBytes($packetLength);
+                $packetSerializer = new PacketSerializer($packetData);
+
+                $packetId = $packetSerializer->getVarInt();
 
                 $packetMap = Protocol::PACKETS[$this->state->value] ?? [];
                 $packetClass = $packetMap[$packetId] ?? null;
 
-                echo "Paquet ID=" . bin2hex($packetId) . "\n" . "Packet CLASS=" . $packetClass . "\n";
-
                 if ($packetClass === null) {
-                    var_dump($this->serializer);
-                    throw new Exception("Paquet inconnu ID=$packetId dans l'état {$this->state->name} avec le buffer: " . bin2hex($this->serializer->get()));
+                    // Handle unknown packet gracefully
+                    echo "Paquet inconnu ID=$packetId dans l'état {$this->state->name}. Déconnexion du client.\n";
+                    $this->close();
+                    return;
                 }
 
                 /** @var ServerboundPacket $packet */
                 $packet = new $packetClass();
-                $packet->read($this->serializer);
-                $this->serializer->clear();
+                $packet->read($packetSerializer);
                 $packet->handle($this);
+                $this->serializer->clear();
             }
 
-            // Conserver les données restantes
             $this->serializer->clear();
         } catch (Exception $e) {
             echo "Erreur: " . $e->getMessage() . "\n";

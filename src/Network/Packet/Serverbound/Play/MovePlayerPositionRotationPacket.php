@@ -4,12 +4,11 @@ namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
 
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\MoveEntityPosRotPacket;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\RotateHeadPacket;
-use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 
-class MovePlayerPositionRotationPacket extends ServerboundPacketPacket
+class MovePlayerPositionRotationPacket extends ServerboundPacket
 {
 
     private float $x;
