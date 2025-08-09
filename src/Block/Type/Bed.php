@@ -1,13 +1,13 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Type\Bed;
+namespace Nirbose\PhpMcServ\Block\Type;
 
 use Nirbose\PhpMcServ\Block\BlockCoefficient;
 use Nirbose\PhpMcServ\Block\Data\Directional;
 use Nirbose\PhpMcServ\Block\Direction;
 use Nirbose\PhpMcServ\Material;
 
-abstract class Bed implements Directional
+class Bed implements Directional
 {
     const FOOT = 0;
     const HEAD = 1;
@@ -16,7 +16,7 @@ abstract class Bed implements Directional
     private int $part = Bed::FOOT;
     private Direction $facing = Direction::EAST;
 
-    protected function __construct(
+    public function __construct(
         private readonly Material $material
     )
     {
