@@ -5,6 +5,8 @@ namespace Nirbose\PhpMcServ\Block;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Block\Type\Bed\RedBed;
 use Nirbose\PhpMcServ\Block\Type\Composter;
+use Nirbose\PhpMcServ\Block\Type\GenericBlockData;
+use Nirbose\PhpMcServ\Material;
 
 enum BlockType
 {
@@ -19,7 +21,7 @@ enum BlockType
     public function getBlockDataClass(): string
     {
         return match ($this) {
-            self::STONE => BlockData::class,
+            self::STONE => GenericBlockData::class,
             self::COMPOSTER => Composter::class,
             self::RED_BED => RedBed::class,
         };
@@ -33,6 +35,8 @@ enum BlockType
             return null;
         }
 
-        return new $class();
+        $materialName = strtoupper($this->name);
+
+        return new $class(...[constant(Material::class . '::' . $materialName)]);
     }
 }
