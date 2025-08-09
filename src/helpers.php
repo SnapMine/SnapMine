@@ -6,7 +6,7 @@ use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 if (!function_exists('packet_dump')) {
     function packet_dump(Packet $packet): void
     {
-        $serializer = new PacketSerializer();
+        $serializer = new PacketSerializer('');
         $class = new ReflectionClass($packet);
 
         $packetName = $class->getShortName();
@@ -32,6 +32,4 @@ if(!function_exists("get_block_state_offset")) {
 
         return $offset;
     }
-
-
 }
