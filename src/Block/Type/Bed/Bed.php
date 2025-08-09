@@ -2,6 +2,7 @@
 
 namespace Nirbose\PhpMcServ\Block\Type\Bed;
 
+use Nirbose\PhpMcServ\Block\BlockCoefficient;
 use Nirbose\PhpMcServ\Block\Data\Directional;
 use Nirbose\PhpMcServ\Block\Direction;
 use Nirbose\PhpMcServ\Material;
@@ -13,13 +14,12 @@ abstract class Bed implements Directional
 
     private bool $occupied = false;
     private int $part = Bed::FOOT;
-    private Direction $facing;
+    private Direction $facing = Direction::EAST;
 
     protected function __construct(
         private readonly Material $material
     )
     {
-        $this->facing = $this->getFacing()[0];
     }
 
     public function getMaterial(): Material
@@ -30,10 +30,10 @@ abstract class Bed implements Directional
     public function getFaces(): array
     {
         return [
-            Direction::EAST,
             Direction::NORTH,
             Direction::SOUTH,
             Direction::WEST,
+            Direction::EAST,
         ];
     }
 
@@ -69,5 +69,14 @@ abstract class Bed implements Directional
         }
 
         $this->part = $part;
+    }
+
+    public function computedId(): int
+    {
+        return $this->material->getBlockId() + get_block_state_offset([
+                'facing' => array_search($this->facing, $this->getFaces()),
+                'occupied' => (int)!$this->occupied,
+                'part' => !$this->part,
+            ], BlockCoefficient::getCoefficient('minecraft:' . $this->material->name));
     }
 }

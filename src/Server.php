@@ -7,6 +7,7 @@ use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
+use Nirbose\PhpMcServ\Block\BlockCoefficient;
 use Nirbose\PhpMcServ\Entity\AreaEffectCloud;
 use Nirbose\PhpMcServ\Entity\DragonFireball;
 use Nirbose\PhpMcServ\Entity\EndCrystal;
@@ -52,6 +53,7 @@ class Server
     )
     {
         $this->eventManager = new EventManager();
+        BlockCoefficient::load(__DIR__ . '/../resources/blocks_states.json');
     }
 
     public function start(): void

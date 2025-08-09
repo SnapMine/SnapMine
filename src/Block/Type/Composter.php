@@ -16,7 +16,7 @@ class Composter implements Level
 
     public function computedId(): int
     {
-        return Material::CAULDRON->getBlockId() + get_block_state_offset([$this->level], [1]);
+        return Material::CAULDRON->getBlockId() + $this->level;
     }
 
     public function getMaximumLevel(): int

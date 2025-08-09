@@ -11,7 +11,7 @@ if (!function_exists('packet_dump')) {
 
         $packetName = $class->getShortName();
         $packetId = $packet->getId();
-        
+
         $packet->write($serializer);
 
         $packetData = bin2hex($packetId) . bin2hex($serializer->get());
@@ -21,12 +21,17 @@ if (!function_exists('packet_dump')) {
     }
 }
 
-if(!function_exists("get_block_state_offset")) {
+if (!function_exists("get_block_state_offset")) {
     function get_block_state_offset(array $property_values, array $property_coefficients): int
     {
         $offset = 0;
 
-        for($i = 0; $i < count($property_values); $i++) {
+        if (!array_is_list($property_values)) {
+            ksort($property_values, SORT_STRING);
+            $property_values = array_values($property_values);
+        }
+
+        for ($i = 0; $i < count($property_values); $i++) {
             $offset += $property_values[$i] * $property_coefficients[$i];
         }
 
