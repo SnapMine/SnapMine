@@ -53,7 +53,7 @@ class Server
     )
     {
         $this->eventManager = new EventManager();
-        BlockCoefficient::load(__DIR__ . '/../resources/blocks_states.json');
+        BlockCoefficient::load(__DIR__ . '/../resources/blocks_coefficients.json');
     }
 
     public function start(): void

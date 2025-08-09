@@ -6,14 +6,11 @@ class BlockCoefficient
 {
     private static array $blocks = [];
 
-    public static function load(string $filePath)
+    public static function load(string $filePath): void
     {
         $content = file_get_contents($filePath);
 
-        $blocks = json_decode($content, true);
-        foreach ($blocks as $key => $block) {
-            self::$blocks[$key] = $block['coef'];
-        }
+        self::$blocks = json_decode($content, true);
     }
 
     public static function getCoefficient(string $key): array

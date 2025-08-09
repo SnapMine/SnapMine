@@ -7,7 +7,7 @@ use Nirbose\PhpMcServ\Block\Type\Bed\Bed;
 use Nirbose\PhpMcServ\Block\Type\Bed\RedBed;
 
 it('Test createBlockData()', function () {
-    BlockCoefficient::load(__DIR__ . '/../../../resources/blocks_states.json');
+    BlockCoefficient::load(__DIR__ . '/../../../resources/blocks_coefficients.json');
 
     /** @var RedBed $bed */
     $bed = BlockType::RED_BED->createBlockData();
