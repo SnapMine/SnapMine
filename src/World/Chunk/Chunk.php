@@ -195,9 +195,9 @@ class Chunk
         return $this->heightmaps;
     }
 
-    public function dump(): void
+    public function dump(): array
     {
-        var_dump([
+        return [
             $this->x,
             $this->z,
             $this->sections,
@@ -205,6 +205,6 @@ class Chunk
             $this->skyLight,
             $this->blockEntities,
             $this->heightmaps,
-        ]);
+        ];
     }
 }

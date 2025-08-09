@@ -14,7 +14,8 @@ class ChunkDataAndUpdateLightPacket extends ClientboundPacket
     public function __construct(
         private readonly int $chunkX,
         private readonly int $chunkZ
-    ) {  
+    )
+    {
     }
 
     public function getId(): int
@@ -25,12 +26,12 @@ class ChunkDataAndUpdateLightPacket extends ClientboundPacket
     public function write(PacketSerializer $serializer): void
     {
         $serializer->putInt($this->chunkX) // Chunk X
-            ->putInt($this->chunkZ); // Chunk Z
+        ->putInt($this->chunkZ); // Chunk Z
 
         $chunk = Artisan::getRegion()->getChunk($this->chunkX, $this->chunkZ);
         $heightmaps = $chunk->getHeightmaps();
-        $serializer->putVarInt(count($heightmaps)); // Nombre de heightmaps
 
+        $serializer->putVarInt(count($heightmaps));
         foreach ($heightmaps as $key => $longArray) {
             $serializer->putVarInt(HeightmapType::of($key)->value)
                 ->putVarInt(count($longArray));
@@ -43,7 +44,20 @@ class ChunkDataAndUpdateLightPacket extends ClientboundPacket
         $dataBuf = new PacketSerializer('');
         $sections = $chunk->getSections();
 
-        foreach ($sections as $key => $section) {
+        for ($i = 0; $i < 24; $i++) {
+
+            if (!isset($sections[$i - 5])) {
+                $dataBuf->putShort(0)
+                    ->putByte(0)
+                    ->putVarInt(0)
+                    ->putByte(0)
+                    ->putVarInt(0);
+
+                continue;
+            }
+
+            $section = $sections[$i - 5];
+
             /** @var Palette $palette */
             $palette = $section['palette'];
 
@@ -118,7 +132,6 @@ class ChunkDataAndUpdateLightPacket extends ClientboundPacket
             ->putBitSet($blockLightMask)
             ->putBitSet($emptySkyLightMask)
             ->putBitSet($emptyBlockLightMask)
-
             ->putVarInt(count($skyLightData));
         foreach ($skyLightData as $data) {
             $serializer->putByteArray($data);
@@ -128,5 +141,7 @@ class ChunkDataAndUpdateLightPacket extends ClientboundPacket
         foreach ($blockLightData as $data) {
             $serializer->putByteArray($data);
         }
+
+        file_put_contents("chunk_{$this->chunkZ}_$this->chunkX.txt", print_r($chunk->dump(), true));
     }
 }
