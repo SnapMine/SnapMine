@@ -43,7 +43,7 @@ class ChunkParser
             if ($compression === 2) {
                 $reader = new ZLibCompressedStringReader($compressed, NbtFormat::JAVA_EDITION);
                 $nbt = Tag::load($reader);
-                $chunks[$chunkX][$chunkZ] = new Chunk($chunkX, $chunkZ, $nbt);
+                $chunks[$chunkX][$chunkZ] = (new Chunk($chunkX, $chunkZ))->loadFromNbt($nbt);
             }
         }
 

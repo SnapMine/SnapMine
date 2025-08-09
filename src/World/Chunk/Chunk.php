@@ -8,20 +8,135 @@ use Nirbose\PhpMcServ\World\Palette;
 
 class Chunk
 {
-    private array $heightmaps;
-    private Palette $palette;
-    private array $data = [];
+    private ?CompoundTag $nbt = null;
+    private array $heightmaps = [];
     private array $sections = [];
+    private array $blockEntities = [];
+    private array $blockLight = [];
+    private array $skyLight = [];
 
     public function __construct(
         private readonly int $x,
-        private readonly int $z,
-        private readonly CompoundTag $nbt
+        private readonly int $z
     ) {
-        $this->palette = new Palette();
+    }
 
+    public function loadFromNbt(CompoundTag $nbt): self
+    {
+        $this->nbt = $nbt;
         $this->loadHeightmaps();
-        $this->loadBlocksData();
+        $this->loadSections();
+        $this->loadBlockEntities();
+        return $this;
+    }
+
+    private function loadHeightmaps(): void
+    {
+        $heightmapsCompound = $this->nbt->getCompound("Heightmaps");
+
+        if (!$heightmapsCompound) {
+            return;
+        }
+
+        foreach ($heightmapsCompound as $key => $longArrayTag) {
+            if ($longArrayTag instanceof LongArrayTag) {
+                $heightmapData = [];
+                foreach ($longArrayTag as $long) {
+                    $heightmapData[] = $long;
+                }
+                $this->heightmaps[$key] = $heightmapData;
+            }
+        }
+    }
+
+    private function loadSections(): void
+    {
+        $sectionsTag = $this->nbt->getList("sections");
+        if (!$sectionsTag) return;
+
+        foreach ($sectionsTag as $section) {
+            $y = $section->getByte("Y")->getValue();
+            $palette = $this->loadPalette($section);
+            $data = $this->loadBlocksData($section);
+            $blockLight = $this->loadLightingData($section, "BlockLight");
+            $skyLight = $this->loadLightingData($section, "SkyLight");
+
+            $this->sections[$y] = [
+                'palette' => $palette,
+                'data' => $data,
+                'blockLight' => $blockLight,
+                'skyLight' => $skyLight,
+            ];
+        }
+    }
+
+    private function loadPalette(CompoundTag $section): Palette
+    {
+        $blockStates = $section->getCompound("block_states");
+        if (!$blockStates) {
+            return new Palette();
+        }
+
+        $paletteList = $blockStates->getList("palette");
+        if (!$paletteList) {
+            return new Palette();
+        }
+
+        $palette = new Palette();
+        $palette->addBlocks($paletteList);
+
+        return $palette;
+    }
+
+    private function loadBlocksData(CompoundTag $section): array
+    {
+        $blockStates = $section->getCompound("block_states");
+        if (!$blockStates) {
+            return [];
+        }
+
+        $data = $blockStates->getLongArray("data");
+        if (!$data) {
+            return [];
+        }
+
+        $blockData = [];
+        foreach ($data as $long) {
+            $blockData[] = $long;
+        }
+
+        return $blockData;
+    }
+
+    private function loadLightingData(CompoundTag $section, string $key): array
+    {
+        $lightingTag = $section->getByteArray($key);
+        if (!$lightingTag) return [];
+
+        $lightingData = [];
+        foreach ($lightingTag as $lighting) {
+            $lightingData[] = $lighting;
+        }
+
+        return $lightingData;
+    }
+
+    private function loadBlockEntities(): void
+    {
+        $blockEntitiesTag = $this->nbt->getList("block_entities");
+        if (!$blockEntitiesTag) return;
+
+        foreach ($blockEntitiesTag as $blockEntity) {
+            if ($blockEntity instanceof CompoundTag) {
+                $this->blockEntities[] = [
+                    'type' => $blockEntity->getString('id')->getValue(),
+                    'x' => $blockEntity->getInt('x')->getValue(),
+                    'y' => $blockEntity->getInt('y')->getValue(),
+                    'z' => $blockEntity->getInt('z')->getValue(),
+                    // ... other block entity data
+                ];
+            }
+        }
     }
 
     /**
@@ -41,14 +156,6 @@ class Chunk
     }
 
     /**
-     * @return CompoundTag
-     */
-    public function getNbt(): CompoundTag
-    {
-        return $this->nbt;
-    }
-
-    /**
      * @return array
      */
     public function getSections(): array
@@ -56,21 +163,28 @@ class Chunk
         return $this->sections;
     }
 
-    private function loadHeightmaps(): void
+    /**
+     * @return array
+     */
+    public function getBlockLight(): array
     {
-        $heightmapsCompound = $this->nbt->getCompound("Heightmaps");
+        return $this->blockLight;
+    }
 
-        if (!$heightmapsCompound) return;
+    /**
+     * @return array
+     */
+    public function getSkyLight(): array
+    {
+        return $this->skyLight;
+    }
 
-        foreach ($heightmapsCompound as $key => $longArrayTag) {
-            if ($longArrayTag instanceof LongArrayTag) {
-                $heightmapData = [];
-                foreach ($longArrayTag as $long) {
-                    $heightmapData[] = $long; // int|string
-                }
-                $this->heightmaps[$key] = $heightmapData;
-            }
-        }
+    /**
+     * @return array
+     */
+    public function getBlockEntities(): array
+    {
+        return $this->blockEntities;
     }
 
     /**
@@ -81,46 +195,16 @@ class Chunk
         return $this->heightmaps;
     }
 
-    private function loadBlocksData(): void
+    public function dump(): array
     {
-        $sections = $this->nbt->getList("sections");
-
-        /** @var CompoundTag $section */
-        foreach ($sections as $section) {
-            $y = $section->getByte("Y")->getValue();
-
-            $blockStates = $section->getCompound("block_states");
-            if (!$blockStates) continue;
-
-            $data = $blockStates->getLongArray("data") ?? [];
-            $paletteList = $blockStates->getList("palette");
-
-            $palette = new Palette();
-            $palette->addBlocks($paletteList);
-
-            $this->sections[$y] = [
-                'palette' => $palette
-            ];
-
-            foreach ($data as $long) {
-                $this->sections[$y]['data'][] = $long;
-            }
-        }
-    }
-
-    /**
-     * @return Palette
-     */
-    public function getPalette(): Palette
-    {
-        return $this->palette;
-    }
-
-    /**
-     * @return array
-     */
-    public function getData(): array
-    {
-        return $this->data;
+        return [
+            $this->x,
+            $this->z,
+            $this->sections,
+            $this->blockLight,
+            $this->skyLight,
+            $this->blockEntities,
+            $this->heightmaps,
+        ];
     }
 }

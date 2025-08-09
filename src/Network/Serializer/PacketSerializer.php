@@ -5,6 +5,7 @@ namespace Nirbose\PhpMcServ\Network\Serializer;
 use Aternos\Nbt\IO\Writer\StringWriter;
 use Aternos\Nbt\NbtFormat;
 use Aternos\Nbt\Tag\Tag;
+use Nirbose\PhpMcServ\Utils\BitSet;
 use Nirbose\PhpMcServ\Utils\UUID;
 use Nirbose\PhpMcServ\World\Position;
 
@@ -386,13 +387,19 @@ class PacketSerializer
      * Encode une Position code sur 64 bits.
      * x (-33554432 to 33554431), z (-33554432 to 33554431), y (-2048 to 2047)
      * 
-     * @param integer $x
-     * @param integer $y
-     * @param integer $z
+     * @param integer|Position $x
+     * @param ?integer $y
+     * @param ?integer $z
      * @return PacketSerializer $this
      */
-    public function putPosition(int $x, int $y, int $z): PacketSerializer
+    public function putPosition(int|Position $x, ?int $y = 0, ?int $z = 0): PacketSerializer
     {
+        if ($x instanceof Position) {
+            $y = $x->getY();
+            $z = $x->getZ();
+            $x = $x->getX();
+        }
+
         $this->putLong(
             (($x & 0x3FFFFFF) << 38) | (($z & 0x3FFFFFF) << 12) | ($y & 0xFFF)
         );
@@ -456,10 +463,19 @@ class PacketSerializer
      * @param string $data Données binaires (ex: issues du writer NBT)
      * @return PacketSerializer $this
      */
-    public function putByteArray(string $data): PacketSerializer
+    public function putByteArray(string|array $data): PacketSerializer
     {
-        $this->putVarInt(strlen($data)); // Longueur d'abord
-        $this->put($data); // Puis contenu binaire brut
+        if (is_string($data)) {
+            $this->putVarInt(strlen($data)); // Longueur d'abord
+            $this->put($data); // Puis contenu binaire brut
+
+        } else if (is_array($data)) {
+            $this->putVarInt(count($data));
+            foreach ($data as $item) {
+                $this->putByte($item);
+            }
+        }
+
         return $this;
     }
 
@@ -541,5 +557,28 @@ class PacketSerializer
         $this->offset += $len;
 
         return $n_bytes;
+    }
+
+    public function putBitSet(BitSet $bitset): PacketSerializer
+    {
+        $bitCount = $bitset->getSize();
+        $longCount = intdiv($bitCount + 63, 64);
+
+        $this->putVarInt($longCount);
+
+        for ($i = 0; $i < $longCount; $i++) {
+            $value = 0;
+            for ($j = 0; $j < 64; $j++) {
+                $bitIndex = $i * 64 + $j;
+                if ($bitIndex >= $bitCount) break;
+                if ($bitset->get($bitIndex)) {
+                    $value |= (1 << $j);
+                }
+            }
+
+            $this->putLong($value);
+        }
+
+        return $this;
     }
 }

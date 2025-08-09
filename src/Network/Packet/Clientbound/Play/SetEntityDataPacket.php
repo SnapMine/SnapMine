@@ -2,14 +2,14 @@
 
 namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Play;
 
+use Nirbose\PhpMcServ\Entity\Entity;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 
 class SetEntityDataPacket extends ClientboundPacket
 {
     public function __construct(
-        private readonly int $entityId,
-        private readonly PacketSerializer $data,
+        private readonly Entity $entity,
     ) {
     }
 
@@ -20,11 +20,9 @@ class SetEntityDataPacket extends ClientboundPacket
 
     public function write(PacketSerializer $serializer): void
     {
-        $serializer->putVarInt($this->entityId);
+        $serializer->putVarInt($this->entity->getId());
 
-        $this->data->putUnsignedByte(0xFF);
-
-        $serializer->put($this->data->get());
+        $serializer->put($this->entity->serialize());
     }
 
 
