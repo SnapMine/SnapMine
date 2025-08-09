@@ -141,7 +141,5 @@ class ChunkDataAndUpdateLightPacket extends ClientboundPacket
         foreach ($blockLightData as $data) {
             $serializer->putByteArray($data);
         }
-
-        file_put_contents("chunk_{$this->chunkZ}_$this->chunkX.txt", print_r($chunk->dump(), true));
     }
 }
