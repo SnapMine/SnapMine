@@ -3,8 +3,11 @@
 namespace Nirbose\PhpMcServ\Entity;
 
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\SoundPacket;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Session\Session;
+use Nirbose\PhpMcServ\Sound\Sound;
+use Nirbose\PhpMcServ\Sound\SoundCategory;
 use Nirbose\PhpMcServ\Utils\UUID;
 use Nirbose\PhpMcServ\World\Location;
 use Nirbose\PhpMcServ\World\Position;
@@ -104,6 +107,26 @@ class Player extends Entity
     public function setPreviousGameMode(?GameMode $previousGameMode): void
     {
         $this->previousGameMode = $previousGameMode;
+    }
+
+    public function playSound(Entity|Location $location, Sound $sound, SoundCategory $category, float $volume = 1.0, float $pitch = 2.0, int $seed = 1): void
+    {
+        if ($location instanceof Entity) {
+            $location = $location->getLocation();
+        }
+
+        $packet = new SoundPacket(
+            $sound,
+            $category,
+            $location->getX(),
+            $location->getY(),
+            $location->getZ(),
+            $volume,
+            $pitch,
+            $seed
+        );
+
+        $this->sendPacket($packet);
     }
 
     function getType(): EntityType
