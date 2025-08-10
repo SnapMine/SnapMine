@@ -2,6 +2,7 @@
 
 namespace Nirbose\PhpMcServ\Block;
 
+use BackedEnum;
 use Exception;
 use Nirbose\PhpMcServ\Material;
 
@@ -72,6 +73,8 @@ class BlockStateLoader
 
             if (is_bool($propertyValue)) {
                 $propertyValue = $propertyValue ? 'true' : 'false';
+            } else if ($propertyValue instanceof BackedEnum) {
+                $propertyValue = $propertyValue->value;
             }
 
             $validValues = $properties[$propertyName];

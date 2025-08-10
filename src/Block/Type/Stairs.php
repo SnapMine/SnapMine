@@ -2,19 +2,22 @@
 
 namespace Nirbose\PhpMcServ\Block\Type;
 
+use Exception;
 use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Block\Data\Facing;
 use Nirbose\PhpMcServ\Block\Data\Waterlogged;
 use Nirbose\PhpMcServ\Block\Direction;
+use Nirbose\PhpMcServ\Block\Half;
+use Nirbose\PhpMcServ\Block\StairsShape;
 use Nirbose\PhpMcServ\Material;
 
 class Stairs implements BlockData
 {
     use Facing, Waterlogged;
 
-    private string $half = 'bottom';
-    private string $shape = 'inner_left';
+    private Half $half = Half::BOTTOM;
+    private StairsShape $shape = StairsShape::INNER_LEFT;
 
     public function __construct(
         private readonly Material $material,
@@ -32,7 +35,7 @@ class Stairs implements BlockData
         return $loader->getBlockStateId($this->material, [
             'waterlogged' => $this->waterlogged,
             'facing' => $this->facing->value,
-            'shape' => $this->shape,
+            'shape' => $this->shape->value,
             'half' => $this->half,
         ]);
     }
@@ -48,33 +51,38 @@ class Stairs implements BlockData
     }
 
     /**
-     * @return string
+     * @return Half
      */
-    public function getHalf(): string
+    public function getHalf(): Half
     {
         return $this->half;
     }
 
     /**
-     * @param string $half
+     * @param Half $half
+     * @throws Exception
      */
-    public function setHalf(string $half): void
+    public function setHalf(Half $half): void
     {
+        if ($half != Half::BOTTOM && $half != Half::TOP) {
+            throw new Exception("Half top or bottom only");
+        }
+
         $this->half = $half;
     }
 
     /**
-     * @return string
+     * @return StairsShape
      */
-    public function getShape(): string
+    public function getShape(): StairsShape
     {
         return $this->shape;
     }
 
     /**
-     * @param string $shape
+     * @param StairsShape $shape
      */
-    public function setShape(string $shape): void
+    public function setShape(StairsShape $shape): void
     {
         $this->shape = $shape;
     }
