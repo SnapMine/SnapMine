@@ -15,14 +15,14 @@ class BlockStateLoader
     public function __construct(string $filePath)
     {
         if (!file_exists($filePath)) {
-            throw new Exception("Le fichier blocks.json est introuvable à l'adresse : {$filePath}");
+            throw new Exception("The file blocks.json could not be found at: {$filePath}");
         }
 
         $jsonContent = file_get_contents($filePath);
         $data = json_decode($jsonContent, true);
 
         if ($data === null) {
-            throw new Exception("Le fichier blocks.json est mal formaté ou vide.");
+            throw new Exception("The file blocks.json is malformed or empty.");
         }
 
         $this->blocksData = $data;
@@ -55,7 +55,7 @@ class BlockStateLoader
         $coefficients = $blockData['coefficients'];
         $properties = $blockData['properties'];
 
-        if (empty($properties)) {
+        if (empty($properties) || empty($propertyValues)) {
             return $baseId;
         }
 

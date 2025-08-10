@@ -4,9 +4,7 @@ namespace Nirbose\PhpMcServ\Block\Data;
 
 interface Powerable extends BlockData
 {
-    public function getPower(): int;
+    public function isPower(): bool;
 
-    public function setPower(int $power): void;
-
-    public function getMaximumPower(): int;
+    public function setPower(bool $power): void;
 }
