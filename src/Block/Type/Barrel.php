@@ -2,7 +2,7 @@
 
 namespace Nirbose\PhpMcServ\Block\Type;
 
-use Nirbose\PhpMcServ\Block\BlockCoefficient;
+use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Block\Data\Directional;
 use Nirbose\PhpMcServ\Block\Data\Openable;
 use Nirbose\PhpMcServ\Block\Direction;
@@ -18,12 +18,12 @@ class Barrel implements Openable, Directional
         return Material::BARREL;
     }
 
-    public function computedId(): int
+    public function computedId(BlockStateLoader $loader): int
     {
-        return $this->getMaterial()->getBlockId() + get_block_state_offset([
-                'facing' => array_search($this->face, $this->getFaces()),
-                'open' => !$this->open,
-            ], BlockCoefficient::getCoefficient('minecraft:barrel'));
+        return $loader->getBlockStateId($this->getMaterial(), [
+            'facing' => $this->face->value,
+            'open' => $this->open,
+        ]);
     }
 
     public function isOpen(): bool

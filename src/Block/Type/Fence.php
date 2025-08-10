@@ -2,7 +2,7 @@
 
 namespace Nirbose\PhpMcServ\Block\Type;
 
-use Nirbose\PhpMcServ\Block\BlockCoefficient;
+use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Block\Data\MultipleFacing;
 use Nirbose\PhpMcServ\Block\Data\Waterlogged;
 use Nirbose\PhpMcServ\Block\Direction;
@@ -10,7 +10,7 @@ use Nirbose\PhpMcServ\Material;
 
 class Fence implements MultipleFacing, Waterlogged
 {
-    private array $allowedFaces = [];
+    private array $allowedFaces;
     private bool $waterlogged = false;
 
     public function __construct(
@@ -25,15 +25,15 @@ class Fence implements MultipleFacing, Waterlogged
         return $this->material;
     }
 
-    public function computedId(): int
+    public function computedId(BlockStateLoader $loader): int
     {
-        return $this->material->getBlockId() + get_block_state_offset([
-                'south' => !$this->hasFace(Direction::SOUTH),
-                'west' => !$this->hasFace(Direction::WEST),
-                'east' => !$this->hasFace(Direction::EAST),
-                'north' => !$this->hasFace(Direction::NORTH),
-                'waterlogged' => !$this->waterlogged,
-            ], BlockCoefficient::getCoefficient('minecraft:' . $this->material->name));
+        return $loader->getBlockStateId($this->getMaterial(), [
+            'south' => $this->hasFace(Direction::SOUTH),
+            'west' => $this->hasFace(Direction::WEST),
+            'east' => $this->hasFace(Direction::EAST),
+            'north' => $this->hasFace(Direction::NORTH),
+            'waterlogged' => $this->waterlogged,
+        ]);
     }
 
     public function getAllowedFaces(): array

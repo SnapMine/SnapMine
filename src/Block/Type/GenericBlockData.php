@@ -2,6 +2,7 @@
 
 namespace Nirbose\PhpMcServ\Block\Type;
 
+use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Material;
 
@@ -18,7 +19,7 @@ readonly class GenericBlockData implements BlockData
         return $this->material;
     }
 
-    public function computedId(): int
+    public function computedId(BlockStateLoader $loader): int
     {
         return $this->material->getBlockId();
     }

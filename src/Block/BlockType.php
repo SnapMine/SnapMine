@@ -2206,4 +2206,16 @@ enum BlockType
 
         return new $class(...[constant(Material::class . '::' . $materialName)]);
     }
+
+    public static function find(string|Material $block): BlockType
+     {
+        if (is_string($block)) {
+            $key = str_replace("minecraft:", "", $block);
+            $key = strtoupper($key);
+
+            return constant(BlockType::class . '::' . $key);
+        }
+
+        return constant(BlockType::class . '::' . $block->name);
+    }
 }

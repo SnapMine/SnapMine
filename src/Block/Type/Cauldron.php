@@ -2,6 +2,7 @@
 
 namespace Nirbose\PhpMcServ\Block\Type;
 
+use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Block\Data\Level;
 use Nirbose\PhpMcServ\Material;
 
@@ -14,9 +15,9 @@ class Cauldron implements Level
         return Material::CAULDRON;
     }
 
-    public function computedId(): int
+    public function computedId(BlockStateLoader $loader): int
     {
-        return Material::CAULDRON->getBlockId() + get_block_state_offset([$this->level], [1]);
+        return Material::CAULDRON->getBlockId() + $this->level;
     }
 
     public function getMaximumLevel(): int

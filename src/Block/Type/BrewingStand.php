@@ -2,6 +2,7 @@
 
 namespace Nirbose\PhpMcServ\Block\Type;
 
+use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Material;
 
@@ -18,9 +19,13 @@ class BrewingStand implements BlockData
         return Material::BREWING_STAND;
     }
 
-    public function computedId(): int
+    public function computedId(BlockStateLoader $loader): int
     {
-        return Material::BREWING_STAND->getBlockId() + get_block_state_offset($this->bottles, [1]);
+        return $loader->getBlockStateId($this->getMaterial(), [
+            'has_bottle_0' => $this->hasBottle(0),
+            'has_bottle_1' => $this->hasBottle(1),
+            'has_bottle_2' => $this->hasBottle(2),
+        ]);
     }
 
     /**

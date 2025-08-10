@@ -1426,6 +1426,11 @@ enum Material: int
         return ($this->value >> 16) & 0xFFFF;
     }
 
+    public function getKey(): string
+    {
+        return 'minecraft:' . strtolower($this->name);
+    }
+
     public static function getMaterial(int $id): Material
     {
         return self::cases()[$id];

@@ -2,6 +2,7 @@
 
 namespace Nirbose\PhpMcServ\Block\Type;
 
+use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Block\Data\Level;
 use Nirbose\PhpMcServ\Material;
 
@@ -14,7 +15,7 @@ class Composter implements Level
         return Material::COMPOSTER;
     }
 
-    public function computedId(): int
+    public function computedId(BlockStateLoader $loader): int
     {
         return Material::CAULDRON->getBlockId() + $this->level;
     }

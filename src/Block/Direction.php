@@ -2,12 +2,12 @@
 
 namespace Nirbose\PhpMcServ\Block;
 
-enum Direction: int
+enum Direction: string
 {
-    case DOWN = 0;
-    case EAST = 1;
-    case NORTH = 2;
-    case SOUTH = 3;
-    case WEST = 4;
-    case UP = 5;
+    case DOWN = 'down';
+    case EAST = 'east';
+    case NORTH = 'north';
+    case SOUTH = 'south';
+    case WEST = 'west';
+    case UP = 'up';
 }
