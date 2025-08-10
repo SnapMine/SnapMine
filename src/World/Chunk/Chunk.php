@@ -58,6 +58,19 @@ class Chunk
             $y = $section->getByte("Y")->getValue();
             $palette = $this->loadPalette($section);
             $data = $this->loadBlocksData($section);
+
+            $paletteBlockCount = count($palette->getBlocks());
+            foreach ($data as $packedLong) {
+                $bitsPerBlock = max(4, (int)ceil(log($paletteBlockCount, 2)));
+                $indices = $this->unpackData($packedLong, $bitsPerBlock);
+
+                foreach ($indices as $index) {
+                    if ($index >= $paletteBlockCount) {
+                        throw new \Exception("Invalid block index found in chunk data! Index {$index} is out of bounds for a palette of size {$paletteBlockCount}.");
+                    }
+                }
+            }
+
             $blockLight = $this->loadLightingData($section, "BlockLight");
             $skyLight = $this->loadLightingData($section, "SkyLight");
 
@@ -68,6 +81,22 @@ class Chunk
                 'skyLight' => $skyLight,
             ];
         }
+    }
+
+    private function unpackData(int|string $packedLong, int $bitsPerBlock): array
+    {
+        $indices = [];
+        $long = (int)$packedLong;
+        $indicesPerLong = floor(64 / $bitsPerBlock);
+        $mask = (1 << $bitsPerBlock) - 1;
+
+        for ($i = 0; $i < $indicesPerLong; $i++) {
+            $shift = $i * $bitsPerBlock;
+            $index = ($long >> $shift) & $mask;
+            $indices[] = $index;
+        }
+
+        return $indices;
     }
 
     private function loadPalette(CompoundTag $section): Palette

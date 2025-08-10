@@ -7,6 +7,7 @@ use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
+use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Entity\AreaEffectCloud;
 use Nirbose\PhpMcServ\Entity\DragonFireball;
 use Nirbose\PhpMcServ\Entity\EndCrystal;
@@ -45,6 +46,7 @@ class Server
     private static string $logFormat = "[%datetime%] %level_name%: %message%\n";
     private Region $region;
     private int $maxPlayer = 20;
+    private BlockStateLoader $blockStateLoader;
 
     public function __construct(
         private readonly string $host,
@@ -52,6 +54,7 @@ class Server
     )
     {
         $this->eventManager = new EventManager();
+        $this->blockStateLoader = new BlockStateLoader(__DIR__ . '/../resources/blocks.json');
     }
 
     public function start(): void
@@ -419,5 +422,13 @@ class Server
         $this->broadcastPacket(new AddEntityPacket($entity, 0, 0, 0, 0));
 
         return $entity;
+    }
+
+    /**
+     * @return BlockStateLoader
+     */
+    public function getBlockStateLoader(): BlockStateLoader
+    {
+        return $this->blockStateLoader;
     }
 }

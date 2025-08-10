@@ -2,9 +2,17 @@
 
 namespace Nirbose\PhpMcServ\Block\Data;
 
-interface Lightable extends BlockData
+trait Lightable
 {
-    public function setLit(bool $lit): void;
+    protected bool $light = false;
 
-    public function isLit(): bool;
+    public function setLit(bool $lit): void
+    {
+        $this->light = $lit;
+    }
+
+    public function isLit(): bool
+    {
+        return $this->light;
+    }
 }

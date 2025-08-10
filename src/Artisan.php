@@ -2,6 +2,7 @@
 
 namespace Nirbose\PhpMcServ;
 
+use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\World\Region;
 
 class Artisan
@@ -21,5 +22,10 @@ class Artisan
     public static function getRegion(): Region
     {
         return self::$server->getRegion();
+    }
+
+    public static function getBlockStateLoader(): BlockStateLoader
+    {
+        return self::$server->getBlockStateLoader();
     }
 }

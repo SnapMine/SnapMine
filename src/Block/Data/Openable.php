@@ -2,9 +2,17 @@
 
 namespace Nirbose\PhpMcServ\Block\Data;
 
-interface Openable extends BlockData
+trait Openable
 {
-    public function isOpen(): bool;
+    protected bool $open = false;
 
-    public function setOpen(bool $open): void;
+    public function isOpen(): bool
+    {
+        return $this->open;
+    }
+
+    public function setOpen(bool $open): void
+    {
+        $this->open = $open;
+    }
 }

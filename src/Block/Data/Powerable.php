@@ -2,11 +2,17 @@
 
 namespace Nirbose\PhpMcServ\Block\Data;
 
-interface Powerable extends BlockData
+trait Powerable
 {
-    public function getPower(): int;
+    protected bool $isPower = false;
 
-    public function setPower(int $power): void;
+    public function isPower(): bool
+    {
+        return $this->isPower;
+    }
 
-    public function getMaximumPower(): int;
+    public function setPower(bool $power): void
+    {
+        $this->isPower = $power;
+    }
 }

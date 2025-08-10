@@ -4,6 +4,8 @@ namespace Nirbose\PhpMcServ\World;
 
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\ListTag;
+use Nirbose\PhpMcServ\Artisan;
+use Nirbose\PhpMcServ\Block\BlockType;
 
 class Palette
 {
@@ -35,10 +37,18 @@ class Palette
 
             $identifier = $tag->getValue();
 
-            if (!isset($this->blocksIdMap[$identifier])) {
-                $value = $this->count++;
+            $b = BlockType::find($identifier)->createBlockData();
+            $properties = $block->getCompound('Properties');
+            $props = [];
+
+            if ($properties == null) {
+                $value = $b->getMaterial()->getBlockId();
             } else {
-                $value = $this->blocksIdMap[$identifier];
+                foreach ($properties as $k => $p) {
+                    $props[$k] = $p->getValue();
+                }
+
+                $value = Artisan::getBlockStateLoader()->getBlockStateId($b->getMaterial(), $props);
             }
 
             if ($value > 0) {
