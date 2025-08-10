@@ -2191,7 +2191,11 @@ enum BlockType
 
     public function createBlockData(): ?BlockData
     {
-        $class = $this->getBlockDataClass();
+        try {
+            $class = $this->getBlockDataClass();
+        } catch (Exception) {
+            $class = GenericBlockData::class;
+        }
 
         if (!class_exists($class)) {
             return null;

@@ -3,6 +3,7 @@
 namespace Nirbose\PhpMcServ\Block\Type;
 
 use Nirbose\PhpMcServ\Block\BlockStateLoader;
+use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Block\Data\Facing;
 use Nirbose\PhpMcServ\Block\Data\Openable;
 use Nirbose\PhpMcServ\Block\Data\Powerable;
@@ -10,28 +11,23 @@ use Nirbose\PhpMcServ\Block\Data\Waterlogged;
 use Nirbose\PhpMcServ\Block\Direction;
 use Nirbose\PhpMcServ\Material;
 
-class Door extends GenericBisected implements Waterlogged, Facing, Powerable, Openable
+class Door extends GenericBisected implements BlockData
 {
-    private Direction $direction;
-    private bool $power = false;
-    private bool $open = false;
-    private bool $waterlogged = false;
+    use Facing, Openable, Powerable, Waterlogged;
     private string $hinge = 'left';
 
     public function __construct(Material $material)
     {
         parent::__construct($material);
-
-        $this->direction = $this->getFaces()[0];
     }
 
     public function computedId(BlockStateLoader $loader): int
     {
         return $loader->getBlockStateId($this->getMaterial(), [
-            'facing' => $this->direction->value,
+            'facing' => $this->facing->value,
             'open' => $this->open,
             'waterlogged' => $this->waterlogged,
-            'power' => $this->power,
+            'power' => $this->isPower(),
             'half' => $this->getHalf(),
             'hinge' => $this->hinge,
         ]);
@@ -45,46 +41,6 @@ class Door extends GenericBisected implements Waterlogged, Facing, Powerable, Op
             Direction::NORTH,
             Direction::SOUTH,
         ];
-    }
-
-    public function getFacing(): Direction
-    {
-        return $this->direction;
-    }
-
-    public function setFacing(Direction $direction): void
-    {
-        $this->direction = $direction;
-    }
-
-    public function isOpen(): bool
-    {
-        return $this->open;
-    }
-
-    public function setOpen(bool $open): void
-    {
-        $this->open = $open;
-    }
-
-    public function isPower(): bool
-    {
-        return $this->power;
-    }
-
-    public function setPower(bool $power): void
-    {
-        $this->power = $power;
-    }
-
-    public function isWaterlogged(): bool
-    {
-        return $this->waterlogged;
-    }
-
-    public function setWaterlogged(bool $waterlogged): void
-    {
-        $this->waterlogged = $waterlogged;
     }
 
     /**

@@ -55,6 +55,9 @@ class BlockStateLoader
         $coefficients = $blockData['coefficients'];
         $properties = $blockData['properties'];
 
+        ksort($properties);
+        ksort($propertyValues);
+
         if (empty($properties) || empty($propertyValues)) {
             return $baseId;
         }

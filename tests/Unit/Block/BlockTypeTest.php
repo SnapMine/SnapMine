@@ -23,3 +23,29 @@ it('Test createBlockData()', function () {
 
     expect($block->getMaterial())->toBe(Material::STONE);
 });
+
+test('Test chest getId', function () {
+    $loader = new BlockStateLoader(__DIR__ . '/../../../resources/blocks.json');
+
+    /** @var \Nirbose\PhpMcServ\Block\Type\Chest $chest */
+    $chest = BlockType::CHEST->createBlockData();
+
+    $chest->setWaterlogged(false);
+    $chest->setFacing(Direction::WEST);
+    $chest->setType('single');
+
+    expect($chest->getMaterial()->getBlockId())->toBe(3018)
+        ->and($chest->computedId($loader))->toBe(3031);
+
+    $chest->setWaterlogged(false);
+    $chest->setFacing(Direction::WEST);
+    $chest->setType('right');
+
+    expect($chest->computedId($loader))->toBe(3035);
+
+    $chest->setWaterlogged(false);
+    $chest->setFacing(Direction::WEST);
+    $chest->setType('left');
+
+    expect($chest->computedId($loader))->toBe(3033);
+});

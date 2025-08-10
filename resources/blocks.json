@@ -4094,16 +4094,16 @@
   },
   "minecraft:chest": {
     "properties": {
-      "type": [
-        "single",
-        "left",
-        "right"
-      ],
       "facing": [
         "north",
         "south",
         "west",
         "east"
+      ],
+      "type": [
+        "single",
+        "left",
+        "right"
       ],
       "waterlogged": [
         "true",
@@ -4111,7 +4111,7 @@
       ]
     },
     "coefficients": [
-      8,
+      6,
       2,
       1
     ],
@@ -11544,10 +11544,6 @@
   },
   "minecraft:moving_piston": {
     "properties": {
-      "type": [
-        "normal",
-        "sticky"
-      ],
       "facing": [
         "north",
         "east",
@@ -11555,10 +11551,14 @@
         "west",
         "up",
         "down"
+      ],
+      "type": [
+        "normal",
+        "sticky"
       ]
     },
     "coefficients": [
-      6,
+      2,
       1
     ],
     "baseId": 2109,
@@ -13992,10 +13992,6 @@
   },
   "minecraft:piston_head": {
     "properties": {
-      "type": [
-        "normal",
-        "sticky"
-      ],
       "facing": [
         "north",
         "east",
@@ -14007,10 +14003,14 @@
       "short": [
         "true",
         "false"
+      ],
+      "type": [
+        "normal",
+        "sticky"
       ]
     },
     "coefficients": [
-      12,
+      4,
       2,
       1
     ],
@@ -18883,16 +18883,16 @@
   },
   "minecraft:trapped_chest": {
     "properties": {
-      "type": [
-        "single",
-        "left",
-        "right"
-      ],
       "facing": [
         "north",
         "south",
         "west",
         "east"
+      ],
+      "type": [
+        "single",
+        "left",
+        "right"
       ],
       "waterlogged": [
         "true",
@@ -18900,7 +18900,7 @@
       ]
     },
     "coefficients": [
-      8,
+      6,
       2,
       1
     ],
