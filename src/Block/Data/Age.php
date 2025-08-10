@@ -2,11 +2,19 @@
 
 namespace Nirbose\PhpMcServ\Block\Data;
 
-interface Age extends BlockData
+trait Age
 {
-    public function getMaximumAge(): int;
+    protected int $age = 0;
 
-    public function setAge(int $age): void;
+    abstract public function getMaximumAge(): int;
 
-    public function getAge(): int;
+    public function setAge(int $age): void
+    {
+        $this->age = $age;
+    }
+
+    public function getAge(): int
+    {
+        return $this->age;
+    }
 }

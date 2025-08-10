@@ -3,15 +3,15 @@
 namespace Nirbose\PhpMcServ\Block\Type;
 
 use Nirbose\PhpMcServ\Block\BlockStateLoader;
-use Nirbose\PhpMcServ\Block\Data\Directional;
+use Nirbose\PhpMcServ\Block\Data\BlockData;
+use Nirbose\PhpMcServ\Block\Data\Facing;
 use Nirbose\PhpMcServ\Block\Data\Openable;
 use Nirbose\PhpMcServ\Block\Direction;
 use Nirbose\PhpMcServ\Material;
 
-class Barrel implements Openable, Directional
+class Barrel implements BlockData
 {
-    private bool $open = false;
-    private Direction $face;
+    use Facing, Openable;
 
     public function getMaterial(): Material
     {
@@ -21,19 +21,9 @@ class Barrel implements Openable, Directional
     public function computedId(BlockStateLoader $loader): int
     {
         return $loader->getBlockStateId($this->getMaterial(), [
-            'facing' => $this->face->value,
+            'facing' => $this->facing->value,
             'open' => $this->open,
         ]);
-    }
-
-    public function isOpen(): bool
-    {
-        return $this->open;
-    }
-
-    public function setOpen(bool $open): void
-    {
-        $this->open = $open;
     }
 
     public function getFaces(): array
@@ -46,15 +36,5 @@ class Barrel implements Openable, Directional
             Direction::UP,
             Direction::DOWN,
         ];
-    }
-
-    public function getFacing(): Direction
-    {
-        return $this->face;
-    }
-
-    public function setFacing(Direction $direction): void
-    {
-        $this->face = $direction;
     }
 }

@@ -3,14 +3,14 @@
 namespace Nirbose\PhpMcServ\Block\Type;
 
 use Nirbose\PhpMcServ\Block\BlockStateLoader;
-use Nirbose\PhpMcServ\Block\Data\Directional;
+use Nirbose\PhpMcServ\Block\Data\Facing;
 use Nirbose\PhpMcServ\Block\Data\Openable;
 use Nirbose\PhpMcServ\Block\Data\Powerable;
 use Nirbose\PhpMcServ\Block\Data\Waterlogged;
 use Nirbose\PhpMcServ\Block\Direction;
 use Nirbose\PhpMcServ\Material;
 
-class Door extends GenericBisected implements Waterlogged, Directional, Powerable, Openable
+class Door extends GenericBisected implements Waterlogged, Facing, Powerable, Openable
 {
     private Direction $direction;
     private bool $power = false;

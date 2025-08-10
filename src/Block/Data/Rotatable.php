@@ -2,8 +2,16 @@
 
 namespace Nirbose\PhpMcServ\Block\Data;
 
-interface Rotatable
+trait Rotatable
 {
-    public function getRotation(): int;
-    public function setRotation(int $rotation): void;
+    protected int $rotation = 0;
+
+    public function getRotation(): int
+    {
+        return $this->rotation;
+    }
+    public function setRotation(int $rotation): void
+    {
+        $this->rotation = $rotation;
+    }
 }

@@ -3,12 +3,13 @@
 namespace Nirbose\PhpMcServ\Block\Type;
 
 use Nirbose\PhpMcServ\Block\BlockStateLoader;
+use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Block\Data\Waterlogged;
 use Nirbose\PhpMcServ\Material;
 
-class Slab implements Waterlogged
+class Slab implements BlockData
 {
-    private bool $waterlogged = false;
+    use Waterlogged;
 
     public function __construct(
         private readonly Material $material,
@@ -26,15 +27,5 @@ class Slab implements Waterlogged
         return $loader->getBlockStateId($this->material, [
             'waterlogged' => $this->waterlogged,
         ]);
-    }
-
-    public function isWaterlogged(): bool
-    {
-        return $this->waterlogged;
-    }
-
-    public function setWaterlogged(bool $waterlogged): void
-    {
-        $this->waterlogged = $waterlogged;
     }
 }

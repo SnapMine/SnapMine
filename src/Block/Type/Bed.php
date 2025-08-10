@@ -3,18 +3,20 @@
 namespace Nirbose\PhpMcServ\Block\Type;
 
 use Nirbose\PhpMcServ\Block\BlockStateLoader;
-use Nirbose\PhpMcServ\Block\Data\Directional;
+use Nirbose\PhpMcServ\Block\Data\BlockData;
+use Nirbose\PhpMcServ\Block\Data\Facing;
 use Nirbose\PhpMcServ\Block\Direction;
 use Nirbose\PhpMcServ\Material;
 
-class Bed implements Directional
+class Bed implements BlockData
 {
+    use Facing;
+
     const FOOT = 'foot';
     const HEAD = 'head';
 
     private bool $occupied = false;
     private string $part = Bed::FOOT;
-    private Direction $facing = Direction::EAST;
 
     public function __construct(
         private readonly Material $material
@@ -35,16 +37,6 @@ class Bed implements Directional
             Direction::WEST,
             Direction::EAST,
         ];
-    }
-
-    public function getFacing(): Direction
-    {
-        return $this->facing;
-    }
-
-    public function setFacing(Direction $direction): void
-    {
-        $this->facing = $direction;
     }
 
     public function isOccupied(): bool

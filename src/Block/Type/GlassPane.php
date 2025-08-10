@@ -3,15 +3,15 @@
 namespace Nirbose\PhpMcServ\Block\Type;
 
 use Nirbose\PhpMcServ\Block\BlockStateLoader;
+use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Block\Data\MultipleFacing;
 use Nirbose\PhpMcServ\Block\Data\Waterlogged;
 use Nirbose\PhpMcServ\Block\Direction;
 use Nirbose\PhpMcServ\Material;
 
-class GlassPane implements MultipleFacing, Waterlogged
+class GlassPane implements BlockData
 {
-    private bool $waterlogged = false;
-    private array $faces = [];
+    use MultipleFacing, Waterlogged;
 
     public function __construct(
         private readonly Material $material,
@@ -32,28 +32,6 @@ class GlassPane implements MultipleFacing, Waterlogged
         ];
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getFaces(): array
-    {
-        return $this->faces;
-    }
-
-    public function setFace(Direction $face): void
-    {
-        if (in_array($face, $this->faces)) {
-            return;
-        }
-
-        $this->faces[] = $face;
-    }
-
-    public function hasFace(Direction $face): bool
-    {
-        return in_array($face, $this->faces);
-    }
-
     public function getMaterial(): Material
     {
         return $this->material;
@@ -68,15 +46,5 @@ class GlassPane implements MultipleFacing, Waterlogged
             'north' => $this->hasFace(Direction::NORTH),
             'south' => $this->hasFace(Direction::SOUTH),
         ]);
-    }
-
-    public function isWaterlogged(): bool
-    {
-        return $this->waterlogged;
-    }
-
-    public function setWaterlogged(bool $waterlogged): void
-    {
-        $this->waterlogged = $waterlogged;
     }
 }

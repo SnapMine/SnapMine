@@ -2,21 +2,46 @@
 
 namespace Nirbose\PhpMcServ\Block\Data;
 
+use Exception;
 use Nirbose\PhpMcServ\Block\Direction;
 
-interface MultipleFacing
+trait MultipleFacing
 {
-    /**
-     * @return Direction[]
-     */
-    public function getAllowedFaces(): array;
+    /** @var Direction[] */
+    protected array $facings = [];
 
     /**
      * @return Direction[]
      */
-    public function getFaces(): array;
+    abstract public function getAllowedFaces(): array;
 
-    public function setFace(Direction $face): void;
+    /**
+     * @return Direction[]
+     */
+    public function getFaces(): array
+    {
+        return $this->facings;
+    }
 
-    public function hasFace(Direction $face): bool;
+    /**
+     * @throws Exception
+     */
+    public function setFace(Direction $face): void
+    {
+        if (in_array($face, $this->getAllowedFaces())) {
+            if ($this->hasFace($face)) {
+                return;
+            }
+
+            $this->facings[] = $face;
+            return;
+        }
+
+        throw new Exception("Direction $face->name is not allowed.");
+    }
+
+    public function hasFace(Direction $face): bool
+    {
+        return !in_array($face, $this->getAllowedFaces()) && in_array($face, $this->getFaces());
+    }
 }

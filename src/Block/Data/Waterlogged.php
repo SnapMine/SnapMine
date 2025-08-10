@@ -2,8 +2,16 @@
 
 namespace Nirbose\PhpMcServ\Block\Data;
 
-interface Waterlogged extends BlockData
+trait Waterlogged
 {
-    public function isWaterlogged(): bool;
-    public function setWaterlogged(bool $waterlogged): void;
+    protected bool $waterlogged = false;
+
+    public function isWaterlogged(): bool
+    {
+        return $this->waterlogged;
+    }
+    public function setWaterlogged(bool $waterlogged): void
+    {
+        $this->waterlogged = $waterlogged;
+    }
 }

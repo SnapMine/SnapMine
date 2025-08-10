@@ -2,9 +2,17 @@
 
 namespace Nirbose\PhpMcServ\Block\Data;
 
-interface Attached extends BlockData
+trait Attached
 {
-    public function setAttached(bool $attached): void;
+    protected bool $attached = false;
 
-    public function isAttached(): bool;
+    public function setAttached(bool $attached): void
+    {
+        $this->attached = $attached;
+    }
+
+    public function isAttached(): bool
+    {
+        return $this->attached;
+    }
 }

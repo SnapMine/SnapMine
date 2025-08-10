@@ -4,9 +4,17 @@ namespace Nirbose\PhpMcServ\Block\Data;
 
 use Nirbose\PhpMcServ\Block\AttachedFace;
 
-interface FaceAttachable extends BlockData
+trait FaceAttachable
 {
-    public function getAttachedFace(): AttachedFace;
+    protected AttachedFace $face = AttachedFace::FLOOR;
 
-    public function setAttachedFace(AttachedFace $face): void;
+    public function getAttachedFace(): AttachedFace
+    {
+        return $this->face;
+    }
+
+    public function setAttachedFace(AttachedFace $face): void
+    {
+        $this->face = $face;
+    }
 }

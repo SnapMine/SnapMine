@@ -3,12 +3,13 @@
 namespace Nirbose\PhpMcServ\Block\Type;
 
 use Nirbose\PhpMcServ\Block\BlockStateLoader;
+use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Block\Data\Level;
 use Nirbose\PhpMcServ\Material;
 
-class Composter implements Level
+class Composter implements BlockData
 {
-    private int $level = 0;
+    use Level;
 
     public function getMaterial(): Material
     {
@@ -23,15 +24,5 @@ class Composter implements Level
     public function getMaximumLevel(): int
     {
         return 8;
-    }
-
-    public function setLevel(int $level): void
-    {
-        $this->level = $level;
-    }
-
-    public function getLevel(): int
-    {
-        return $this->level;
     }
 }

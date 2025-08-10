@@ -3,15 +3,16 @@
 namespace Nirbose\PhpMcServ\Block\Type;
 
 use Nirbose\PhpMcServ\Block\BlockStateLoader;
-use Nirbose\PhpMcServ\Block\Data\Directional;
+use Nirbose\PhpMcServ\Block\Data\BlockData;
+use Nirbose\PhpMcServ\Block\Data\Facing;
 use Nirbose\PhpMcServ\Block\Data\Waterlogged;
 use Nirbose\PhpMcServ\Block\Direction;
 use Nirbose\PhpMcServ\Material;
 
-class Stairs implements Directional, Waterlogged
+class Stairs implements BlockData
 {
-    private bool $waterlogged = false;
-    private Direction $direction;
+    use Facing, Waterlogged;
+
     private string $half = 'bottom';
     private string $shape = 'inner_left';
 
@@ -19,7 +20,6 @@ class Stairs implements Directional, Waterlogged
         private readonly Material $material,
     )
     {
-        $this->direction = $this->getFaces()[0];
     }
 
     public function getMaterial(): Material
@@ -31,7 +31,7 @@ class Stairs implements Directional, Waterlogged
     {
         return $loader->getBlockStateId($this->material, [
             'waterlogged' => $this->waterlogged,
-            'facing' => $this->direction->value,
+            'facing' => $this->facing->value,
             'shape' => $this->shape,
             'half' => $this->half,
         ]);
@@ -45,26 +45,6 @@ class Stairs implements Directional, Waterlogged
             Direction::NORTH,
             Direction::SOUTH,
         ];
-    }
-
-    public function getFacing(): Direction
-    {
-        return $this->direction;
-    }
-
-    public function setFacing(Direction $direction): void
-    {
-        $this->direction = $direction;
-    }
-
-    public function isWaterlogged(): bool
-    {
-        return $this->waterlogged;
-    }
-
-    public function setWaterlogged(bool $waterlogged): void
-    {
-        $this->waterlogged = $waterlogged;
     }
 
     /**

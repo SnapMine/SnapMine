@@ -41,9 +41,11 @@ class BrewingStand implements BlockData
         return 3;
     }
 
-    public function setBottle(int $index, bool $has) {
+    public function setBottle(int $index, bool $has): void
+    {
         if ($index < 0 || $index > $this->getMaximumBottles()) {
             // TODO: Throw error
+            return;
         }
 
         $this->bottles[$index] = $has;
