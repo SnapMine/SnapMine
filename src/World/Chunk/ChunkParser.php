@@ -4,6 +4,7 @@ namespace Nirbose\PhpMcServ\World\Chunk;
 
 use Aternos\Nbt\IO\Reader\ZLibCompressedStringReader;
 use Aternos\Nbt\NbtFormat;
+use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\Tag;
 use Exception;
 
@@ -33,8 +34,6 @@ class ChunkParser
 
             if ($offset === 0 || $sectors === 0) continue;
 
-            $chunkX = $i % 32;
-            $chunkZ = intdiv($i, 32);
             fseek($handle, $offset * 4096);
             $length = unpack('N', fread($handle, 4))[1];
             $compression = ord(fread($handle, 1));
@@ -43,7 +42,13 @@ class ChunkParser
             if ($compression === 2) {
                 $reader = new ZLibCompressedStringReader($compressed, NbtFormat::JAVA_EDITION);
                 $nbt = Tag::load($reader);
-                $chunks[$chunkX][$chunkZ] = (new Chunk($chunkX, $chunkZ))->loadFromNbt($nbt);
+
+                if ($nbt instanceof CompoundTag) {
+                    $chunkX = $nbt->getInt('xPos')->getValue();
+                    $chunkZ = $nbt->getInt('zPos')->getValue();
+
+                    $chunks[$chunkX][$chunkZ] = (new Chunk($chunkX, $chunkZ))->loadFromNbt($nbt);
+                }
             }
         }
 
