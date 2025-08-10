@@ -60,8 +60,9 @@ class ChunkDataAndUpdateLightPacket extends ClientboundPacket
 
             /** @var Palette $palette */
             $palette = $section['palette'];
+            $totalBlock = $section['totalBlock'];
 
-            if ($palette->getBlockCount() == 0) {
+            if ($totalBlock == 0) {
                 $dataBuf->putShort(0)
                     ->putByte(0)
                     ->putVarInt(0)
@@ -73,7 +74,7 @@ class ChunkDataAndUpdateLightPacket extends ClientboundPacket
 
             $data = $section['data'];
 
-            $dataBuf->putShort($palette->getBlockCount()); // Calculate ALL block in the chunk (by data ? current is 3)
+            $dataBuf->putShort($totalBlock);
 
             $paletteSize = count($palette->getBlocks());
             $bitsPerBlock = max(4, (int)ceil(log($paletteSize, 2)));

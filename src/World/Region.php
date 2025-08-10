@@ -7,23 +7,22 @@ use Nirbose\PhpMcServ\World\Chunk\ChunkParser;
 
 class Region
 {
-    private string $filePath;
+    private ChunkParser $parser;
     private array $chunks = []; // [chunkX][chunkZ] => Chunk
 
     public function __construct(string $filePath)
     {
-        $this->filePath = $filePath;
-        $this->loadChunks();
-    }
-
-    private function loadChunks(): void
-    {
-        $reader = new ChunkParser($this->filePath);
-        $this->chunks = $reader->parseAll();
+        $this->parser = new ChunkParser($filePath);
     }
 
     public function getChunk(int $x, int $z): ?Chunk
     {
-        return $this->chunks[$x][$z] ?? null;
+        if (!isset($this->chunks[$x][$z])) {
+            $chunk = $this->parser->getChunk($x, $z);
+
+            $this->chunks[$x][$z] = $chunk;
+        }
+
+        return $this->chunks[$x][$z];
     }
 }

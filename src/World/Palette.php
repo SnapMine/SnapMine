@@ -10,15 +10,6 @@ use Nirbose\PhpMcServ\Block\BlockType;
 class Palette
 {
     private array $blocks = [];
-
-    // Temp
-    private array $blocksIdMap = [
-        'minecraft:bedrock' => 85,
-        'minecraft:air' => 0,
-        'minecraft:dirt' => 10,
-        'minecraft:grass_block' => 9,
-    ];
-    private int $count = 50;
     private int $blockCount = 0;
 
     public function __construct()

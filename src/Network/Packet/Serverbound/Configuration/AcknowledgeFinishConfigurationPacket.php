@@ -46,8 +46,8 @@ class AcknowledgeFinishConfigurationPacket extends ServerboundPacket
         $session->sendPacket(
             new SetCenterChunk()
         );
-        for ($i = -10; $i < 10; $i++) {
-            for ($j = -10; $j < 10; $j++) {
+        for ($i = 0; $i < 10; $i++) {
+            for ($j = 0; $j < 10; $j++) {
                 if ($session->getServer()->getRegion()->getChunk($i, $j) === null) {
                     continue;
                 }
