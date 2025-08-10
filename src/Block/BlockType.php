@@ -3,6 +3,7 @@
 namespace Nirbose\PhpMcServ\Block;
 
 use Exception;
+use Nirbose\PhpMcServ\Artisan;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Block\Type\Anvil;
 use Nirbose\PhpMcServ\Block\Type\Barrel;
@@ -2199,7 +2200,12 @@ enum BlockType
         $materialName = strtoupper($this->name);
         $material = constant(Material::class . '::' . $materialName);
 
-        return new $class(...[$material]);
+        return new $class($material);
+    }
+
+    public function getKey(): string
+    {
+        return 'minecraft:' . strtolower($this->name);
     }
 
     public static function find(string|Material $block): BlockType
