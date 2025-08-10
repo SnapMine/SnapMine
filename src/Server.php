@@ -26,6 +26,7 @@ use Nirbose\PhpMcServ\Manager\KeepAliveManager;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\AddEntityPacket;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Session\Session;
+use Nirbose\PhpMcServ\World\Chunk\Chunk;
 use Nirbose\PhpMcServ\World\Location;
 use Nirbose\PhpMcServ\World\Region;
 use Nirbose\PhpMcServ\World\RegionLoader;
@@ -430,5 +431,10 @@ class Server
     public function getBlockStateLoader(): BlockStateLoader
     {
         return $this->blockStateLoader;
+    }
+
+    public function getChunk(int $x, int $z): Chunk|null
+    {
+        return $this->region->getChunk($x, $z);
     }
 }

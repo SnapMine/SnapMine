@@ -4,6 +4,7 @@ namespace Nirbose\PhpMcServ\World\Chunk;
 
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\LongArrayTag;
+use Exception;
 use Nirbose\PhpMcServ\World\Palette;
 
 class Chunk
@@ -14,6 +15,7 @@ class Chunk
     private array $blockEntities = [];
     private array $blockLight = [];
     private array $skyLight = [];
+    private bool $loaded = false;
 
     public function __construct(
         private readonly int $x,
@@ -21,12 +23,19 @@ class Chunk
     ) {
     }
 
+    /**
+     * @throws Exception
+     */
     public function loadFromNbt(CompoundTag $nbt): self
     {
         $this->nbt = $nbt;
+
         $this->loadHeightmaps();
         $this->loadSections();
         $this->loadBlockEntities();
+
+        $this->loaded = true;
+
         return $this;
     }
 
@@ -60,27 +69,43 @@ class Chunk
             $data = $this->loadBlocksData($section);
 
             $paletteBlockCount = count($palette->getBlocks());
+            $bitsPerBlock = max(4, (int)ceil(log($paletteBlockCount, 2)));
             foreach ($data as $packedLong) {
-                $bitsPerBlock = max(4, (int)ceil(log($paletteBlockCount, 2)));
                 $indices = $this->unpackData($packedLong, $bitsPerBlock);
 
                 foreach ($indices as $index) {
                     if ($index >= $paletteBlockCount) {
-                        throw new \Exception("Invalid block index found in chunk data! Index {$index} is out of bounds for a palette of size {$paletteBlockCount}.");
+                        throw new Exception("Invalid block index found in chunk data! Index {$index} is out of bounds for a palette of size {$paletteBlockCount}.");
                     }
                 }
             }
 
             $blockLight = $this->loadLightingData($section, "BlockLight");
             $skyLight = $this->loadLightingData($section, "SkyLight");
+            $totalBlock = $this->getTotalBlockSection($palette, $data, $bitsPerBlock);
 
             $this->sections[$y] = [
                 'palette' => $palette,
                 'data' => $data,
+                'totalBlock' => $totalBlock,
                 'blockLight' => $blockLight,
                 'skyLight' => $skyLight,
             ];
         }
+    }
+
+    private function getTotalBlockSection(Palette $palette, array $data, int $bitsPerBlock): int
+    {
+        $n = array_map(function ($packedLong) use ($palette, $bitsPerBlock) {
+            $indices = $this->unpackData($packedLong, $bitsPerBlock);
+            $filter = array_filter($indices, function ($index) use ($palette) {
+                return $palette->getBlocks()[$index] > 0;
+            });
+
+            return array_sum($filter);
+        }, $data);
+
+        return array_sum($n);
     }
 
     private function unpackData(int|string $packedLong, int $bitsPerBlock): array
@@ -235,5 +260,13 @@ class Chunk
             $this->blockEntities,
             $this->heightmaps,
         ];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLoaded(): bool
+    {
+        return $this->loaded;
     }
 }

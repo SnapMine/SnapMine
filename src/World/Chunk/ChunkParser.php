@@ -11,48 +11,81 @@ use Exception;
 class ChunkParser
 {
     private string $file;
+    /** @var resource */
+    private $handle;
+    private string $offsetTable;
 
+    /**
+     * @throws Exception
+     */
     public function __construct(string $file)
     {
         $this->file = $file;
+        $this->handle = fopen($file, 'rb');
+        if (!$this->handle) {
+            throw new Exception("Cannot open: $file");
+        }
+
+        $this->offsetTable = fread($this->handle, 4096);
+        if ($this->offsetTable === false || strlen($this->offsetTable) < 4096) {
+            throw new Exception("Invalid region file: $file");
+        }
+    }
+
+    public function __destruct()
+    {
+        if (is_resource($this->handle)) {
+            fclose($this->handle);
+        }
     }
 
     /**
      * @throws Exception
      */
-    public function parseAll(): array
+    public function getChunk(int $localX, int $localZ): ?Chunk
     {
-        $chunks = [];
-        $handle = fopen($this->file, 'rb');
-        if (!$handle) throw new Exception("Cannot open: $this->file");
+        if ($localX < 0 || $localX >= 32 || $localZ < 0 || $localZ >= 32) {
+            throw new Exception("Invalid local coordinates ($localX, $localZ)");
+        }
 
-        $offsetTable = fread($handle, 4096);
-        for ($i = 0; $i < 1024; $i++) {
-            $entry = substr($offsetTable, $i * 4, 4);
-            $offset = unpack('N', "\x00" . substr($entry, 0, 3))[1];
-            $sectors = ord($entry[3]);
+        $i = $localX + $localZ * 32;
+        $entryOffset = $i * 4;
 
-            if ($offset === 0 || $sectors === 0) continue;
+        $offset = unpack(
+            'N',
+            "\x00" .
+            $this->offsetTable[$entryOffset] .
+            $this->offsetTable[$entryOffset + 1] .
+            $this->offsetTable[$entryOffset + 2]
+        )[1];
+        $sectors = ord($this->offsetTable[$entryOffset + 3]);
 
-            fseek($handle, $offset * 4096);
-            $length = unpack('N', fread($handle, 4))[1];
-            $compression = ord(fread($handle, 1));
-            $compressed = fread($handle, $length - 1);
+        if ($offset === 0 || $sectors === 0) {
+            return null; // chunk vide
+        }
 
-            if ($compression === 2) {
-                $reader = new ZLibCompressedStringReader($compressed, NbtFormat::JAVA_EDITION);
-                $nbt = Tag::load($reader);
+        fseek($this->handle, $offset * 4096);
+        $lengthData = fread($this->handle, 4);
+        if ($lengthData === false || strlen($lengthData) < 4) {
+            return null;
+        }
+        $length = unpack('N', $lengthData)[1];
 
-                if ($nbt instanceof CompoundTag) {
-                    $chunkX = $nbt->getInt('xPos')->getValue();
-                    $chunkZ = $nbt->getInt('zPos')->getValue();
+        $compressionType = ord(fread($this->handle, 1));
+        $compressedData = fread($this->handle, $length - 1);
 
-                    $chunks[$chunkX][$chunkZ] = (new Chunk($chunkX, $chunkZ))->loadFromNbt($nbt);
-                }
+        if ($compressionType === 2 && $compressedData !== false) {
+            $reader = new ZLibCompressedStringReader($compressedData, NbtFormat::JAVA_EDITION);
+            $nbt = Tag::load($reader);
+
+            if ($nbt instanceof CompoundTag) {
+                $chunkX = $nbt->getInt('xPos')->getValue();
+                $chunkZ = $nbt->getInt('zPos')->getValue();
+
+                return (new Chunk($chunkX, $chunkZ))->loadFromNbt($nbt);
             }
         }
 
-        fclose($handle);
-        return $chunks;
+        return null;
     }
 }
