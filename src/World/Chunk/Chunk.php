@@ -9,7 +9,7 @@ use Nirbose\PhpMcServ\Artisan;
 use Nirbose\PhpMcServ\Block\Block;
 use Nirbose\PhpMcServ\Material;
 use Nirbose\PhpMcServ\World\Location;
-use Nirbose\PhpMcServ\World\Palette;
+use Nirbose\PhpMcServ\World\PalettedContainer;
 
 class Chunk
 {
@@ -98,7 +98,7 @@ class Chunk
         }
     }
 
-    private function getTotalBlockSection(Palette $palette, array $data, int $bitsPerBlock): int
+    private function getTotalBlockSection(PalettedContainer $palette, array $data, int $bitsPerBlock): int
     {
         $n = array_map(function ($packedLong) use ($palette, $bitsPerBlock) {
             $indices = $this->unpackData($packedLong, $bitsPerBlock);
@@ -128,19 +128,19 @@ class Chunk
         return $indices;
     }
 
-    private function loadPalette(CompoundTag $section): Palette
+    private function loadPalette(CompoundTag $section): PalettedContainer
     {
         $blockStates = $section->getCompound("block_states");
         if (!$blockStates) {
-            return new Palette();
+            return new PalettedContainer();
         }
 
         $paletteList = $blockStates->getList("palette");
         if (!$paletteList) {
-            return new Palette();
+            return new PalettedContainer();
         }
 
-        $palette = new Palette();
+        $palette = new PalettedContainer();
         $palette->addBlocks($paletteList);
 
         return $palette;

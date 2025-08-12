@@ -7,7 +7,7 @@ use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Utils\BitSet;
 use Nirbose\PhpMcServ\World\Chunk\HeightmapType;
-use Nirbose\PhpMcServ\World\Palette;
+use Nirbose\PhpMcServ\World\PalettedContainer;
 
 class ChunkDataAndUpdateLightPacket extends ClientboundPacket
 {
@@ -58,7 +58,7 @@ class ChunkDataAndUpdateLightPacket extends ClientboundPacket
 
             $section = $sections[$i - 5];
 
-            /** @var Palette $palette */
+            /** @var PalettedContainer $palette */
             $palette = $section['palette'];
             $totalBlock = $section['totalBlock'];
 

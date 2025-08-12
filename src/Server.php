@@ -24,6 +24,7 @@ use Nirbose\PhpMcServ\Event\Listener;
 use Nirbose\PhpMcServ\Listener\PlayerJoinListener;
 use Nirbose\PhpMcServ\Manager\KeepAliveManager;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\AddEntityPacket;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\PlayerInfoRemovePacket;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Session\Session;
 use Nirbose\PhpMcServ\World\Chunk\Chunk;
@@ -135,6 +136,7 @@ class Server
 
             if ($session->getPlayer() !== null) {
                 if (isset($this->players[$session->getPlayer()->getUuid()->toString()])) {
+                    $this->broadcastPacket(new PlayerInfoRemovePacket([$session->getPlayer()->getUuid()]));
                     unset($this->players[$session->getPlayer()->getUuid()->toString()]);
                 }
             }
