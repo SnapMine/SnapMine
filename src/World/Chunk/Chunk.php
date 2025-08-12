@@ -5,6 +5,10 @@ namespace Nirbose\PhpMcServ\World\Chunk;
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\LongArrayTag;
 use Exception;
+use Nirbose\PhpMcServ\Artisan;
+use Nirbose\PhpMcServ\Block\Block;
+use Nirbose\PhpMcServ\Material;
+use Nirbose\PhpMcServ\World\Location;
 use Nirbose\PhpMcServ\World\Palette;
 
 class Chunk
@@ -268,5 +272,32 @@ class Chunk
     public function isLoaded(): bool
     {
         return $this->loaded;
+    }
+
+    public function getBlock(int $x, int $y, int $z): Block
+    {
+        $sectionY = $y >> 4;
+        $localY = $y & 0xF;
+        $localX = $x & 0xF;
+        $localZ = $z & 0xF;
+
+        $index = $localY * 16 * 16 + $localZ * 16 + $localX;
+        $section = $this->sections[$sectionY];
+
+        $palette = $section['palette'];
+        $data = $section['data'];
+        $paletteBlockCount = count($palette->getBlocks());
+        $bitsPerBlock = max(4, (int)ceil(log($paletteBlockCount, 2)));
+
+        $bitOffset = $index * $bitsPerBlock;
+        $longIndex = $bitOffset >> 6;
+        $bitOffsetInLong = $bitOffset & 0x3F;
+        $packedLong = $data[$longIndex];
+
+        $mask = (1 << $bitsPerBlock) - 1;
+        $blockIndexInPalette = ($packedLong >> $bitOffsetInLong) & $mask;
+        $material = Material::cases()[$palette->getBlocks()[$blockIndexInPalette]];
+
+        return new Block(Artisan::getServer(), $material, new Location($x, $y, $z));
     }
 }

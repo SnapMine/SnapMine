@@ -27,6 +27,7 @@ use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\PlayerLoadedPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\SetCarriedItemPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\SetCreativeModeSlotPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\SwingPacket;
+use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\UseItemOnPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Status\PingPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Status\StatusRequestPacket;
 
@@ -73,6 +74,7 @@ class Protocol
             0x14 => CustomPlayloadPacket::class,
             0x33 => SetCarriedItemPacket::class,
             0x36 => SetCreativeModeSlotPacket::class,
+            0x3E => UseItemOnPacket::class,
         ],
     ];
 }

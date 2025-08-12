@@ -14,6 +14,14 @@ class Artisan
         self::$server = $server;
     }
 
+    /**
+     * @return Server|null
+     */
+    public static function getServer(): ?Server
+    {
+        return self::$server;
+    }
+
     public static function getPlayers(): array
     {
         return self::$server->getPlayers();
