@@ -4,28 +4,174 @@ namespace Nirbose\PhpMcServ\World\Chunk;
 
 use Aternos\Nbt\Tag\CompoundTag;
 use Exception;
+use Nirbose\PhpMcServ\Block\AttachedFace;
+use Nirbose\PhpMcServ\Block\BlockType;
+use Nirbose\PhpMcServ\Block\Data\Age;
+use Nirbose\PhpMcServ\Block\Data\Attached;
+use Nirbose\PhpMcServ\Block\Data\BlockData;
+use Nirbose\PhpMcServ\Block\Data\FaceAttachable;
+use Nirbose\PhpMcServ\Block\Data\Facing;
+use Nirbose\PhpMcServ\Block\Data\Level;
+use Nirbose\PhpMcServ\Block\Data\Lightable;
+use Nirbose\PhpMcServ\Block\Data\MultipleFacing;
+use Nirbose\PhpMcServ\Block\Data\Openable;
+use Nirbose\PhpMcServ\Block\Data\Powerable;
+use Nirbose\PhpMcServ\Block\Data\Rotatable;
+use Nirbose\PhpMcServ\Block\Data\Waterlogged;
+use Nirbose\PhpMcServ\Block\Direction;
+use Nirbose\PhpMcServ\Material;
 use Nirbose\PhpMcServ\World\PalettedContainer;
 
 class ChunkSection
 {
-    private int $blockCount;
-    private PalettedContainer $palette;
-    private array $data = [];
-    private int $bitsPerBlock;
+    private int $blockCount = 4096;
+    private PalettedContainer $palettedContainer;
 
-    public function __construct(CompoundTag $tag)
+    /**
+     * @throws Exception
+     */
+    public function __construct(CompoundTag $tag, private array $blockLight, private array $skyLight) // TODO: Il faudrait que la logique de création soit ailleurs passer les arguments par des NBT c'es pas ouf
     {
-        $this->palette = new PalettedContainer();
+        $this->palettedContainer = new PalettedContainer(
+            $this->loadPalette($tag),
+            $this->loadBlocksData($tag)
+        );
 
-        $this->palette->setData($tag->getCompound('block_states')->getList('palette'));
+        $index = array_search(BlockType::AIR->createBlockData(), $this->palettedContainer->getPalette());
 
-        foreach ($tag->getLongArray('data') as $long) {
-            $this->data[] = $long->getValue();
+        if (is_int($index)) {
+            $this->blockCount = 0;
+            for ($i = 0; $i < 4096; $i++) {
+                if (Material::AIR !== $this->palettedContainer[$i]->getMaterial()) {
+                    $this->blockCount++;
+                }
+            }
+        }
+    }
+
+    private function getBlockFromNBT(CompoundTag $blockState): BlockData
+    {
+        $b = BlockType::find($blockState->getString("Name")->getValue())->createBlockData();
+        $properties = $blockState->getCompound('Properties');
+
+        if ($properties == null) {
+            return $b;
         }
 
-        $paletteBlockCount = count($this->palette->getBlocks());
-        $this->bitsPerBlock = max(4, (int)ceil(log($paletteBlockCount, 2)));
+        if (has_trait(Age::class, $b)) {
+            /** @var Age $b */
+            $b->setAge(intval($properties->getString("age")->getValue()));
+        }
+
+        if (has_trait(Attached::class, $b)) {
+            /** @var Attached $b */
+            $b->setAttached($properties->getString("attached")->getValue() === "true");
+        }
+
+        if (has_trait(FaceAttachable::class, $b)) {
+            /** @var FaceAttachable $b */
+            $b->setAttachedFace(AttachedFace::from($properties->getString("face")->getValue()));
+        }
+
+        if (has_trait(Facing::class, $b)) {
+            /** @var Facing $b */
+            $b->setFacing(Direction::from($properties->getString("facing")->getValue()));
+        }
+
+        if (has_trait(Level::class, $b)) {
+            /** @var Level $b */
+            $b->setLevel(intval($properties->getString("level")->getValue()));
+        }
+
+        if (has_trait(Lightable::class, $b)) {
+            /** @var Lightable $b */
+            $b->setLit($properties->getString("lit")->getValue() === "true");
+        }
+
+        if (has_trait(MultipleFacing::class, $b)) {
+            /** @var MultipleFacing $b */
+            foreach ($b->getAllowedFaces() as $face) {
+                if ($properties->getString(strtolower($face->name))->getValue() === "true") {
+                    $b->setFace($face);
+                }
+            }
+        }
+        if (has_trait(Openable::class, $b)) {
+            /** @var Openable $b */
+            $b->setOpen($properties->getString("open")->getValue() === "true");
+        }
+
+        if (has_trait(Powerable::class, $b)) {
+            /** @var Powerable $b */
+            $b->setPower($properties->getString("powered")->getValue() === "true");
+        }
+
+        if (has_trait(Rotatable::class, $b)) {
+            /** @var Rotatable $b */
+            $b->setRotation(intval($properties->getString("rotation")->getValue()));
+        }
+
+        if (has_trait(Waterlogged::class, $b)) {
+            /** @var Waterlogged $b */
+            $b->setWaterlogged($properties->getString("waterlogged")->getValue() === "true");
+        }
+
+        return $b;
     }
+
+    /**
+     * @throws Exception
+     */
+    private function loadPalette(CompoundTag $section): array
+    {
+        $palette = [];
+        $blockStatesCompound = $section->getCompound("block_states");
+        if (!$blockStatesCompound) {
+            return [BlockType::AIR->createBlockData()];
+        }
+
+        $paletteList = $blockStatesCompound->getList("palette");
+        if (!$paletteList) {
+            return [BlockType::AIR->createBlockData()];
+        }
+
+        foreach ($paletteList as $blockStateNBT) {
+            if (!$blockStateNBT instanceof CompoundTag) {
+                throw new Exception("Invalid block state in palette, expected CompoundTag.");
+            }
+            try {
+                $palette[] = $this->getBlockFromNBT($blockStateNBT);
+            } catch (\Throwable $e) {
+                file_put_contents("err.txt", $blockStateNBT->__toString());
+                throw new Exception("Failed to load block from NBT: " . $e->getMessage());
+            }
+
+        }
+
+        return $palette;
+    }
+
+
+    private function loadBlocksData(CompoundTag $section): array
+    {
+        $blockStates = $section->getCompound("block_states");
+        if (!$blockStates) {
+            return [0];
+        }
+
+        $data = $blockStates->getLongArray("data");
+        if (!$data) {
+            return [0];
+        }
+
+        $blockData = [];
+        foreach ($data as $long) {
+            $blockData[] = $long;
+        }
+
+        return $blockData;
+    }
+
 
     /**
      * Get total block in this chunk
@@ -49,24 +195,9 @@ class ChunkSection
         $this->blockCount = $blockCount;
     }
 
-    /**
-     * @return array
-     */
-    public function getBlockStates(): array
+    public function getBlockData(int $localX, int $localY, int $localZ): BlockData
     {
-        return $this->palette->getBlocks();
-    }
-
-    public function getBlock(int $localX, int $localY, int $localZ): int
-    {
-        $index = $localX + $localZ << 4 + $localY << 8;
-        $bitOffset = $index * $this->bitsPerBlock;
-        $longIndex =  $bitOffset >> 6;
-        $bitOffsetInLong = $bitOffset & 0x3F;
-        $mask = (1 << $this->bitsPerBlock) - 1;
-
-        $paletteIndex = ($this->data[$longIndex] >> $bitOffsetInLong) & $mask;
-        return $this->palette[$localX + $localZ << 4 + $localY << 8];
+        return $this->palettedContainer[$localX + $localZ << 4 + $localY << 8];
     }
 
 

@@ -9,4 +9,6 @@ interface BlockData
 {
     public function getMaterial(): Material;
     public function computedId(BlockStateLoader $loader): int;
+
+
 }

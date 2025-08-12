@@ -7,6 +7,7 @@ use Aternos\Nbt\Tag\LongArrayTag;
 use Exception;
 use Nirbose\PhpMcServ\Artisan;
 use Nirbose\PhpMcServ\Block\Block;
+use Nirbose\PhpMcServ\Block\BlockType;
 use Nirbose\PhpMcServ\Material;
 use Nirbose\PhpMcServ\World\Location;
 use Nirbose\PhpMcServ\World\PalettedContainer;
@@ -62,6 +63,9 @@ class Chunk
         }
     }
 
+    /**
+     * @throws Exception
+     */
     private function loadSections(): void
     {
         $sectionsTag = $this->nbt->getList("sections");
@@ -69,102 +73,23 @@ class Chunk
 
         foreach ($sectionsTag as $section) {
             $y = $section->getByte("Y")->getValue();
-            $palette = $this->loadPalette($section);
-            $data = $this->loadBlocksData($section);
-
-            $paletteBlockCount = count($palette->getBlocks());
-            $bitsPerBlock = max(4, (int)ceil(log($paletteBlockCount, 2)));
-            foreach ($data as $packedLong) {
-                $indices = $this->unpackData($packedLong, $bitsPerBlock);
-
-                foreach ($indices as $index) {
-                    if ($index >= $paletteBlockCount) {
-                        throw new Exception("Invalid block index found in chunk data! Index {$index} is out of bounds for a palette of size {$paletteBlockCount}.");
-                    }
-                }
-            }
 
             $blockLight = $this->loadLightingData($section, "BlockLight");
             $skyLight = $this->loadLightingData($section, "SkyLight");
-            $totalBlock = $this->getTotalBlockSection($palette, $data, $bitsPerBlock);
 
-            $this->sections[$y] = [
-                'palette' => $palette,
-                'data' => $data,
-                'totalBlock' => $totalBlock,
-                'blockLight' => $blockLight,
-                'skyLight' => $skyLight,
-            ];
+            //try {
+            $this->sections[$y] = new ChunkSection($section, $blockLight, $skyLight);
+            //} catch (Exception $exception) {
+             //   throw new Exception("Failed to load chunk section at Y={$y}: " . $exception->getMessage());
+            //}
         }
     }
 
-    private function getTotalBlockSection(PalettedContainer $palette, array $data, int $bitsPerBlock): int
-    {
-        $n = array_map(function ($packedLong) use ($palette, $bitsPerBlock) {
-            $indices = $this->unpackData($packedLong, $bitsPerBlock);
-            $filter = array_filter($indices, function ($index) use ($palette) {
-                return $palette->getBlocks()[$index] > 0;
-            });
 
-            return array_sum($filter);
-        }, $data);
 
-        return array_sum($n);
-    }
 
-    private function unpackData(int|string $packedLong, int $bitsPerBlock): array
-    {
-        $indices = [];
-        $long = (int)$packedLong;
-        $indicesPerLong = floor(64 / $bitsPerBlock);
-        $mask = (1 << $bitsPerBlock) - 1;
 
-        for ($i = 0; $i < $indicesPerLong; $i++) {
-            $shift = $i * $bitsPerBlock;
-            $index = ($long >> $shift) & $mask;
-            $indices[] = $index;
-        }
 
-        return $indices;
-    }
-
-    private function loadPalette(CompoundTag $section): PalettedContainer
-    {
-        $blockStates = $section->getCompound("block_states");
-        if (!$blockStates) {
-            return new PalettedContainer();
-        }
-
-        $paletteList = $blockStates->getList("palette");
-        if (!$paletteList) {
-            return new PalettedContainer();
-        }
-
-        $palette = new PalettedContainer();
-        $palette->addBlocks($paletteList);
-
-        return $palette;
-    }
-
-    private function loadBlocksData(CompoundTag $section): array
-    {
-        $blockStates = $section->getCompound("block_states");
-        if (!$blockStates) {
-            return [];
-        }
-
-        $data = $blockStates->getLongArray("data");
-        if (!$data) {
-            return [];
-        }
-
-        $blockData = [];
-        foreach ($data as $long) {
-            $blockData[] = $long;
-        }
-
-        return $blockData;
-    }
 
     private function loadLightingData(CompoundTag $section, string $key): array
     {
@@ -276,28 +201,15 @@ class Chunk
 
     public function getBlock(int $x, int $y, int $z): Block
     {
-        $sectionY = $y >> 4;
-        $localY = $y & 0xF;
-        $localX = $x & 0xF;
-        $localZ = $z & 0xF;
+        $sectionIndex = $y >> 4;
+        $location = new Location($x, $y, $z);
 
-        $index = $localY * 16 * 16 + $localZ * 16 + $localX;
-        $section = $this->sections[$sectionY];
+        if (!isset($this->sections[$sectionIndex])) {
+            return new Block(Artisan::getServer(), $location, BlockType::AIR->createBlockData());
+        }
 
-        $palette = $section['palette'];
-        $data = $section['data'];
-        $paletteBlockCount = count($palette->getBlocks());
-        $bitsPerBlock = max(4, (int)ceil(log($paletteBlockCount, 2)));
+        $blockData = $this->sections[$sectionIndex]->getBlockData($x, $y & 0xF, $z);
 
-        $bitOffset = $index * $bitsPerBlock;
-        $longIndex = $bitOffset >> 6;
-        $bitOffsetInLong = $bitOffset & 0x3F;
-        $packedLong = $data[$longIndex];
-
-        $mask = (1 << $bitsPerBlock) - 1;
-        $blockIndexInPalette = ($packedLong >> $bitOffsetInLong) & $mask;
-        $material = Material::cases()[$palette->getBlocks()[$blockIndexInPalette]];
-
-        return new Block(Artisan::getServer(), $material, new Location($x, $y, $z));
+        return new Block(Artisan::getServer(), $location, $blockData);
     }
 }

@@ -45,8 +45,9 @@ class ChunkDataAndUpdateLightPacket extends ClientboundPacket
         $sections = $chunk->getSections();
 
         for ($i = 0; $i < 24; $i++) {
+            $sectionY = $i - 5;
 
-            if (!isset($sections[$i - 5])) {
+            if (!isset($sections[$sectionY])) {
                 $dataBuf->putShort(0)
                     ->putByte(0)
                     ->putVarInt(0)
@@ -56,13 +57,11 @@ class ChunkDataAndUpdateLightPacket extends ClientboundPacket
                 continue;
             }
 
-            $section = $sections[$i - 5];
+            $section = $sections[$sectionY];
 
-            /** @var PalettedContainer $palette */
-            $palette = $section['palette'];
-            $totalBlock = $section['totalBlock'];
+            $blockCount = $section->getBlockCount();
 
-            if ($totalBlock == 0) {
+            if ($blockCount == 0) {
                 $dataBuf->putShort(0)
                     ->putByte(0)
                     ->putVarInt(0)
@@ -72,20 +71,24 @@ class ChunkDataAndUpdateLightPacket extends ClientboundPacket
                 continue;
             }
 
-            $data = $section['data'];
+            $palettedContainer = $section->getPalettedContainer();
+            $palette = $palettedContainer->getPalette();
+            $data = $palettedContainer->getData();
 
-            $dataBuf->putShort($totalBlock);
+            $dataBuf->putShort($blockCount);
 
-            $paletteSize = count($palette->getBlocks());
+            $paletteSize = count($palette);
             $bitsPerBlock = max(4, (int)ceil(log($paletteSize, 2)));
 
             $dataBuf->putByte($bitsPerBlock)
                 ->putVarInt($paletteSize);
 
-            foreach ($palette->getBlocks() as $block) {
-                $dataBuf->putVarInt($block);
+            foreach ($palette as $blockData) {
+                $blockId = $blockData->computedId(Artisan::getBlockStateLoader());
+                $dataBuf->putVarInt($blockId);
             }
 
+            $dataBuf->putVarInt(count($data));
             foreach ($data as $long) {
                 $dataBuf->putLong($long);
             }
@@ -98,7 +101,7 @@ class ChunkDataAndUpdateLightPacket extends ClientboundPacket
         $serializer->putVarInt(strlen($dataBuf->get()))
             ->put($dataBuf->get());
 
-        $serializer->putVarInt(0); // Block entities
+        $serializer->putVarInt(count($chunk->getBlockEntities())); // Block entities
 
         $skyLightMask = new BitSet(24);
         $blockLightMask = new BitSet(24);
@@ -109,16 +112,16 @@ class ChunkDataAndUpdateLightPacket extends ClientboundPacket
 
         $sections = $chunk->getSections();
         foreach ($sections as $y => $section) {
-            $hasSkyLight = !empty($section['skyLight']);
-            $hasBlockLight = !empty($section['blockLight']);
+            $hasSkyLight = !empty($section->getSkyLight());
+            $hasBlockLight = !empty($section->getBlockLight());
 
             if ($hasSkyLight) {
                 $skyLightMask->set($y + 5, true);
-                $skyLightData[] = $section['skyLight'];
+                $skyLightData[] = $section->getSkyLight();
             }
             if ($hasBlockLight) {
                 $blockLightMask->set($y + 5, true);
-                $blockLightData[] = $section['blockLight'];
+                $blockLightData[] = $section->getBlockLight();
             }
 
             if (!$hasSkyLight) {

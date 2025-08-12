@@ -4,9 +4,13 @@ namespace Nirbose\PhpMcServ\World;
 
 use ArrayAccess;
 use Aternos\Nbt\Tag\CompoundTag;
+use InvalidArgumentException;
 use Iterator;
+use RuntimeException;
 
-abstract class PalettedContainer implements ArrayAccess, Iterator
+
+// Pas besoin de sous-classes en fait, on l'utilise comme un array
+class PalettedContainer implements ArrayAccess
 {
     protected int $bitsPerEntry;
 
@@ -15,11 +19,22 @@ abstract class PalettedContainer implements ArrayAccess, Iterator
      * @param array $data
      */
     public function __construct(
-        protected array $palette,
-        protected array $data,
+        protected readonly array $palette,
+        protected array          $data,
     )
+    {   // TODO: Single value palette (j'ai remis le max)
+        $this->bitsPerEntry = max(4, (int)ceil(log(count($this->palette), 2)));
+    }
+
+
+    public function getData(): array
     {
-        $this->bitsPerEntry = (int)ceil(log(count($this->palette), 2));
+        return $this->data;
+    }
+
+    public function getPalette(): array
+    {
+        return $this->palette;
     }
 
     /**
@@ -35,7 +50,24 @@ abstract class PalettedContainer implements ArrayAccess, Iterator
      */
     public function offsetGet(mixed $offset): mixed
     {
-        return $this->data[$offset];
+        if (!is_int($offset)) {
+            throw new InvalidArgumentException("Offset must be an integer.");
+        }
+
+        $bpe = $this->bitsPerEntry;
+
+        $valsPerLong = intdiv(64, $bpe);
+
+        $longIndex = intdiv($offset, $valsPerLong);
+        $inLongIdx = $offset % $valsPerLong;
+        $bitInLong = $inLongIdx * $bpe;
+
+        $mask = (1 << $bpe) - 1;
+
+        $lo = $this->data[$longIndex] ?? 0;
+        $indexInPalette = ($lo >> $bitInLong) & $mask;
+
+        return $this->palette[$indexInPalette];
     }
 
     /**
@@ -43,8 +75,43 @@ abstract class PalettedContainer implements ArrayAccess, Iterator
      */
     public function offsetSet(mixed $offset, mixed $value): void
     {
-        $this->data[$offset] = $value;
+        if (!is_int($offset)) {
+            throw new InvalidArgumentException("Offset must be an integer.");
+        }
+        if (!is_int($value)) {
+            throw new InvalidArgumentException("Value must be an integer (palette index).");
+        }
+
+        $bpe = $this->bitsPerEntry;
+        if ($bpe <= 0) {
+            throw new RuntimeException("bitsPerEntry must be > 0");
+        }
+
+        $valsPerLong = intdiv(64, $bpe);
+        if ($valsPerLong <= 0) {
+            throw new RuntimeException("bitsPerEntry must be <= 64");
+        }
+
+        $longIndex = intdiv($offset, $valsPerLong);
+        $inLongIdx = $offset % $valsPerLong;
+        $bitInLong = $inLongIdx * $bpe;
+
+        $maskEntry = (1 << $bpe) - 1;
+        $value    &= $maskEntry;                     // clamp à la largeur
+        $FULL64    = 0xFFFFFFFFFFFFFFFF;
+
+        // S'assurer que le slot existe
+        if (!isset($this->data[$longIndex])) {
+            $this->data[$longIndex] = 0;
+        }
+
+        $clear = $FULL64 ^ (($maskEntry << $bitInLong) & $FULL64);
+        $cur   = $this->data[$longIndex] & $FULL64;
+
+        $cur   = ($cur & $clear) | ((($value & $maskEntry) << $bitInLong) & $FULL64);
+        $this->data[$longIndex] = $cur;
     }
+
 
     /**
      * @inheritDoc
@@ -54,43 +121,7 @@ abstract class PalettedContainer implements ArrayAccess, Iterator
         unset($this->data[$offset]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function current(): mixed
-    {
-        return current($this->data);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function next(): void
-    {
-        next($this->data);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function key(): string|int|null
-    {
-        return key($this->data);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function valid(): bool
-    {
-        return current($this->data) !== false;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function rewind(): void
-    {
-        reset($this->data);
-    }
+    // J'ai supprimé Iterator pour l'instant parce que les valeurs étaient celle de
+    // la data mais brute. On itérera avec un compteur pour l'instant.
+    // A voir si on l'implémente plus tard.
 }

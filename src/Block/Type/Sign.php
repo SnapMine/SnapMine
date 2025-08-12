@@ -28,7 +28,6 @@ class Sign implements BlockData
     public function computedId(BlockStateLoader $loader): int
     {
         return $loader->getBlockStateId($this->material, [
-            'facing' => $this->facing->value,
             'rotation' => $this->rotation,
             'waterlogged' => $this->waterlogged,
         ]);

@@ -2,6 +2,7 @@
 
 namespace Nirbose\PhpMcServ\Block;
 
+use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Material;
 use Nirbose\PhpMcServ\Server;
 use Nirbose\PhpMcServ\World\Chunk\Chunk;
@@ -11,8 +12,8 @@ class Block
 {
     public function __construct(
         private readonly Server   $server,
-        private Material          $material,
-        private readonly Location $location
+        private readonly Location $location,
+        private BlockData         $blockData,
     )
     {
     }
