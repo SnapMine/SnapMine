@@ -2,25 +2,32 @@
 
 namespace Nirbose\PhpMcServ\Registry;
 
+use Aternos\Nbt\Tag\ByteTag;
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\StringTag;
-use Nirbose\PhpMcServ\Keyed;
 use RuntimeException;
 
 /**
- * @method static TrimMaterial AMETHYST()
- * @method static TrimMaterial COPPER()
- * @method static TrimMaterial DIAMOND()
- * @method static TrimMaterial EMERALD()
- * @method static TrimMaterial GOLD()
- * @method static TrimMaterial IRON()
- * @method static TrimMaterial LAPIS()
- * @method static TrimMaterial NETHERITE()
- * @method static TrimMaterial QUARTZ()
- * @method static TrimMaterial REDSTONE()
- * @method static TrimMaterial RESIN()
+ * @method static TrimPattern BOLT()
+ * @method static TrimPattern COAST()
+ * @method static TrimPattern DUNE()
+ * @method static TrimPattern EYE()
+ * @method static TrimPattern FLOW()
+ * @method static TrimPattern HOST()
+ * @method static TrimPattern RAISER()
+ * @method static TrimPattern RIB()
+ * @method static TrimPattern SENTRY()
+ * @method static TrimPattern SHAPER()
+ * @method static TrimPattern SILENCE()
+ * @method static TrimPattern SNOUT()
+ * @method static TrimPattern SPIRE()
+ * @method static TrimPattern TIDE()
+ * @method static TrimPattern VEX()
+ * @method static TrimPattern WARD()
+ * @method static TrimPattern WAYFINDER()
+ * @method static TrimPattern WILD()
  */
-class TrimMaterial implements Keyed
+class TrimPattern
 {
     /** @var array<string, self> */
     private static array $entries = [];
@@ -67,9 +74,9 @@ class TrimMaterial implements Keyed
         $base = new CompoundTag();
 
         $base
-            ->set('asset_name', (new StringTag())->setValue($this->data['asset_name']))
+            ->set('asset_id', (new StringTag())->setValue($this->data['asset_id']))
+            ->set('decal', (new ByteTag())->setValue($this->data['decal']))
             ->set('description', (new CompoundTag())
-                ->set('color', (new StringTag())->setValue($this->data['description']['color']))
                 ->set('translate', (new StringTag())->setValue($this->data['description']['translate']))
             );
 

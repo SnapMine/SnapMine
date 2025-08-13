@@ -25,6 +25,8 @@ use Nirbose\PhpMcServ\Listener\PlayerJoinListener;
 use Nirbose\PhpMcServ\Manager\KeepAliveManager;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\AddEntityPacket;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Registry\Registry;
+use Nirbose\PhpMcServ\Registry\TrimMaterial;
 use Nirbose\PhpMcServ\Session\Session;
 use Nirbose\PhpMcServ\World\Chunk\Chunk;
 use Nirbose\PhpMcServ\World\Location;
@@ -56,6 +58,7 @@ class Server
     {
         $this->eventManager = new EventManager();
         $this->blockStateLoader = new BlockStateLoader(__DIR__ . '/../resources/blocks.json');
+        Registry::load(dirname(__DIR__) . '/resources/registries/');
     }
 
     public function start(): void

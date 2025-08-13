@@ -13,7 +13,7 @@ class RegistryDataPacket extends ClientboundPacket
 {
     /**
      * @param string $registryId
-     * @param array<string, CompoundTag> $entries
+     * @param array<string, object> $entries
      */
     public function __construct(
         private readonly string $registryId,
@@ -33,7 +33,7 @@ class RegistryDataPacket extends ClientboundPacket
             ->putVarInt(count($this->entries));
 
         foreach ($this->entries as $entry) {
-            $serializer->putNBT($entry);
+            $serializer->putNBT($entry->toNbt());
         }
     }
 
