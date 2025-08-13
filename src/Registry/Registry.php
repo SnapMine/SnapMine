@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ;
+namespace Nirbose\PhpMcServ\Registry;
 
 use Aternos\Nbt\Tag\ByteTag;
 use Aternos\Nbt\Tag\DoubleTag;
