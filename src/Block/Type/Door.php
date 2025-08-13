@@ -13,7 +13,7 @@ use Nirbose\PhpMcServ\Material;
 
 class Door extends GenericBisected implements BlockData
 {
-    use Facing, Openable, Powerable, Waterlogged;
+    use Facing, Openable, Powerable;
     private string $hinge = 'left';
 
     public function __construct(Material $material)
@@ -26,8 +26,7 @@ class Door extends GenericBisected implements BlockData
         return $loader->getBlockStateId($this->getMaterial(), [
             'facing' => $this->facing->value,
             'open' => $this->open,
-            'waterlogged' => $this->waterlogged,
-            'power' => $this->isPower(),
+            'powered' => $this->isPower(),
             'half' => $this->getHalf(),
             'hinge' => $this->hinge,
         ]);

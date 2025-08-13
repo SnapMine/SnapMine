@@ -200,6 +200,29 @@ class ChunkSection
         return $this->palettedContainer[$localX + $localZ << 4 + $localY << 8];
     }
 
+    /**
+     * @return PalettedContainer
+     */
+    public function getPalettedContainer(): PalettedContainer
+    {
+        return $this->palettedContainer;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBlockLight(): array
+    {
+        return $this->blockLight;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSkyLight(): array
+    {
+        return $this->skyLight;
+    }
 
     public function isEmpty(): bool
     {

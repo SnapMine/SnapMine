@@ -23,7 +23,7 @@ class Block
      */
     public function getMaterial(): Material
     {
-        return $this->material;
+        return $this->blockData->getMaterial();
     }
 
     /**
@@ -31,7 +31,7 @@ class Block
      */
     public function setMaterial(Material $material): void
     {
-        $this->material = $material;
+        $this->blockData = BlockType::find($material)->createBlockData();
 
         // TODO: Update for player client
     }

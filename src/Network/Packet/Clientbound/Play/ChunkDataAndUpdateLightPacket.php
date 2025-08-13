@@ -6,6 +6,7 @@ use Nirbose\PhpMcServ\Artisan;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Utils\BitSet;
+use Nirbose\PhpMcServ\World\Chunk\ChunkSection;
 use Nirbose\PhpMcServ\World\Chunk\HeightmapType;
 use Nirbose\PhpMcServ\World\PalettedContainer;
 

@@ -16,6 +16,7 @@ class Chunk
 {
     private ?CompoundTag $nbt = null;
     private array $heightmaps = [];
+    /** @var ChunkSection[] */
     private array $sections = [];
     private array $blockEntities = [];
     private array $blockLight = [];
