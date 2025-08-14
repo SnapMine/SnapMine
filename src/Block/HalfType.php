@@ -2,7 +2,7 @@
 
 namespace Nirbose\PhpMcServ\Block;
 
-enum Half: string
+enum HalfType: string
 {
     case LOWER = 'lower';
     case UPPER = 'upper';

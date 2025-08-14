@@ -70,7 +70,6 @@ class BlockStateLoader
             $propertyName = $propertyNames[$i];
 
             if (!isset($propertyValues[$propertyName])) {
-                var_dump($propertyValues);
                 throw new Exception("Property '{$propertyName}' is missing in the provided property values for block {$blockName}.");
             }
             $propertyValue = $propertyValues[$propertyName];

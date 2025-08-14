@@ -11,6 +11,7 @@ use Nirbose\PhpMcServ\Block\Data\Attached;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Block\Data\FaceAttachable;
 use Nirbose\PhpMcServ\Block\Data\Facing;
+use Nirbose\PhpMcServ\Block\Data\Half;
 use Nirbose\PhpMcServ\Block\Data\Level;
 use Nirbose\PhpMcServ\Block\Data\Lightable;
 use Nirbose\PhpMcServ\Block\Data\MultipleFacing;
@@ -20,12 +21,16 @@ use Nirbose\PhpMcServ\Block\Data\Rotatable;
 use Nirbose\PhpMcServ\Block\Data\Type;
 use Nirbose\PhpMcServ\Block\Data\Waterlogged;
 use Nirbose\PhpMcServ\Block\Direction;
+use Nirbose\PhpMcServ\Block\HalfType;
+use Nirbose\PhpMcServ\Block\StairsShape;
+use Nirbose\PhpMcServ\Block\Type\Stairs;
 use Nirbose\PhpMcServ\Material;
 use Nirbose\PhpMcServ\World\PalettedContainer;
 
 class ChunkSection
 {
     private int $blockCount = 4096;
+    /** @var PalettedContainer<BlockData> */
     private PalettedContainer $palettedContainer;
 
     /**
@@ -117,9 +122,18 @@ class ChunkSection
             $b->setWaterlogged($properties->getString("waterlogged")->getValue() === "true");
         }
 
-        if(has_trait(Type::class, $b)) {
+        if (has_trait(Type::class, $b)) {
             /** @var Type $b */
             $b->setType($properties->getString("type")->getValue());
+        }
+
+        if (has_trait(Half::class, $b)) {
+            /** @var Half $b */
+            $b->setHalf(HalfType::from($properties->getString('half')->getValue()));
+        }
+
+        if ($b instanceof Stairs) {
+            $b->setShape(StairsShape::from($properties->getString('shape')->getValue()));
         }
 
         return $b;
@@ -151,12 +165,8 @@ class ChunkSection
                 file_put_contents("err.txt", $blockStateNBT->__toString());
                 throw new Exception("Failed to load block from NBT: " . $e->getMessage());
             }
-
         }
 
-        if(count($palette) > 4) {
-            var_dump($palette);
-        }
         return $palette;
     }
 
@@ -210,7 +220,7 @@ class ChunkSection
     }
 
     /**
-     * @return PalettedContainer
+     * @return PalettedContainer<BlockData>
      */
     public function getPalettedContainer(): PalettedContainer
     {

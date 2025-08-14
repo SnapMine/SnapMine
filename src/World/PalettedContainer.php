@@ -11,14 +11,16 @@ use Nirbose\PhpMcServ\Material;
 use RuntimeException;
 
 
-// Pas besoin de sous-classes en fait, on l'utilise comme un array
+/**
+ * @template T
+ */
 class PalettedContainer implements ArrayAccess
 {
     protected int $bitsPerEntry;
 
     /**
-     * @param array $palette
-     * @param array $data
+     * @param T[] $palette
+     * @param array<int> $data
      */
     public function __construct(
         protected readonly array $palette,
@@ -38,6 +40,9 @@ class PalettedContainer implements ArrayAccess
         return $this->data;
     }
 
+    /**
+     * @return T[]
+     */
     public function getPalette(): array
     {
         return $this->palette;
@@ -59,8 +64,6 @@ class PalettedContainer implements ArrayAccess
         if (!is_int($offset)) {
             throw new InvalidArgumentException("Offset must be an integer.");
         }
-
-
 
         $bpe = $this->bitsPerEntry;
 
