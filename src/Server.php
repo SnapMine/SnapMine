@@ -9,6 +9,7 @@ use Monolog\Level;
 use Monolog\Logger;
 use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Entity\AreaEffectCloud;
+use Nirbose\PhpMcServ\Entity\Cow;
 use Nirbose\PhpMcServ\Entity\DragonFireball;
 use Nirbose\PhpMcServ\Entity\EndCrystal;
 use Nirbose\PhpMcServ\Entity\Entity;
@@ -26,6 +27,8 @@ use Nirbose\PhpMcServ\Manager\KeepAliveManager;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\AddEntityPacket;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\PlayerInfoRemovePacket;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Registry\Registry;
+use Nirbose\PhpMcServ\Registry\TrimMaterial;
 use Nirbose\PhpMcServ\Session\Session;
 use Nirbose\PhpMcServ\World\Chunk\Chunk;
 use Nirbose\PhpMcServ\World\Location;
@@ -58,6 +61,7 @@ class Server
     {
         $this->eventManager = new EventManager();
         $this->blockStateLoader = new BlockStateLoader(__DIR__ . '/../resources/blocks.json');
+        Registry::load(dirname(__DIR__) . '/resources/registries/');
     }
 
     public function __destruct()
@@ -316,7 +320,7 @@ class Server
             EntityType::CHICKEN => throw new \Exception('To be implemented'),
             EntityType::COD => throw new \Exception('To be implemented'),
             EntityType::COMMAND_BLOCK_MINECART => throw new \Exception('To be implemented'),
-            EntityType::COW => throw new \Exception('To be implemented'),
+            EntityType::COW => new Cow($this, $location),
             EntityType::CREAKING => throw new \Exception('To be implemented'),
             EntityType::CREEPER => throw new \Exception('To be implemented'),
             EntityType::DARK_OAK_BOAT => throw new \Exception('To be implemented'),
