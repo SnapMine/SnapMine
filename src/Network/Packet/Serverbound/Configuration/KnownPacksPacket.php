@@ -6,6 +6,7 @@ use Nirbose\PhpMcServ\Network\Packet\Clientbound\Configuration\FinishConfigurati
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Configuration\RegistryDataPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
+use Nirbose\PhpMcServ\Registry\Registry;
 use Nirbose\PhpMcServ\Session\Session;
 
 class KnownPacksPacket extends ServerboundPacket
@@ -36,11 +37,13 @@ class KnownPacksPacket extends ServerboundPacket
 
     public function handle(Session $session): void
     {
-        $json = file_get_contents('./resources/registry_data.json');
-        $registries = json_decode($json);
+        $registries = Registry::cases();
 
-        foreach ($registries as $id => $registry) {
-            $packet = new RegistryDataPacket($id, $registry);
+        foreach ($registries as $registry) {
+            $packet = new RegistryDataPacket(
+                'minecraft:' . str_replace('__', '/', strtolower($registry->name)),
+                $registry->value::getEntries()
+            );
 
             $session->sendPacket($packet);
         }
