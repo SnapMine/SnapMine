@@ -5,7 +5,6 @@ namespace Nirbose\PhpMcServ\Entity\Variant;
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\StringTag;
 use Aternos\Nbt\Tag\Tag;
-use Nirbose\PhpMcServ\Registry\RegistryData;
 
 /**
  * @method static CowVariant COLD()
@@ -20,13 +19,14 @@ class CowVariant
     public function __construct(
         protected readonly string $key,
         protected readonly array $data,
+        protected readonly int $id,
     )
     {
     }
 
     public static function register(string $name, string $key, array $data): self
     {
-        $instance = new static($key, $data);
+        $instance = new static($key, $data, count(self::$entries));
         self::$entries[strtoupper($name)] = $instance;
 
         return $instance;
@@ -52,6 +52,11 @@ class CowVariant
     public static function getEntries(): array
     {
         return self::$entries;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
     }
 
     public function toNbt(): Tag
