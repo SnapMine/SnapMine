@@ -8,6 +8,8 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
 use Nirbose\PhpMcServ\Block\BlockStateLoader;
+use Nirbose\PhpMcServ\Entity\Animal\Armadillo;
+use Nirbose\PhpMcServ\Entity\Animal\Bee;
 use Nirbose\PhpMcServ\Entity\Animal\Cow;
 use Nirbose\PhpMcServ\Entity\Animal\Sheep;
 use Nirbose\PhpMcServ\Entity\AreaEffectCloud;
@@ -275,14 +277,14 @@ class Server
             EntityType::ACACIA_CHEST_BOAT => throw new \Exception('To be implemented'),
             EntityType::ALLAY => throw new \Exception('To be implemented'),
             EntityType::AREA_EFFECT_CLOUD => new AreaEffectCloud($this, $location),
-            EntityType::ARMADILLO => throw new \Exception('To be implemented'),
+            EntityType::ARMADILLO => new Armadillo($this, $location),
             EntityType::ARMOR_STAND => throw new \Exception('To be implemented'),
             EntityType::ARROW => throw new \Exception('To be implemented'),
             EntityType::AXOLOTL => throw new \Exception('To be implemented'),
             EntityType::BAMBOO_CHEST_RAFT => throw new \Exception('To be implemented'),
             EntityType::BAMBOO_RAFT => throw new \Exception('To be implemented'),
             EntityType::BAT => throw new \Exception('To be implemented'),
-            EntityType::BEE => throw new \Exception('To be implemented'),
+            EntityType::BEE => new Bee($this, $location),
             EntityType::BIRCH_BOAT => throw new \Exception('To be implemented'),
             EntityType::BIRCH_CHEST_BOAT => throw new \Exception('To be implemented'),
             EntityType::BLAZE => throw new \Exception('To be implemented'),
