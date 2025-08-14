@@ -19,7 +19,7 @@ It aims to provide a flexible and modular foundation to quickly develop custom M
 - `src/`: Main source code (server, entities, packets, utilities, etc.)
 - `plugins/`: Custom plugins
 - `resources/`: Registry data and other resources
-- `gen_scripts/`: Automatic generation scripts (Python)
+- `scripts/`: Automatic generation scripts (Python)
 - `tests/`: Unit and integration tests
 - `mca-test/`: Test files for regions/chunks
 
