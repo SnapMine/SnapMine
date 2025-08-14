@@ -14,6 +14,7 @@ use Nirbose\PhpMcServ\Block\Type\Door;
 use Nirbose\PhpMcServ\Block\Type\Fence;
 use Nirbose\PhpMcServ\Block\Type\GenericBisected;
 use Nirbose\PhpMcServ\Block\Type\GenericBlockData;
+use Nirbose\PhpMcServ\Block\Type\GenericFacing;
 use Nirbose\PhpMcServ\Block\Type\GenericOrientable;
 use Nirbose\PhpMcServ\Block\Type\GenericSnowy;
 use Nirbose\PhpMcServ\Block\Type\GlassPane;
@@ -1933,7 +1934,7 @@ enum BlockType
             self::REDSTONE_LAMP => throw new Exception('To be implemented'),
             self::REDSTONE_ORE => throw new Exception('To be implemented'),
             self::REDSTONE_TORCH => throw new Exception('To be implemented'),
-            self::REDSTONE_WALL_TORCH => throw new Exception('To be implemented'),
+            self::REDSTONE_WALL_TORCH, self::SOUL_WALL_TORCH, self::WALL_TORCH => GenericFacing::class,
             self::REDSTONE_WIRE => throw new Exception('To be implemented'),
             self::REINFORCED_DEEPSLATE => throw new Exception('To be implemented'),
             self::REPEATER => throw new Exception('To be implemented'),
@@ -1992,7 +1993,6 @@ enum BlockType
             self::SOUL_SAND => throw new Exception('To be implemented'),
             self::SOUL_SOIL => throw new Exception('To be implemented'),
             self::SOUL_TORCH => throw new Exception('To be implemented'),
-            self::SOUL_WALL_TORCH => throw new Exception('To be implemented'),
             self::SPAWNER => throw new Exception('To be implemented'),
             self::SPONGE => throw new Exception('To be implemented'),
             self::SPORE_BLOSSOM => throw new Exception('To be implemented'),
@@ -2084,8 +2084,7 @@ enum BlockType
             self::VAULT => throw new Exception('To be implemented'),
             self::VERDANT_FROGLIGHT => throw new Exception('To be implemented'),
             self::VINE => throw new Exception('To be implemented'),
-            self::VOID_AIR => throw new Exception('To be implemented'),
-            self::WALL_TORCH => GenericBlockData::class, // TODO: Implement real logic
+            self::VOID_AIR => throw new Exception('To be implemented'), // TODO: Implement real logic
             self::WARPED_BUTTON => throw new Exception('To be implemented'),
             self::WARPED_DOOR => throw new Exception('To be implemented'),
             self::WARPED_FENCE_GATE => throw new Exception('To be implemented'),

@@ -30,6 +30,8 @@ class ChunkDataAndUpdateLightPacket extends ClientboundPacket
         ->putInt($this->chunkZ); // Chunk Z
 
         $chunk = Artisan::getRegion()->getChunk($this->chunkX, $this->chunkZ);
+
+
         $heightmaps = $chunk->getHeightmaps();
 
         $serializer->putVarInt(count($heightmaps));
@@ -62,7 +64,7 @@ class ChunkDataAndUpdateLightPacket extends ClientboundPacket
 
             $blockCount = $section->getBlockCount();
 
-            if ($blockCount == 0) {
+            if ($section->isEmpty()) {
                 $dataBuf->putShort(0)
                     ->putByte(0)
                     ->putVarInt(0)
@@ -89,7 +91,7 @@ class ChunkDataAndUpdateLightPacket extends ClientboundPacket
                 $dataBuf->putVarInt($blockId);
             }
 
-            $dataBuf->putVarInt(count($data));
+            //$dataBuf->putVarInt(count($data));
             foreach ($data as $long) {
                 $dataBuf->putLong($long);
             }
@@ -102,7 +104,8 @@ class ChunkDataAndUpdateLightPacket extends ClientboundPacket
         $serializer->putVarInt(strlen($dataBuf->get()))
             ->put($dataBuf->get());
 
-        $serializer->putVarInt(count($chunk->getBlockEntities())); // Block entities
+        //$serializer->putVarInt(count($chunk->getBlockEntities())); // Block entities
+        $serializer->putVarInt(0);
 
         $skyLightMask = new BitSet(24);
         $blockLightMask = new BitSet(24);
@@ -146,5 +149,9 @@ class ChunkDataAndUpdateLightPacket extends ClientboundPacket
         foreach ($blockLightData as $data) {
             $serializer->putByteArray($data);
         }
+
+
+        file_put_contents("yoo.txt", print_r($chunk, true), FILE_APPEND);
+        //echo "Content packet: " . bin2hex($serializer->get()) . "\n";
     }
 }

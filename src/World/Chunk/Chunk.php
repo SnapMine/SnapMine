@@ -8,13 +8,10 @@ use Exception;
 use Nirbose\PhpMcServ\Artisan;
 use Nirbose\PhpMcServ\Block\Block;
 use Nirbose\PhpMcServ\Block\BlockType;
-use Nirbose\PhpMcServ\Material;
 use Nirbose\PhpMcServ\World\Location;
-use Nirbose\PhpMcServ\World\PalettedContainer;
 
 class Chunk
 {
-    private ?CompoundTag $nbt = null;
     private array $heightmaps = [];
     /** @var ChunkSection[] */
     private array $sections = [];
@@ -34,20 +31,19 @@ class Chunk
      */
     public function loadFromNbt(CompoundTag $nbt): self
     {
-        $this->nbt = $nbt;
 
-        $this->loadHeightmaps();
-        $this->loadSections();
-        $this->loadBlockEntities();
+        $this->loadHeightmaps($nbt);
+        $this->loadSections($nbt);
+        //$this->loadBlockEntities($nbt);
 
         $this->loaded = true;
 
         return $this;
     }
 
-    private function loadHeightmaps(): void
+    private function loadHeightmaps(CompoundTag $nbt): void
     {
-        $heightmapsCompound = $this->nbt->getCompound("Heightmaps");
+        $heightmapsCompound = $nbt->getCompound("Heightmaps");
 
         if (!$heightmapsCompound) {
             return;
@@ -67,9 +63,9 @@ class Chunk
     /**
      * @throws Exception
      */
-    private function loadSections(): void
+    private function loadSections(CompoundTag $tag): void
     {
-        $sectionsTag = $this->nbt->getList("sections");
+        $sectionsTag = $tag->getList("sections");
         if (!$sectionsTag) return;
 
         foreach ($sectionsTag as $section) {
@@ -86,12 +82,6 @@ class Chunk
         }
     }
 
-
-
-
-
-
-
     private function loadLightingData(CompoundTag $section, string $key): array
     {
         $lightingTag = $section->getByteArray($key);
@@ -105,9 +95,9 @@ class Chunk
         return $lightingData;
     }
 
-    private function loadBlockEntities(): void
+    private function loadBlockEntities(CompoundTag $tag): void
     {
-        $blockEntitiesTag = $this->nbt->getList("block_entities");
+        $blockEntitiesTag = $tag->getList("block_entities");
         if (!$blockEntitiesTag) return;
 
         foreach ($blockEntitiesTag as $blockEntity) {

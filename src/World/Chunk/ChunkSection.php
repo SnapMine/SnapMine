@@ -17,6 +17,7 @@ use Nirbose\PhpMcServ\Block\Data\MultipleFacing;
 use Nirbose\PhpMcServ\Block\Data\Openable;
 use Nirbose\PhpMcServ\Block\Data\Powerable;
 use Nirbose\PhpMcServ\Block\Data\Rotatable;
+use Nirbose\PhpMcServ\Block\Data\Type;
 use Nirbose\PhpMcServ\Block\Data\Waterlogged;
 use Nirbose\PhpMcServ\Block\Direction;
 use Nirbose\PhpMcServ\Material;
@@ -49,7 +50,7 @@ class ChunkSection
         }
     }
 
-    private function getBlockFromNBT(CompoundTag $blockState): BlockData
+    private function getBlockDataFromNBT(CompoundTag $blockState): BlockData
     {
         $b = BlockType::find($blockState->getString("Name")->getValue())->createBlockData();
         $properties = $blockState->getCompound('Properties');
@@ -116,6 +117,11 @@ class ChunkSection
             $b->setWaterlogged($properties->getString("waterlogged")->getValue() === "true");
         }
 
+        if(has_trait(Type::class, $b)) {
+            /** @var Type $b */
+            $b->setType($properties->getString("type")->getValue());
+        }
+
         return $b;
     }
 
@@ -140,7 +146,7 @@ class ChunkSection
                 throw new Exception("Invalid block state in palette, expected CompoundTag.");
             }
             try {
-                $palette[] = $this->getBlockFromNBT($blockStateNBT);
+                $palette[] = $this->getBlockDataFromNBT($blockStateNBT);
             } catch (\Throwable $e) {
                 file_put_contents("err.txt", $blockStateNBT->__toString());
                 throw new Exception("Failed to load block from NBT: " . $e->getMessage());
@@ -148,6 +154,9 @@ class ChunkSection
 
         }
 
+        if(count($palette) > 4) {
+            var_dump($palette);
+        }
         return $palette;
     }
 

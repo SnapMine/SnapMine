@@ -6,6 +6,8 @@ use ArrayAccess;
 use Aternos\Nbt\Tag\CompoundTag;
 use InvalidArgumentException;
 use Iterator;
+use Nirbose\PhpMcServ\Block\Data\BlockData;
+use Nirbose\PhpMcServ\Material;
 use RuntimeException;
 
 
@@ -22,8 +24,12 @@ class PalettedContainer implements ArrayAccess
         protected readonly array $palette,
         protected array          $data,
     )
-    {   // TODO: Single value palette (j'ai remis le max)
-        $this->bitsPerEntry = max(4, (int)ceil(log(count($this->palette), 2)));
+    {
+        if(count($this->palette) == 1) {
+            $this->bitsPerEntry = 0;
+        } else {
+            $this->bitsPerEntry = max(4, (int)ceil(log(count($this->palette), 2)));
+        }
     }
 
 
@@ -54,7 +60,13 @@ class PalettedContainer implements ArrayAccess
             throw new InvalidArgumentException("Offset must be an integer.");
         }
 
+
+
         $bpe = $this->bitsPerEntry;
+
+        if($this->bitsPerEntry == 0) {
+            return $this->palette[0];
+        }
 
         $valsPerLong = intdiv(64, $bpe);
 

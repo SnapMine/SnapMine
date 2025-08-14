@@ -27,8 +27,8 @@ class JoinGamePacket extends ClientboundPacket
             ->putString("minecraft:overworld")
 
             ->putVarInt($this->player->getServer()->getMaxPlayer()) // Max player
-            ->putVarInt(50) // View distance
-            ->putVarInt(50) // Simulation Distance
+            ->putVarInt(8) // View distance
+            ->putVarInt(8) // Simulation Distance
             ->putBool(false) // Reduced Debug Info
             ->putBool(true) // Enable Respawn Screen
             ->putBool(false) // Do Limit Crafting

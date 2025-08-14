@@ -38,6 +38,7 @@ use Throwable;
 
 class Server
 {
+    private Socket $socket;
     private array $clients = [];
     private array $sessions = [];
     private array $players = [];
@@ -59,14 +60,31 @@ class Server
         $this->blockStateLoader = new BlockStateLoader(__DIR__ . '/../resources/blocks.json');
     }
 
+    public function __destruct()
+    {
+        foreach ($this->clients as $client) {
+            if (is_resource($client)) {
+                socket_close($client);
+            }
+        }
+
+        socket_close($this->socket);
+
+        $this->clients = [];
+        $this->sessions = [];
+        $this->players = [];
+        self::getLogger()->info("Server stopped.");
+    }
+
     public function start(): void
     {
         Artisan::setServer($this);
         $this->region = RegionLoader::load(ROOT_PATH . "/mca-test/r.0.0.mca");
 
-        $socket1 = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-        socket_bind($socket1, $this->host, $this->port);
-        socket_listen($socket1);
+        $this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+        socket_set_option($this->socket, SOL_SOCKET, SO_REUSEADDR, 1);
+        socket_bind($this->socket, $this->host, $this->port);
+        socket_listen($this->socket);
         self::getLogger()->info("Serveur démarré sur {$this->host}:{$this->port}");
 
         $this->registerListener(new PlayerJoinListener());
@@ -76,17 +94,17 @@ class Server
 
         while (true) {
             $keepAliveManager->tick($this);
-            $read = array_merge([$socket1], $this->clients);
+            $read = array_merge([$this->socket], $this->clients);
 
             try {
                 socket_select($read, $write, $except, null);
             } catch (Throwable) {
-                $read = array_merge([$socket1], $this->clients);
+                $read = array_merge([$this->socket], $this->clients);
             }
 
             foreach ($read as $socket) {
-                if ($socket === $socket1) {
-                    $client = socket_accept($socket1);
+                if ($socket === $this->socket) {
+                    $client = socket_accept($this->socket);
 
                     if ($client) {
                         socket_set_nonblock($client);
