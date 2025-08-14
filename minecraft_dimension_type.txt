@@ -1,0 +1,97 @@
+TAG_Compound('None'): 17 entries
+{
+  TAG_Float('ambient_light'): 0, 
+  TAG_Byte('bed_works'): 1, 
+  TAG_Float('coordinate_scale'): 1, 
+  TAG_String('effects'): 'minecraft:overworld', 
+  TAG_Byte('has_ceiling'): 0, 
+  TAG_Byte('has_raids'): 1, 
+  TAG_Byte('has_skylight'): 1, 
+  TAG_Int('height'): 384, 
+  TAG_String('infiniburn'): '#minecraft:infiniburn_overworld', 
+  TAG_Int('logical_height'): 384, 
+  TAG_Int('min_y'): -64, 
+  TAG_Int('monster_spawn_block_light_limit'): 0, 
+  TAG_Byte('natural'): 1, 
+  TAG_Byte('piglin_safe'): 0, 
+  TAG_Byte('respawn_anchor_works'): 0, 
+  TAG_Byte('ultrawarm'): 0, 
+  TAG_Compound('monster_spawn_light_level'): 3 entries
+  {
+    TAG_String('type'): 'minecraft:uniform', 
+    TAG_Int('max_inclusive'): 7, 
+    TAG_Int('min_inclusive'): 0
+  }
+}
+TAG_Compound('None'): 17 entries
+{
+  TAG_Float('ambient_light'): 0, 
+  TAG_Byte('bed_works'): 1, 
+  TAG_Float('coordinate_scale'): 1, 
+  TAG_String('effects'): 'minecraft:overworld', 
+  TAG_Byte('has_ceiling'): 1, 
+  TAG_Byte('has_raids'): 1, 
+  TAG_Byte('has_skylight'): 1, 
+  TAG_Int('height'): 384, 
+  TAG_String('infiniburn'): '#minecraft:infiniburn_overworld', 
+  TAG_Int('logical_height'): 384, 
+  TAG_Int('min_y'): -64, 
+  TAG_Int('monster_spawn_block_light_limit'): 0, 
+  TAG_Byte('natural'): 1, 
+  TAG_Byte('piglin_safe'): 0, 
+  TAG_Byte('respawn_anchor_works'): 0, 
+  TAG_Byte('ultrawarm'): 0, 
+  TAG_Compound('monster_spawn_light_level'): 3 entries
+  {
+    TAG_String('type'): 'minecraft:uniform', 
+    TAG_Int('max_inclusive'): 7, 
+    TAG_Int('min_inclusive'): 0
+  }
+}
+TAG_Compound('None'): 18 entries
+{
+  TAG_Float('ambient_light'): 0, 
+  TAG_Byte('bed_works'): 0, 
+  TAG_Float('coordinate_scale'): 1, 
+  TAG_String('effects'): 'minecraft:the_end', 
+  TAG_Byte('has_ceiling'): 0, 
+  TAG_Byte('has_raids'): 1, 
+  TAG_Byte('has_skylight'): 0, 
+  TAG_Int('height'): 256, 
+  TAG_String('infiniburn'): '#minecraft:infiniburn_end', 
+  TAG_Int('logical_height'): 256, 
+  TAG_Int('min_y'): 0, 
+  TAG_Int('monster_spawn_block_light_limit'): 0, 
+  TAG_Byte('natural'): 0, 
+  TAG_Byte('piglin_safe'): 0, 
+  TAG_Byte('respawn_anchor_works'): 0, 
+  TAG_Byte('ultrawarm'): 0, 
+  TAG_Compound('monster_spawn_light_level'): 3 entries
+  {
+    TAG_String('type'): 'minecraft:uniform', 
+    TAG_Int('max_inclusive'): 7, 
+    TAG_Int('min_inclusive'): 0
+  }, 
+  TAG_Int('fixed_time'): 6000
+}
+TAG_Compound('None'): 18 entries
+{
+  TAG_Float('ambient_light'): 0.1, 
+  TAG_Byte('bed_works'): 0, 
+  TAG_Float('coordinate_scale'): 8, 
+  TAG_String('effects'): 'minecraft:the_nether', 
+  TAG_Byte('has_ceiling'): 1, 
+  TAG_Byte('has_raids'): 0, 
+  TAG_Byte('has_skylight'): 0, 
+  TAG_Int('height'): 256, 
+  TAG_String('infiniburn'): '#minecraft:infiniburn_nether', 
+  TAG_Int('logical_height'): 128, 
+  TAG_Int('min_y'): 0, 
+  TAG_Int('monster_spawn_block_light_limit'): 15, 
+  TAG_Byte('natural'): 0, 
+  TAG_Byte('piglin_safe'): 1, 
+  TAG_Byte('respawn_anchor_works'): 1, 
+  TAG_Byte('ultrawarm'): 1, 
+  TAG_Int('monster_spawn_light_level'): 7, 
+  TAG_Int('fixed_time'): 18000
+}

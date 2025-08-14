@@ -1,0 +1,184 @@
+TAG_Compound('None'): 2 entries
+{
+  TAG_Compound('assets'): 3 entries
+  {
+    TAG_String('angry'): 'minecraft:entity/wolf/wolf_ashen_angry', 
+    TAG_String('tame'): 'minecraft:entity/wolf/wolf_ashen_tame', 
+    TAG_String('wild'): 'minecraft:entity/wolf/wolf_ashen'
+  }, 
+  TAG_List<TAG_Compound>('spawn_conditions'): 1 entry
+  [
+    TAG_Compound('None'): 2 entries
+    {
+      TAG_Compound('condition'): 2 entries
+      {
+        TAG_String('type'): 'minecraft:biome', 
+        TAG_String('biomes'): 'minecraft:snowy_taiga'
+      }, 
+      TAG_Int('priority'): 1
+    }
+  ]
+}
+TAG_Compound('None'): 2 entries
+{
+  TAG_Compound('assets'): 3 entries
+  {
+    TAG_String('angry'): 'minecraft:entity/wolf/wolf_black_angry', 
+    TAG_String('tame'): 'minecraft:entity/wolf/wolf_black_tame', 
+    TAG_String('wild'): 'minecraft:entity/wolf/wolf_black'
+  }, 
+  TAG_List<TAG_Compound>('spawn_conditions'): 1 entry
+  [
+    TAG_Compound('None'): 2 entries
+    {
+      TAG_Compound('condition'): 2 entries
+      {
+        TAG_String('type'): 'minecraft:biome', 
+        TAG_String('biomes'): 'minecraft:old_growth_pine_taiga'
+      }, 
+      TAG_Int('priority'): 1
+    }
+  ]
+}
+TAG_Compound('None'): 2 entries
+{
+  TAG_Compound('assets'): 3 entries
+  {
+    TAG_String('angry'): 'minecraft:entity/wolf/wolf_chestnut_angry', 
+    TAG_String('tame'): 'minecraft:entity/wolf/wolf_chestnut_tame', 
+    TAG_String('wild'): 'minecraft:entity/wolf/wolf_chestnut'
+  }, 
+  TAG_List<TAG_Compound>('spawn_conditions'): 1 entry
+  [
+    TAG_Compound('None'): 2 entries
+    {
+      TAG_Compound('condition'): 2 entries
+      {
+        TAG_String('type'): 'minecraft:biome', 
+        TAG_String('biomes'): 'minecraft:old_growth_spruce_taiga'
+      }, 
+      TAG_Int('priority'): 1
+    }
+  ]
+}
+TAG_Compound('None'): 2 entries
+{
+  TAG_Compound('assets'): 3 entries
+  {
+    TAG_String('angry'): 'minecraft:entity/wolf/wolf_angry', 
+    TAG_String('tame'): 'minecraft:entity/wolf/wolf_tame', 
+    TAG_String('wild'): 'minecraft:entity/wolf/wolf'
+  }, 
+  TAG_List<TAG_Compound>('spawn_conditions'): 1 entry
+  [
+    TAG_Compound('None'): 1 entry
+    {
+      TAG_Int('priority'): 0
+    }
+  ]
+}
+TAG_Compound('None'): 2 entries
+{
+  TAG_Compound('assets'): 3 entries
+  {
+    TAG_String('angry'): 'minecraft:entity/wolf/wolf_rusty_angry', 
+    TAG_String('tame'): 'minecraft:entity/wolf/wolf_rusty_tame', 
+    TAG_String('wild'): 'minecraft:entity/wolf/wolf_rusty'
+  }, 
+  TAG_List<TAG_Compound>('spawn_conditions'): 1 entry
+  [
+    TAG_Compound('None'): 2 entries
+    {
+      TAG_Compound('condition'): 2 entries
+      {
+        TAG_String('type'): 'minecraft:biome', 
+        TAG_String('biomes'): '#minecraft:is_jungle'
+      }, 
+      TAG_Int('priority'): 1
+    }
+  ]
+}
+TAG_Compound('None'): 2 entries
+{
+  TAG_Compound('assets'): 3 entries
+  {
+    TAG_String('angry'): 'minecraft:entity/wolf/wolf_snowy_angry', 
+    TAG_String('tame'): 'minecraft:entity/wolf/wolf_snowy_tame', 
+    TAG_String('wild'): 'minecraft:entity/wolf/wolf_snowy'
+  }, 
+  TAG_List<TAG_Compound>('spawn_conditions'): 1 entry
+  [
+    TAG_Compound('None'): 2 entries
+    {
+      TAG_Compound('condition'): 2 entries
+      {
+        TAG_String('type'): 'minecraft:biome', 
+        TAG_String('biomes'): 'minecraft:grove'
+      }, 
+      TAG_Int('priority'): 1
+    }
+  ]
+}
+TAG_Compound('None'): 2 entries
+{
+  TAG_Compound('assets'): 3 entries
+  {
+    TAG_String('angry'): 'minecraft:entity/wolf/wolf_spotted_angry', 
+    TAG_String('tame'): 'minecraft:entity/wolf/wolf_spotted_tame', 
+    TAG_String('wild'): 'minecraft:entity/wolf/wolf_spotted'
+  }, 
+  TAG_List<TAG_Compound>('spawn_conditions'): 1 entry
+  [
+    TAG_Compound('None'): 2 entries
+    {
+      TAG_Compound('condition'): 2 entries
+      {
+        TAG_String('type'): 'minecraft:biome', 
+        TAG_String('biomes'): '#minecraft:is_savanna'
+      }, 
+      TAG_Int('priority'): 1
+    }
+  ]
+}
+TAG_Compound('None'): 2 entries
+{
+  TAG_Compound('assets'): 3 entries
+  {
+    TAG_String('angry'): 'minecraft:entity/wolf/wolf_striped_angry', 
+    TAG_String('tame'): 'minecraft:entity/wolf/wolf_striped_tame', 
+    TAG_String('wild'): 'minecraft:entity/wolf/wolf_striped'
+  }, 
+  TAG_List<TAG_Compound>('spawn_conditions'): 1 entry
+  [
+    TAG_Compound('None'): 2 entries
+    {
+      TAG_Compound('condition'): 2 entries
+      {
+        TAG_String('type'): 'minecraft:biome', 
+        TAG_String('biomes'): '#minecraft:is_badlands'
+      }, 
+      TAG_Int('priority'): 1
+    }
+  ]
+}
+TAG_Compound('None'): 2 entries
+{
+  TAG_Compound('assets'): 3 entries
+  {
+    TAG_String('angry'): 'minecraft:entity/wolf/wolf_woods_angry', 
+    TAG_String('tame'): 'minecraft:entity/wolf/wolf_woods_tame', 
+    TAG_String('wild'): 'minecraft:entity/wolf/wolf_woods'
+  }, 
+  TAG_List<TAG_Compound>('spawn_conditions'): 1 entry
+  [
+    TAG_Compound('None'): 2 entries
+    {
+      TAG_Compound('condition'): 2 entries
+      {
+        TAG_String('type'): 'minecraft:biome', 
+        TAG_String('biomes'): 'minecraft:forest'
+      }, 
+      TAG_Int('priority'): 1
+    }
+  ]
+}

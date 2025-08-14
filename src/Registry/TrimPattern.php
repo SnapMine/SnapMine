@@ -5,8 +5,6 @@ namespace Nirbose\PhpMcServ\Registry;
 use Aternos\Nbt\Tag\ByteTag;
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\StringTag;
-use RuntimeException;
-
 /**
  * @method static TrimPattern BOLT()
  * @method static TrimPattern COAST()
@@ -30,18 +28,18 @@ use RuntimeException;
 class TrimPattern
 {
     /** @var array<string, self> */
-    private static array $entries = [];
+    protected static array $entries = [];
 
     public function __construct(
-        private readonly string $key,
-        private readonly array $data,
+        protected readonly string $key,
+        protected readonly array $data,
     )
     {
     }
 
     public static function register(string $name, string $key, array $data): self
     {
-        $instance = new self($key, $data);
+        $instance = new static($key, $data);
         self::$entries[strtoupper($name)] = $instance;
 
         return $instance;
@@ -50,7 +48,7 @@ class TrimPattern
     public static function __callStatic(string $name, array $args): self {
         $name = strtoupper($name);
         if (!isset(self::$entries[$name])) {
-            throw new RuntimeException("TrimMaterial '$name' not found");
+            throw new \RuntimeException("TrimMaterial '$name' not found");
         }
 
         return self::$entries[$name];

@@ -1,0 +1,138 @@
+TAG_Compound('None'): 2 entries
+{
+  TAG_String('asset_id'): 'minecraft:entity/cat/all_black', 
+  TAG_List<TAG_Compound>('spawn_conditions'): 2 entries
+  [
+    TAG_Compound('None'): 2 entries
+    {
+      TAG_Compound('condition'): 2 entries
+      {
+        TAG_String('type'): 'minecraft:structure', 
+        TAG_String('structures'): '#minecraft:cats_spawn_as_black'
+      }, 
+      TAG_Int('priority'): 1
+    }, 
+    TAG_Compound('None'): 2 entries
+    {
+      TAG_Compound('condition'): 2 entries
+      {
+        TAG_String('type'): 'minecraft:moon_brightness', 
+        TAG_Compound('range'): 1 entry
+        {
+          TAG_Float('min'): 0.9
+        }
+      }, 
+      TAG_Int('priority'): 0
+    }
+  ]
+}
+TAG_Compound('None'): 2 entries
+{
+  TAG_String('asset_id'): 'minecraft:entity/cat/black', 
+  TAG_List<TAG_Compound>('spawn_conditions'): 1 entry
+  [
+    TAG_Compound('None'): 1 entry
+    {
+      TAG_Int('priority'): 0
+    }
+  ]
+}
+TAG_Compound('None'): 2 entries
+{
+  TAG_String('asset_id'): 'minecraft:entity/cat/british_shorthair', 
+  TAG_List<TAG_Compound>('spawn_conditions'): 1 entry
+  [
+    TAG_Compound('None'): 1 entry
+    {
+      TAG_Int('priority'): 0
+    }
+  ]
+}
+TAG_Compound('None'): 2 entries
+{
+  TAG_String('asset_id'): 'minecraft:entity/cat/calico', 
+  TAG_List<TAG_Compound>('spawn_conditions'): 1 entry
+  [
+    TAG_Compound('None'): 1 entry
+    {
+      TAG_Int('priority'): 0
+    }
+  ]
+}
+TAG_Compound('None'): 2 entries
+{
+  TAG_String('asset_id'): 'minecraft:entity/cat/jellie', 
+  TAG_List<TAG_Compound>('spawn_conditions'): 1 entry
+  [
+    TAG_Compound('None'): 1 entry
+    {
+      TAG_Int('priority'): 0
+    }
+  ]
+}
+TAG_Compound('None'): 2 entries
+{
+  TAG_String('asset_id'): 'minecraft:entity/cat/persian', 
+  TAG_List<TAG_Compound>('spawn_conditions'): 1 entry
+  [
+    TAG_Compound('None'): 1 entry
+    {
+      TAG_Int('priority'): 0
+    }
+  ]
+}
+TAG_Compound('None'): 2 entries
+{
+  TAG_String('asset_id'): 'minecraft:entity/cat/ragdoll', 
+  TAG_List<TAG_Compound>('spawn_conditions'): 1 entry
+  [
+    TAG_Compound('None'): 1 entry
+    {
+      TAG_Int('priority'): 0
+    }
+  ]
+}
+TAG_Compound('None'): 2 entries
+{
+  TAG_String('asset_id'): 'minecraft:entity/cat/red', 
+  TAG_List<TAG_Compound>('spawn_conditions'): 1 entry
+  [
+    TAG_Compound('None'): 1 entry
+    {
+      TAG_Int('priority'): 0
+    }
+  ]
+}
+TAG_Compound('None'): 2 entries
+{
+  TAG_String('asset_id'): 'minecraft:entity/cat/siamese', 
+  TAG_List<TAG_Compound>('spawn_conditions'): 1 entry
+  [
+    TAG_Compound('None'): 1 entry
+    {
+      TAG_Int('priority'): 0
+    }
+  ]
+}
+TAG_Compound('None'): 2 entries
+{
+  TAG_String('asset_id'): 'minecraft:entity/cat/tabby', 
+  TAG_List<TAG_Compound>('spawn_conditions'): 1 entry
+  [
+    TAG_Compound('None'): 1 entry
+    {
+      TAG_Int('priority'): 0
+    }
+  ]
+}
+TAG_Compound('None'): 2 entries
+{
+  TAG_String('asset_id'): 'minecraft:entity/cat/white', 
+  TAG_List<TAG_Compound>('spawn_conditions'): 1 entry
+  [
+    TAG_Compound('None'): 1 entry
+    {
+      TAG_Int('priority'): 0
+    }
+  ]
+}

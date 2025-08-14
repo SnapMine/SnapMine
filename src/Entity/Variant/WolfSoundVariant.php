@@ -1,24 +1,12 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Registry;
+namespace Nirbose\PhpMcServ\Entity\Variant;
 
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\StringTag;
+use Nirbose\PhpMcServ\Registry\RegistryData;
 
-/**
- * @method static TrimMaterial AMETHYST()
- * @method static TrimMaterial COPPER()
- * @method static TrimMaterial DIAMOND()
- * @method static TrimMaterial EMERALD()
- * @method static TrimMaterial GOLD()
- * @method static TrimMaterial IRON()
- * @method static TrimMaterial LAPIS()
- * @method static TrimMaterial NETHERITE()
- * @method static TrimMaterial QUARTZ()
- * @method static TrimMaterial REDSTONE()
- * @method static TrimMaterial RESIN()
- */
-class TrimMaterial
+class WolfSoundVariant
 {
     /** @var array<string, self> */
     protected static array $entries = [];
@@ -62,15 +50,12 @@ class TrimMaterial
 
     public function toNbt(): CompoundTag
     {
-        $base = new CompoundTag();
-
-        $base
-            ->set('asset_name', (new StringTag())->setValue($this->data['asset_name']))
-            ->set('description', (new CompoundTag())
-                ->set('color', (new StringTag())->setValue($this->data['description']['color']))
-                ->set('translate', (new StringTag())->setValue($this->data['description']['translate']))
-            );
-
-        return $base;
+        return (new CompoundTag())
+            ->set('ambient_sound', (new StringTag())->setValue($this->data['ambient_sound']))
+            ->set('death_sound', (new StringTag())->setValue($this->data['death_sound']))
+            ->set('growl_sound', (new StringTag())->setValue($this->data['growl_sound']))
+            ->set('hurt_sound', (new StringTag())->setValue($this->data['hurt_sound']))
+            ->set('pant_sound', (new StringTag())->setValue($this->data['pant_sound']))
+            ->set('whine_sound', (new StringTag())->setValue($this->data['whine_sound']));
     }
 }

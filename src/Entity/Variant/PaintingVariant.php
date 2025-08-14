@@ -1,24 +1,14 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Registry;
+namespace Nirbose\PhpMcServ\Entity\Variant;
 
 use Aternos\Nbt\Tag\CompoundTag;
+use Aternos\Nbt\Tag\IntTag;
 use Aternos\Nbt\Tag\StringTag;
+use Aternos\Nbt\Tag\Tag;
+use Nirbose\PhpMcServ\Registry\RegistryData;
 
-/**
- * @method static TrimMaterial AMETHYST()
- * @method static TrimMaterial COPPER()
- * @method static TrimMaterial DIAMOND()
- * @method static TrimMaterial EMERALD()
- * @method static TrimMaterial GOLD()
- * @method static TrimMaterial IRON()
- * @method static TrimMaterial LAPIS()
- * @method static TrimMaterial NETHERITE()
- * @method static TrimMaterial QUARTZ()
- * @method static TrimMaterial REDSTONE()
- * @method static TrimMaterial RESIN()
- */
-class TrimMaterial
+class PaintingVariant
 {
     /** @var array<string, self> */
     protected static array $entries = [];
@@ -60,16 +50,28 @@ class TrimMaterial
         return self::$entries;
     }
 
-    public function toNbt(): CompoundTag
+    public function toNbt(): Tag
     {
         $base = new CompoundTag();
 
         $base
-            ->set('asset_name', (new StringTag())->setValue($this->data['asset_name']))
-            ->set('description', (new CompoundTag())
-                ->set('color', (new StringTag())->setValue($this->data['description']['color']))
-                ->set('translate', (new StringTag())->setValue($this->data['description']['translate']))
-            );
+            ->set('asset_id', (new StringTag())->setValue($this->data['asset_id']))
+            ->set('height', (new IntTag())->setValue($this->data['height']))
+            ->set('width', (new IntTag())->setValue($this->data['width']));
+
+        if (isset($this->data['author'])) {
+            $author = (new CompoundTag())
+                ->set('color', (new StringTag())->setValue($this->data['author']['color']))
+                ->set('translate', (new StringTag())->setValue($this->data['author']['translate']));
+
+            $base->set('author', $author);
+        }
+
+        $title = (new CompoundTag())
+            ->set('color', (new StringTag())->setValue($this->data['title']['color']))
+            ->set('translate', (new StringTag())->setValue($this->data['title']['translate']));
+
+        $base->set('title', $title);
 
         return $base;
     }

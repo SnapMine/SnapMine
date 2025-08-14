@@ -1,0 +1,44 @@
+TAG_Compound('None'): 3 entries
+{
+  TAG_String('asset_id'): 'minecraft:entity/chicken/cold_chicken', 
+  TAG_String('model'): 'cold', 
+  TAG_List<TAG_Compound>('spawn_conditions'): 1 entry
+  [
+    TAG_Compound('None'): 2 entries
+    {
+      TAG_Compound('condition'): 2 entries
+      {
+        TAG_String('type'): 'minecraft:biome', 
+        TAG_String('biomes'): '#minecraft:spawns_cold_variant_farm_animals'
+      }, 
+      TAG_Int('priority'): 1
+    }
+  ]
+}
+TAG_Compound('None'): 2 entries
+{
+  TAG_String('asset_id'): 'minecraft:entity/chicken/temperate_chicken', 
+  TAG_List<TAG_Compound>('spawn_conditions'): 1 entry
+  [
+    TAG_Compound('None'): 1 entry
+    {
+      TAG_Int('priority'): 0
+    }
+  ]
+}
+TAG_Compound('None'): 2 entries
+{
+  TAG_String('asset_id'): 'minecraft:entity/chicken/warm_chicken', 
+  TAG_List<TAG_Compound>('spawn_conditions'): 1 entry
+  [
+    TAG_Compound('None'): 2 entries
+    {
+      TAG_Compound('condition'): 2 entries
+      {
+        TAG_String('type'): 'minecraft:biome', 
+        TAG_String('biomes'): '#minecraft:spawns_warm_variant_farm_animals'
+      }, 
+      TAG_Int('priority'): 1
+    }
+  ]
+}

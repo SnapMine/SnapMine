@@ -3,22 +3,10 @@
 namespace Nirbose\PhpMcServ\Registry;
 
 use Aternos\Nbt\Tag\CompoundTag;
+use Aternos\Nbt\Tag\FloatTag;
 use Aternos\Nbt\Tag\StringTag;
 
-/**
- * @method static TrimMaterial AMETHYST()
- * @method static TrimMaterial COPPER()
- * @method static TrimMaterial DIAMOND()
- * @method static TrimMaterial EMERALD()
- * @method static TrimMaterial GOLD()
- * @method static TrimMaterial IRON()
- * @method static TrimMaterial LAPIS()
- * @method static TrimMaterial NETHERITE()
- * @method static TrimMaterial QUARTZ()
- * @method static TrimMaterial REDSTONE()
- * @method static TrimMaterial RESIN()
- */
-class TrimMaterial
+class DamageType implements EncodableToNbt
 {
     /** @var array<string, self> */
     protected static array $entries = [];
@@ -62,14 +50,18 @@ class TrimMaterial
 
     public function toNbt(): CompoundTag
     {
-        $base = new CompoundTag();
+        $base = (new CompoundTag())
+            ->set('exhaustion', (new FloatTag())->setValue($this->data['exhaustion']))
+            ->set('message_id', (new StringTag())->setValue($this->data['message_id']))
+            ->set('scaling', (new StringTag())->setValue($this->data['scaling']));
 
-        $base
-            ->set('asset_name', (new StringTag())->setValue($this->data['asset_name']))
-            ->set('description', (new CompoundTag())
-                ->set('color', (new StringTag())->setValue($this->data['description']['color']))
-                ->set('translate', (new StringTag())->setValue($this->data['description']['translate']))
-            );
+        if (isset($this->data['effects'])) {
+            $base->set('effects', (new StringTag())->setValue($this->data['effects']));
+        }
+
+        if (isset($this->data['death_message_type'])) {
+            $base->set('death_message_type', (new StringTag())->setValue($this->data['death_message_type']));
+        }
 
         return $base;
     }

@@ -1,0 +1,63 @@
+TAG_Compound('None'): 6 entries
+{
+  TAG_String('ambient_sound'): 'minecraft:entity.wolf_angry.ambient', 
+  TAG_String('death_sound'): 'minecraft:entity.wolf_angry.death', 
+  TAG_String('growl_sound'): 'minecraft:entity.wolf_angry.growl', 
+  TAG_String('hurt_sound'): 'minecraft:entity.wolf_angry.hurt', 
+  TAG_String('pant_sound'): 'minecraft:entity.wolf_angry.pant', 
+  TAG_String('whine_sound'): 'minecraft:entity.wolf_angry.whine'
+}
+TAG_Compound('None'): 6 entries
+{
+  TAG_String('ambient_sound'): 'minecraft:entity.wolf_big.ambient', 
+  TAG_String('death_sound'): 'minecraft:entity.wolf_big.death', 
+  TAG_String('growl_sound'): 'minecraft:entity.wolf_big.growl', 
+  TAG_String('hurt_sound'): 'minecraft:entity.wolf_big.hurt', 
+  TAG_String('pant_sound'): 'minecraft:entity.wolf_big.pant', 
+  TAG_String('whine_sound'): 'minecraft:entity.wolf_big.whine'
+}
+TAG_Compound('None'): 6 entries
+{
+  TAG_String('ambient_sound'): 'minecraft:entity.wolf.ambient', 
+  TAG_String('death_sound'): 'minecraft:entity.wolf.death', 
+  TAG_String('growl_sound'): 'minecraft:entity.wolf.growl', 
+  TAG_String('hurt_sound'): 'minecraft:entity.wolf.hurt', 
+  TAG_String('pant_sound'): 'minecraft:entity.wolf.pant', 
+  TAG_String('whine_sound'): 'minecraft:entity.wolf.whine'
+}
+TAG_Compound('None'): 6 entries
+{
+  TAG_String('ambient_sound'): 'minecraft:entity.wolf_cute.ambient', 
+  TAG_String('death_sound'): 'minecraft:entity.wolf_cute.death', 
+  TAG_String('growl_sound'): 'minecraft:entity.wolf_cute.growl', 
+  TAG_String('hurt_sound'): 'minecraft:entity.wolf_cute.hurt', 
+  TAG_String('pant_sound'): 'minecraft:entity.wolf_cute.pant', 
+  TAG_String('whine_sound'): 'minecraft:entity.wolf_cute.whine'
+}
+TAG_Compound('None'): 6 entries
+{
+  TAG_String('ambient_sound'): 'minecraft:entity.wolf_grumpy.ambient', 
+  TAG_String('death_sound'): 'minecraft:entity.wolf_grumpy.death', 
+  TAG_String('growl_sound'): 'minecraft:entity.wolf_grumpy.growl', 
+  TAG_String('hurt_sound'): 'minecraft:entity.wolf_grumpy.hurt', 
+  TAG_String('pant_sound'): 'minecraft:entity.wolf_grumpy.pant', 
+  TAG_String('whine_sound'): 'minecraft:entity.wolf_grumpy.whine'
+}
+TAG_Compound('None'): 6 entries
+{
+  TAG_String('ambient_sound'): 'minecraft:entity.wolf_puglin.ambient', 
+  TAG_String('death_sound'): 'minecraft:entity.wolf_puglin.death', 
+  TAG_String('growl_sound'): 'minecraft:entity.wolf_puglin.growl', 
+  TAG_String('hurt_sound'): 'minecraft:entity.wolf_puglin.hurt', 
+  TAG_String('pant_sound'): 'minecraft:entity.wolf_puglin.pant', 
+  TAG_String('whine_sound'): 'minecraft:entity.wolf_puglin.whine'
+}
+TAG_Compound('None'): 6 entries
+{
+  TAG_String('ambient_sound'): 'minecraft:entity.wolf_sad.ambient', 
+  TAG_String('death_sound'): 'minecraft:entity.wolf_sad.death', 
+  TAG_String('growl_sound'): 'minecraft:entity.wolf_sad.growl', 
+  TAG_String('hurt_sound'): 'minecraft:entity.wolf_sad.hurt', 
+  TAG_String('pant_sound'): 'minecraft:entity.wolf_sad.pant', 
+  TAG_String('whine_sound'): 'minecraft:entity.wolf_sad.whine'
+}

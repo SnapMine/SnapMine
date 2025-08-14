@@ -1,24 +1,23 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Registry;
+namespace Nirbose\PhpMcServ\Entity\Variant;
 
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\StringTag;
+use Nirbose\PhpMcServ\Registry\RegistryData;
 
 /**
- * @method static TrimMaterial AMETHYST()
- * @method static TrimMaterial COPPER()
- * @method static TrimMaterial DIAMOND()
- * @method static TrimMaterial EMERALD()
- * @method static TrimMaterial GOLD()
- * @method static TrimMaterial IRON()
- * @method static TrimMaterial LAPIS()
- * @method static TrimMaterial NETHERITE()
- * @method static TrimMaterial QUARTZ()
- * @method static TrimMaterial REDSTONE()
- * @method static TrimMaterial RESIN()
+ * @method static WolfVariant ASHEN()
+ * @method static WolfVariant BLACK()
+ * @method static WolfVariant CHESTNUT()
+ * @method static WolfVariant PALE()
+ * @method static WolfVariant RUSTY()
+ * @method static WolfVariant SNOWY()
+ * @method static WolfVariant SPOTTED()
+ * @method static WolfVariant STRIPED()
+ * @method static WolfVariant WOODS()
  */
-class TrimMaterial
+class WolfVariant
 {
     /** @var array<string, self> */
     protected static array $entries = [];
@@ -65,11 +64,15 @@ class TrimMaterial
         $base = new CompoundTag();
 
         $base
-            ->set('asset_name', (new StringTag())->setValue($this->data['asset_name']))
-            ->set('description', (new CompoundTag())
-                ->set('color', (new StringTag())->setValue($this->data['description']['color']))
-                ->set('translate', (new StringTag())->setValue($this->data['description']['translate']))
+            ->set('assets', (new CompoundTag())
+                ->set('angry', (new StringTag())->setValue($this->data['assets']['angry']))
+                ->set('tame', (new StringTag())->setValue($this->data['assets']['tame']))
+                ->set('wild', (new StringTag())->setValue($this->data['assets']['wild']))
             );
+
+        $conditionsTag = (new SpawnConditions($this->data['spawn_conditions']))->toNbt();
+
+        $base->set('spawn_conditions', $conditionsTag);
 
         return $base;
     }

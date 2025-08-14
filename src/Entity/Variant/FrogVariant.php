@@ -1,24 +1,17 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Registry;
+namespace Nirbose\PhpMcServ\Entity\Variant;
 
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\StringTag;
+use Nirbose\PhpMcServ\Registry\RegistryData;
 
 /**
- * @method static TrimMaterial AMETHYST()
- * @method static TrimMaterial COPPER()
- * @method static TrimMaterial DIAMOND()
- * @method static TrimMaterial EMERALD()
- * @method static TrimMaterial GOLD()
- * @method static TrimMaterial IRON()
- * @method static TrimMaterial LAPIS()
- * @method static TrimMaterial NETHERITE()
- * @method static TrimMaterial QUARTZ()
- * @method static TrimMaterial REDSTONE()
- * @method static TrimMaterial RESIN()
+ * @method static FrogVariant COLD()
+ * @method static FrogVariant TEMPERATE()
+ * @method static FrogVariant WARM()
  */
-class TrimMaterial
+class FrogVariant
 {
     /** @var array<string, self> */
     protected static array $entries = [];
@@ -65,11 +58,11 @@ class TrimMaterial
         $base = new CompoundTag();
 
         $base
-            ->set('asset_name', (new StringTag())->setValue($this->data['asset_name']))
-            ->set('description', (new CompoundTag())
-                ->set('color', (new StringTag())->setValue($this->data['description']['color']))
-                ->set('translate', (new StringTag())->setValue($this->data['description']['translate']))
-            );
+            ->set('asset_id', (new StringTag())->setValue($this->data['asset_id']));
+
+        $conditionsTag = (new SpawnConditions($this->data['spawn_conditions']))->toNbt();
+
+        $base->set('spawn_conditions', $conditionsTag);
 
         return $base;
     }
