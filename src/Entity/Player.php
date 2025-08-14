@@ -12,7 +12,7 @@ use Nirbose\PhpMcServ\Utils\UUID;
 use Nirbose\PhpMcServ\World\Location;
 use Nirbose\PhpMcServ\World\Position;
 
-class Player extends Entity
+class Player extends LivingEntity
 {
     public int $lastKeepAliveId = 0;
     private GameMode $gameMode = GameMode::SURVIVAL;
