@@ -2,10 +2,6 @@
 
 namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Configuration;
 
-use Aternos\Nbt\Tag\CompoundTag;
-use Aternos\Nbt\Tag\ListTag;
-use Aternos\Nbt\Tag\StringTag;
-use Aternos\Nbt\Tag\Tag;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Registry\EncodableToNbt;

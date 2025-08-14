@@ -5,7 +5,6 @@ namespace Nirbose\PhpMcServ\Entity\Variant;
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\StringTag;
 use Aternos\Nbt\Tag\Tag;
-use Nirbose\PhpMcServ\Registry\RegistryData;
 
 /**
  * @method static ChickenVariant COLD()

@@ -6,7 +6,6 @@ use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\IntTag;
 use Aternos\Nbt\Tag\StringTag;
 use Aternos\Nbt\Tag\Tag;
-use Nirbose\PhpMcServ\Registry\RegistryData;
 
 class PaintingVariant
 {
