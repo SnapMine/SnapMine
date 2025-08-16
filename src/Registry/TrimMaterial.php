@@ -32,7 +32,7 @@ class TrimMaterial
 
     public static function register(string $name, string $key, array $data): self
     {
-        $instance = new static($key, $data);
+        $instance = new self($key, $data);
         self::$entries[strtoupper($name)] = $instance;
 
         return $instance;

@@ -9,14 +9,23 @@ use Nirbose\PhpMcServ\Session\Session;
 class ClientInformationPacket extends ServerboundPacket
 {
 
+    /** @phpstan-ignore property.onlyWritten */
     private string $locale;
-    private string $viewDistance;
-    private string $chatMode;
+    /** @phpstan-ignore property.onlyWritten */
+    private int $viewDistance;
+    /** @phpstan-ignore property.onlyWritten */
+    private int $chatMode;
+    /** @phpstan-ignore property.onlyWritten */
     private bool $chatColors;
+    /** @phpstan-ignore property.onlyWritten */
     private int $displayedSkinParts;
+    /** @phpstan-ignore property.onlyWritten */
     private int $mainHand;
+    /** @phpstan-ignore property.onlyWritten */
     private bool $enableTextFiltering;
+    /** @phpstan-ignore property.onlyWritten */
     private bool $allowServerListings;
+    /** @phpstan-ignore property.onlyWritten */
     private int $particleStatus;
 
     public function getId(): int

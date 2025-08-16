@@ -26,7 +26,7 @@ class CowVariant
 
     public static function register(string $name, string $key, array $data): self
     {
-        $instance = new static($key, $data, count(self::$entries));
+        $instance = new self($key, $data, count(self::$entries));
         self::$entries[strtoupper($name)] = $instance;
 
         return $instance;

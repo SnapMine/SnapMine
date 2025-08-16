@@ -1560,7 +1560,7 @@ enum Material: int
 
     public function isBlock(): bool
     {
-        return $this->isAir() || ($this->value >> 16) & 0xFFFF > 0;
+        return $this->isAir() || (($this->value >> 16) & 0xFFFF) != 0;
     }
 
     public function isItem(): bool

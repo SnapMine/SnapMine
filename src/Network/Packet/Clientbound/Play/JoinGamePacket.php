@@ -36,7 +36,7 @@ class JoinGamePacket extends ClientboundPacket
             ->putString('minecraft:overworld') // Dimension Name
             ->putLong(234345456) // Hashed Seed
             ->putUnsignedByte($this->player->getGameMode()->value) // Game Mode
-            ->putByte($this->player->getPreviousGameMode()?->value ?? -1) // Previous Game Mode (-1 undefined)
+            ->putByte($this->player->getPreviousGameMode()->value ?? -1) // Previous Game Mode (-1 undefined)
             ->putBool(false) // Is Debug
             ->putBool(false) // Is Flat
             ->putBool(false) // Has Death Location

@@ -2,6 +2,8 @@
 
 namespace Nirbose\PhpMcServ\World\Chunk;
 
+use Mockery\Exception;
+
 enum HeightmapType: int
 {
     case WORLD_SURFACE = 1;
@@ -16,5 +18,7 @@ enum HeightmapType: int
                 return $enum;
             }
         }
+
+        throw new Exception("Unknown heightmap type: $name");
     }
 }

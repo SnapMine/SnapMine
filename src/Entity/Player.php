@@ -118,9 +118,9 @@ class Player extends Entity
         $packet = new SoundPacket(
             $sound,
             $category,
-            $location->getX(),
-            $location->getY(),
-            $location->getZ(),
+            (int)$location->getX(),
+            (int)$location->getY(),
+            (int)$location->getZ(),
             $volume,
             $pitch,
             $seed

@@ -35,6 +35,7 @@ use Nirbose\PhpMcServ\World\Region;
 use Nirbose\PhpMcServ\World\RegionLoader;
 use ReflectionClass;
 use ReflectionMethod;
+use ReflectionNamedType;
 use Socket;
 use Throwable;
 
@@ -65,7 +66,7 @@ class Server
     public function start(): void
     {
         Artisan::setServer($this);
-        $this->region = RegionLoader::load(ROOT_PATH . "/mca-test/r.0.0.mca");
+        $this->region = RegionLoader::load(dirname(__DIR__) . "/mca-test/r.0.0.mca");
 
         $socket1 = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         socket_bind($socket1, $this->host, $this->port);
@@ -77,6 +78,7 @@ class Server
         $write = $except = null;
         $keepAliveManager = new KeepAliveManager();
 
+        /** @phpstan-ignore while.alwaysTrue */
         while (true) {
             $keepAliveManager->tick($this);
             $read = array_merge([$socket1], $this->clients);
@@ -227,13 +229,17 @@ class Server
                 throw new Exception("Require one parameter"); // TODO: Change exception
             }
 
-            $isEventChild = get_parent_class($parameters[0]->getType()->getName()) === Event::class;
+            $type = $parameters[0]->getType();
 
-            if (!$isEventChild) {
-                throw new Exception("Parameter is not instance of Event"); // TODO: Change exception
+            if ($type instanceof ReflectionNamedType) {
+                $isEventChild = get_parent_class($type->getName()) === Event::class;
+
+                if (!$isEventChild) {
+                    throw new Exception("Parameter is not instance of Event"); // TODO: Change exception
+                }
+
+                $this->eventManager->register($type->getName(), $method->getClosure($listener));
             }
-
-            $this->eventManager->register($parameters[0]->getType()->getName(), $method->getClosure($listener));
         }
     }
 

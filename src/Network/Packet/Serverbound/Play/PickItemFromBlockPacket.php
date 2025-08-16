@@ -2,15 +2,15 @@
 
 namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
 
-use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Session\Session;
 use Nirbose\PhpMcServ\World\Position;
 
 class PickItemFromBlockPacket extends ServerboundPacket
 {
+    /** @phpstan-ignore property.onlyWritten */
     private Position $position;
+    /** @phpstan-ignore property.onlyWritten */
     private bool $includeData;
 
     public function getId(): int

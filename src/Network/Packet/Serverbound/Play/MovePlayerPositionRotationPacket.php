@@ -16,6 +16,7 @@ class MovePlayerPositionRotationPacket extends ServerboundPacket
     private float $z;
     private float $yaw;
     private float $pitch;
+    /** @phpstan-ignore property.onlyWritten */
     private bool $flags;
 
     public function getId(): int
@@ -30,7 +31,7 @@ class MovePlayerPositionRotationPacket extends ServerboundPacket
         $this->z = $serializer->getDouble();
         $this->yaw = $serializer->getFloat();
         $this->pitch = $serializer->getFloat();
-        $this->flags = $serializer->getByte();
+        $this->flags = $serializer->getBool();
     }
 
     public function handle(Session $session): void
