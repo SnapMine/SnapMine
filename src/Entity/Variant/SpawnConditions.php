@@ -38,7 +38,8 @@ readonly class SpawnConditions implements EncodableToNbt
                             ->set('min', (new FloatTag())->setValue($condition['condition']['range']['min']))
                     );
                 } else {
-                    $conditionCompoundTag->set($type, (new StringTag())->setValue($condition['condition'][$type]));
+                    $key = str_replace("minecraft:", "", $type) . 's';
+                    $conditionCompoundTag->set($key, (new StringTag())->setValue($condition['condition'][$key]));
                 }
 
                 $baseCompound->set('condition', $conditionCompoundTag);

@@ -5,6 +5,8 @@ namespace Nirbose\PhpMcServ\Entity\Variant;
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\StringTag;
 use Aternos\Nbt\Tag\Tag;
+use Nirbose\PhpMcServ\Keyed;
+use Nirbose\PhpMcServ\Registry\EncodableToNbt;
 use Nirbose\PhpMcServ\Registry\RegistryData;
 use RuntimeException;
 
@@ -21,7 +23,7 @@ use RuntimeException;
  * @method static CatVariant TABBY()
  * @method static CatVariant WHITE()
  */
-class CatVariant
+class CatVariant implements EncodableToNbt, Keyed
 {
     /** @var array<string, self> */
     protected static array $entries = [];
