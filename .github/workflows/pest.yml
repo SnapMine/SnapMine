@@ -1,0 +1,25 @@
+on:
+  pull_request:
+    types: [opened, reopened]
+  push:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: test module
+        id: test_module
+        uses: zyborg/pester-tests-report@v1
+        with:
+          include_paths: tests
+          exclude_paths: tests/powershell1,tests/powershell2
+          exclude_tags: skip_ci
+          report_name: module_tests
+          report_title: My Module Tests
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: dump test results
+        shell: pwsh
+        run: |
+          Write-Host 'Total Tests Executed...:  ${{ steps.test_module.outputs.total_count }}'
+          Write-Host 'Total Tests PASSED.....:  ${{ steps.test_module.outputs.passed_count }}'
+          Write-Host 'Total Tests FAILED.....:  ${{ steps.test_module.outputs.failed_count }}'
