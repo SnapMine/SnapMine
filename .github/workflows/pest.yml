@@ -11,10 +11,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v5
+
+    - name: Trust repo for Git
+      run: git config --global --add safe.directory /app
+
     - name: Setup PHP with PECL extension
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.4'
+        php-version: '8.3'
         extensions: sockets, gmp
+
     - uses: php-actions/composer@v6
+
     - uses: NWBY/pest-action@v1.2.0
