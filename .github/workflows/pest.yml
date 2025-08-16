@@ -15,12 +15,18 @@ jobs:
     - name: Trust repo for Git
       run: git config --global --add safe.directory /app
 
-    - name: Setup PHP with PECL extension
+    - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.3'
         extensions: sockets, gmp
+        tools: composer
 
-    - uses: php-actions/composer@v6
+    - name: Check PHP extensions
+      run: php -m
 
-    - uses: NWBY/pest-action@v1.2.0
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --no-interaction
+
+    - name: Run Pest
+      uses: NWBY/pest-action@v1.2.0
