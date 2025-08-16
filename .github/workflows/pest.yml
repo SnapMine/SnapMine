@@ -12,10 +12,9 @@ jobs:
         uses: zyborg/pester-tests-report@v1
         with:
           include_paths: tests
-          exclude_paths: tests/powershell1,tests/powershell2
           exclude_tags: skip_ci
           report_name: module_tests
-          report_title: My Module Tests
+          report_title: Tests
           github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: dump test results
         shell: pwsh
