@@ -4,13 +4,15 @@ namespace Nirbose\PhpMcServ\Entity\Variant;
 
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\StringTag;
+use Nirbose\PhpMcServ\Keyed;
+use Nirbose\PhpMcServ\Registry\EncodableToNbt;
 
 /**
  * @method static FrogVariant COLD()
  * @method static FrogVariant TEMPERATE()
  * @method static FrogVariant WARM()
  */
-class FrogVariant
+class FrogVariant implements EncodableToNbt, Keyed
 {
     /** @var array<string, self> */
     protected static array $entries = [];

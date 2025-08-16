@@ -4,6 +4,8 @@ namespace Nirbose\PhpMcServ\Entity\Variant;
 
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\StringTag;
+use Nirbose\PhpMcServ\Keyed;
+use Nirbose\PhpMcServ\Registry\EncodableToNbt;
 
 /**
  * @method static WolfVariant ASHEN()
@@ -16,7 +18,7 @@ use Aternos\Nbt\Tag\StringTag;
  * @method static WolfVariant STRIPED()
  * @method static WolfVariant WOODS()
  */
-class WolfVariant
+class WolfVariant implements EncodableToNbt, Keyed
 {
     /** @var array<string, self> */
     protected static array $entries = [];
