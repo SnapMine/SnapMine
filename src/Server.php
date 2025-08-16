@@ -26,6 +26,7 @@ use Nirbose\PhpMcServ\Listener\PlayerJoinListener;
 use Nirbose\PhpMcServ\Manager\KeepAliveManager;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\AddEntityPacket;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Particle\Particle;
 use Nirbose\PhpMcServ\Registry\Registry;
 use Nirbose\PhpMcServ\Registry\TrimMaterial;
 use Nirbose\PhpMcServ\Session\Session;
@@ -446,5 +447,14 @@ class Server
     public function getChunk(int $x, int $z): Chunk|null
     {
         return $this->region->getChunk($x, $z);
+    }
+
+    public function spawnParticle(Particle $particle, int $x, int $y, int $z, object $data): void
+    {
+        if ($data === null && $particle->getDataClass() !== null) {
+            throw new Exception("error");
+        }
+
+        // TODO: Send packet
     }
 }
