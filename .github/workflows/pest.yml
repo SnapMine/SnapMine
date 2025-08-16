@@ -28,5 +28,5 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-interaction
 
-    - name: Run Pest
-      uses: NWBY/pest-action@v1.2.0
+    - name: Run Pest tests
+      run: ./vendor/bin/pest
