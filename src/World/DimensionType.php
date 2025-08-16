@@ -8,8 +8,10 @@ use Aternos\Nbt\Tag\FloatTag;
 use Aternos\Nbt\Tag\IntTag;
 use Aternos\Nbt\Tag\StringTag;
 use Aternos\Nbt\Tag\Tag;
+use Nirbose\PhpMcServ\Keyed;
+use Nirbose\PhpMcServ\Registry\EncodableToNbt;
 
-class DimensionType
+class DimensionType implements EncodableToNbt, Keyed
 {
     /** @var array<string, self> */
     protected static array $entries = [];
