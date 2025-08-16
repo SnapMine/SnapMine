@@ -2,15 +2,12 @@
 
 namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
 
-use Nirbose\PhpMcServ\Artisan;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\AddEntityPacket;
-use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Session\Session;
 
 class ConfirmTeleportationPacket extends ServerboundPacket
 {
+    /** @phpstan-ignore property.onlyWritten */
     private int $teleportId;
 
     public function getId(): int
@@ -22,6 +19,4 @@ class ConfirmTeleportationPacket extends ServerboundPacket
     {
         $this->teleportId = $serializer->getVarInt();
     }
-
-
 }

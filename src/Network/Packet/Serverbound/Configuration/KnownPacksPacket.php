@@ -12,6 +12,7 @@ use Nirbose\PhpMcServ\Session\Session;
 class KnownPacksPacket extends ServerboundPacket
 {
 
+    /** @phpstan-ignore property.onlyWritten */
     private array $packs;
 
     public function getId(): int

@@ -10,7 +10,6 @@ use Exception;
 
 class ChunkParser
 {
-    private string $file;
     /** @var resource */
     private $handle;
     private string $offsetTable;
@@ -20,14 +19,13 @@ class ChunkParser
      */
     public function __construct(string $file)
     {
-        $this->file = $file;
         $this->handle = fopen($file, 'rb');
         if (!$this->handle) {
             throw new Exception("Cannot open: $file");
         }
 
         $this->offsetTable = fread($this->handle, 4096);
-        if ($this->offsetTable === false || strlen($this->offsetTable) < 4096) {
+        if (!$this->offsetTable || strlen($this->offsetTable) < 4096) {
             throw new Exception("Invalid region file: $file");
         }
     }

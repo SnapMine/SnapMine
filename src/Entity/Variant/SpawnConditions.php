@@ -31,22 +31,15 @@ readonly class SpawnConditions implements EncodableToNbt
 
                 $conditionCompoundTag->set('type', (new StringTag())->setValue($type));
 
-                $typed = match ($type) {
-                    'minecraft:biome' => 'biomes',
-                    'minecraft:structure' => 'structures',
-                    'minecraft:moon_brightness' => function () use ($condition, $conditionCompoundTag) {
-                        $conditionCompoundTag->set(
-                            'range',
-                            (new CompoundTag())
-                                ->set('min', (new FloatTag())->setValue($condition['condition']['range']['min']))
-                        );
-                    },
-                };
-
-                if (!is_callable($typed))
-                    $conditionCompoundTag->set($typed, (new StringTag())->setValue($condition['condition'][$typed]));
-                else
-                    $typed();
+                if ($type == 'minecraft:moon_brightness') {
+                    $conditionCompoundTag->set(
+                        'range',
+                        (new CompoundTag())
+                            ->set('min', (new FloatTag())->setValue($condition['condition']['range']['min']))
+                    );
+                } else {
+                    $conditionCompoundTag->set($type, (new StringTag())->setValue($condition['condition'][$type]));
+                }
 
                 $baseCompound->set('condition', $conditionCompoundTag);
             }

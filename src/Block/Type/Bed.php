@@ -56,7 +56,7 @@ class Bed implements BlockData
 
     public function setPart(string $part): void
     {
-        if ($part != 'head' || $part != 'foot') {
+        if ($part != 'head' && $part != 'foot') {
             // TODO: Throw error
         }
 

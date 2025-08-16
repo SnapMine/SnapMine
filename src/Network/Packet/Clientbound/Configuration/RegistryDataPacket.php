@@ -2,6 +2,7 @@
 
 namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Configuration;
 
+use Nirbose\PhpMcServ\Keyed;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Registry\EncodableToNbt;
@@ -30,6 +31,10 @@ class RegistryDataPacket extends ClientboundPacket
             ->putVarInt(count($this->entries));
 
         foreach ($this->entries as $entry) {
+            if (!($entry instanceof Keyed)) {
+                continue;
+            }
+
             $serializer->putString($entry->getKey())
                 ->putBool(true)
                 ->putNBT($entry->toNbt());
