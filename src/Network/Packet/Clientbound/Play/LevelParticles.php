@@ -20,7 +20,7 @@ class LevelParticles extends ClientboundPacket
         private readonly float $maxSpeed,
         private readonly bool $longDistance,
         private readonly bool $alwaysVisible,
-        private readonly ?object $data = null,
+        private readonly mixed $data = null,
     )
     {
     }
