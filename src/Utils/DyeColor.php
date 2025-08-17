@@ -23,6 +23,6 @@ enum DyeColor: string
 
     public function getColor(): Color
     {
-        return new Color($this->value);
+        return Color::fromHex($this->value);
     }
 }

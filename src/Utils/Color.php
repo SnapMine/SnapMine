@@ -16,7 +16,7 @@ readonly class Color implements ProtocolEncodable
 
     public static function fromRGB(int $r, int $g, int $b): Color
     {
-        return new static(($r << 16) + ($g << 8) + $b);
+        return new self(($r << 16) + ($g << 8) + $b);
     }
 
     /**
@@ -29,7 +29,7 @@ readonly class Color implements ProtocolEncodable
                 $hex = substr($hex, 1);
             }
 
-            return new static((int)hexdec($hex));
+            return new self((int)hexdec($hex));
         }
 
         throw new Exception('Invalid hex color');
