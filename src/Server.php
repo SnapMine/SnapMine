@@ -459,13 +459,6 @@ class Server
             throw new Exception("error");
         }
 
-        if ($dataClass === BlockData::class) {
-            /** @var BlockData $data */
-            $packetData = $data->computedId(Artisan::getBlockStateLoader());
-        } else {
-            $packetData = null;
-        }
-
-        $this->broadcastPacket(new LevelParticles($particle, 1, $x, $y, $z, 0, 0, 0, 0, true, false, $packetData));
+        $this->broadcastPacket(new LevelParticles($particle, 1, $x, $y, $z, 0, 0, 0, 0, true, false, $data));
     }
 }

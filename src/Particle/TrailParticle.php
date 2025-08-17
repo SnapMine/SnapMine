@@ -2,9 +2,11 @@
 
 namespace Nirbose\PhpMcServ\Particle;
 
-use _PHPStan_f9a2208af\Symfony\Component\Console\Color;
+use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
+use Nirbose\PhpMcServ\Network\Serializer\ProtocolEncodable;
+use Nirbose\PhpMcServ\Utils\Color;
 
-class TrailParticle
+class TrailParticle implements ProtocolEncodable
 {
     public function __construct(
         private float $x,
@@ -54,5 +56,15 @@ class TrailParticle
     public function getDuration(): int
     {
         return $this->duration;
+    }
+
+    public function toPacket(PacketSerializer $serializer): void
+    {
+        $serializer
+            ->putDouble($this->x)
+            ->putDouble($this->y)
+            ->putDouble($this->z)
+            ->putInt($this->color->getColor())
+            ->putVarInt($this->duration);
     }
 }

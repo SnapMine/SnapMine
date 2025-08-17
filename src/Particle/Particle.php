@@ -4,7 +4,6 @@
 
 namespace Nirbose\PhpMcServ\Particle;
 
-use Mockery\Exception;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Inventory\ItemStack;
 use Nirbose\PhpMcServ\Particle\Vibration\VibrationParticle;

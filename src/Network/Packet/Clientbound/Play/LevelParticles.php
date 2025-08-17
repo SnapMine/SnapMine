@@ -4,24 +4,24 @@ namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Play;
 
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
+use Nirbose\PhpMcServ\Network\Serializer\ProtocolEncodable;
 use Nirbose\PhpMcServ\Particle\Particle;
-use Nirbose\PhpMcServ\Utils\Color;
 
 class LevelParticles extends ClientboundPacket
 {
     public function __construct(
-        private readonly Particle $particle,
-        private readonly int $number,
-        private readonly float $x,
-        private readonly float $y,
-        private readonly float $z,
-        private readonly float $offsetX,
-        private readonly float $offsetY,
-        private readonly float $offsetZ,
-        private readonly float $maxSpeed,
-        private readonly bool $longDistance,
-        private readonly bool $alwaysVisible,
-        private readonly mixed $data = null,
+        private readonly Particle                         $particle,
+        private readonly int                              $number,
+        private readonly float                            $x,
+        private readonly float                            $y,
+        private readonly float                            $z,
+        private readonly float                            $offsetX,
+        private readonly float                            $offsetY,
+        private readonly float                            $offsetZ,
+        private readonly float                            $maxSpeed,
+        private readonly bool                             $longDistance,
+        private readonly bool                             $alwaysVisible,
+        private readonly ProtocolEncodable|float|int|null $data = null,
     )
     {
     }
@@ -44,12 +44,13 @@ class LevelParticles extends ClientboundPacket
         if ($this->data !== null) {
             $dataClass = $this->particle->getDataClass();
 
+            var_dump($dataClass);
             if ($dataClass == 'varint') {
                 $serializer->putVarInt($this->data);
             } else if ($dataClass == 'float') {
                 $serializer->putFloat($this->data);
-            } else if ($dataClass == Color::class) {
-                $serializer->putInt($this->data->getColor());
+            } else {
+                $serializer->putObject($this->data);
             }
         }
     }

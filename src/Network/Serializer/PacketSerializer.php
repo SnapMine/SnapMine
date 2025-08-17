@@ -582,4 +582,11 @@ class PacketSerializer
 
         return $this;
     }
+
+    public function putObject(ProtocolEncodable $encodable): PacketSerializer
+    {
+        $encodable->toPacket($this);
+
+        return $this;
+    }
 }

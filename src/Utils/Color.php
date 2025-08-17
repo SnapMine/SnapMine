@@ -3,8 +3,10 @@
 namespace Nirbose\PhpMcServ\Utils;
 
 use Exception;
+use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
+use Nirbose\PhpMcServ\Network\Serializer\ProtocolEncodable;
 
-readonly class Color
+readonly class Color implements ProtocolEncodable
 {
     public function __construct(
         private int $color,
@@ -44,5 +46,10 @@ readonly class Color
     public function getHexColor(): string
     {
         return dechex($this->color);
+    }
+
+    public function toPacket(PacketSerializer $serializer): void
+    {
+        $serializer->putInt($this->color);
     }
 }

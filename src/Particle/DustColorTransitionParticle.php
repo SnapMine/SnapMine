@@ -2,9 +2,11 @@
 
 namespace Nirbose\PhpMcServ\Particle;
 
+use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
+use Nirbose\PhpMcServ\Network\Serializer\ProtocolEncodable;
 use Nirbose\PhpMcServ\Utils\Color;
 
-class DustColorTransitionParticle
+class DustColorTransitionParticle implements ProtocolEncodable
 {
     public function __construct(
         private Color $from,
@@ -36,5 +38,13 @@ class DustColorTransitionParticle
     public function getScale(): float
     {
         return $this->scale;
+    }
+
+    public function toPacket(PacketSerializer $serializer): void
+    {
+        $serializer
+            ->putInt($this->from->getColor())
+            ->putInt($this->to->getColor())
+            ->putFloat($this->scale);
     }
 }
