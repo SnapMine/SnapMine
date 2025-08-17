@@ -5,6 +5,7 @@ namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Play;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Particle\Particle;
+use Nirbose\PhpMcServ\Utils\Color;
 
 class LevelParticles extends ClientboundPacket
 {
@@ -41,7 +42,15 @@ class LevelParticles extends ClientboundPacket
             ->putVarInt($this->particle->value);
 
         if ($this->data !== null) {
-            // Serialize data
+            $dataClass = $this->particle->getDataClass();
+
+            if ($dataClass == 'varint') {
+                $serializer->putVarInt($this->data);
+            } else if ($dataClass == 'float') {
+                $serializer->putFloat($this->data);
+            } else if ($dataClass == Color::class) {
+                $serializer->putInt($this->data->getColor());
+            }
         }
     }
 

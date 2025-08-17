@@ -6,6 +6,9 @@ namespace Nirbose\PhpMcServ\Particle;
 
 use Mockery\Exception;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
+use Nirbose\PhpMcServ\Inventory\ItemStack;
+use Nirbose\PhpMcServ\Particle\Vibration\VibrationParticle;
+use Nirbose\PhpMcServ\Utils\Color;
 
 enum Particle: int
 {
@@ -131,14 +134,14 @@ enum Particle: int
     {
         return match ($this) {
             Particle::BLOCK, Particle::BLOCK_MARKER, Particle::FALLING_DUST, Particle::DUST_PILLAR, Particle::BLOCK_CRUMBLE => BlockData::class,
-            Particle::DUST => throw new Exception('To be implement'),
-            Particle::DUST_COLOR_TRANSITION => throw new Exception('To be implement'),
-            Particle::ENTITY_EFFECT, Particle::TINTED_LEAVES => throw new Exception('To be implement'),
-            Particle::SCULK_CHARGE => throw new Exception('To be implement'),
-            Particle::ITEM => throw new Exception('To be implement'),
-            Particle::VIBRATION => throw new Exception('To be implement'),
-            Particle::TRAIL => throw new Exception('To be implement'),
-            Particle::SHRIEK => throw new Exception('To be implement'),
+            Particle::DUST => DustParticle::class,
+            Particle::DUST_COLOR_TRANSITION => DustColorTransitionParticle::class,
+            Particle::ENTITY_EFFECT, Particle::TINTED_LEAVES => Color::class,
+            Particle::SCULK_CHARGE => 'float',
+            Particle::ITEM => ItemStack::class,
+            Particle::VIBRATION => VibrationParticle::class,
+            Particle::TRAIL => TrailParticle::class,
+            Particle::SHRIEK => 'varint',
             default => null,
         };
     }

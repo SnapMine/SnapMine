@@ -1,0 +1,48 @@
+<?php
+
+namespace Nirbose\PhpMcServ\Utils;
+
+use Exception;
+
+readonly class Color
+{
+    public function __construct(
+        private int $color,
+    )
+    {
+    }
+
+    public static function fromRGB(int $r, int $g, int $b): Color
+    {
+        return new static(($r << 16) + ($g << 8) + $b);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function fromHex(string $hex): Color
+    {
+        if (strlen($hex) === 6) {
+            if ($hex[0] === '#') {
+                $hex = substr($hex, 1);
+            }
+
+            return new static((int)hexdec($hex));
+        }
+
+        throw new Exception('Invalid hex color');
+    }
+
+    /**
+     * @return int
+     */
+    public function getColor(): int
+    {
+        return $this->color;
+    }
+
+    public function getHexColor(): string
+    {
+        return dechex($this->color);
+    }
+}
