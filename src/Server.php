@@ -8,6 +8,7 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
 use Nirbose\PhpMcServ\Block\BlockStateLoader;
+use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Entity\AreaEffectCloud;
 use Nirbose\PhpMcServ\Entity\Cow;
 use Nirbose\PhpMcServ\Entity\DragonFireball;
@@ -25,7 +26,9 @@ use Nirbose\PhpMcServ\Event\Listener;
 use Nirbose\PhpMcServ\Listener\PlayerJoinListener;
 use Nirbose\PhpMcServ\Manager\KeepAliveManager;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\AddEntityPacket;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\LevelParticles;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Particle\Particle;
 use Nirbose\PhpMcServ\Registry\Registry;
 use Nirbose\PhpMcServ\Registry\TrimMaterial;
 use Nirbose\PhpMcServ\Session\Session;
@@ -446,5 +449,16 @@ class Server
     public function getChunk(int $x, int $z): Chunk|null
     {
         return $this->region->getChunk($x, $z);
+    }
+
+    public function spawnParticle(Particle $particle, float $x, float $y, float $z, ?object $data = null): void
+    {
+        $dataClass = $particle->getDataClass();
+
+        if ($data === null && $dataClass !== null) {
+            throw new Exception("error");
+        }
+
+        $this->broadcastPacket(new LevelParticles($particle, 1, $x, $y, $z, 0, 0, 0, 0, true, false, $data));
     }
 }
