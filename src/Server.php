@@ -449,7 +449,7 @@ class Server
         return $this->region->getChunk($x, $z);
     }
 
-    public function spawnParticle(Particle $particle, int $x, int $y, int $z, object $data): void
+    public function spawnParticle(Particle $particle, float $x, float $y, float $z, ?object $data = null): void
     {
         if ($data === null && $particle->getDataClass() !== null) {
             throw new Exception("error");
