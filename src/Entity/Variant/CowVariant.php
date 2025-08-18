@@ -5,13 +5,15 @@ namespace Nirbose\PhpMcServ\Entity\Variant;
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\StringTag;
 use Aternos\Nbt\Tag\Tag;
+use Nirbose\PhpMcServ\Keyed;
+use Nirbose\PhpMcServ\Registry\EncodableToNbt;
 
 /**
  * @method static CowVariant COLD()
  * @method static CowVariant TEMPERATE()
  * @method static CowVariant WARM()
  */
-class CowVariant
+class CowVariant implements EncodableToNbt, Keyed
 {
     /** @var array<string, self> */
     protected static array $entries = [];
@@ -26,7 +28,7 @@ class CowVariant
 
     public static function register(string $name, string $key, array $data): self
     {
-        $instance = new static($key, $data, count(self::$entries));
+        $instance = new self($key, $data, count(self::$entries));
         self::$entries[strtoupper($name)] = $instance;
 
         return $instance;

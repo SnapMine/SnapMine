@@ -9,9 +9,10 @@ use Aternos\Nbt\Tag\FloatTag;
 use Aternos\Nbt\Tag\IntTag;
 use Aternos\Nbt\Tag\ListTag;
 use Aternos\Nbt\Tag\StringTag;
+use Nirbose\PhpMcServ\Keyed;
 use Nirbose\PhpMcServ\Registry\EncodableToNbt;
 
-class Biome implements EncodableToNbt
+class Biome implements EncodableToNbt, Keyed
 {
     /** @var array<string, self> */
     protected static array $entries = [];
@@ -25,7 +26,7 @@ class Biome implements EncodableToNbt
 
     public static function register(string $name, string $key, array $data): self
     {
-        $instance = new static($key, $data);
+        $instance = new self($key, $data);
         self::$entries[strtoupper($name)] = $instance;
 
         return $instance;

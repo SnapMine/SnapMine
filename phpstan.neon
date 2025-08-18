@@ -1,0 +1,17 @@
+parameters:
+    level: 5
+
+    paths:
+        - src
+
+    excludePaths:
+        - tests/*
+        - vendor/*
+
+    ignoreErrors:
+        - identifier: trait.unused
+          paths:
+              - src/
+
+includes:
+    - vendor/phpstan/phpstan/conf/bleedingEdge.neon

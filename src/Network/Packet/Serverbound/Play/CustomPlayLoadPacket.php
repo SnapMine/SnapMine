@@ -2,14 +2,10 @@
 
 namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
 
-use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Session\Session;
 
-class CustomPlayloadPacket extends ServerboundPacket {
-    private string $channel;
-    private string $data;
+class CustomPlayLoadPacket extends ServerboundPacket {
 
     public function getId(): int
     {

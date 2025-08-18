@@ -82,7 +82,7 @@ class Session
 
                 $packetId = $packetSerializer->getVarInt();
 
-                $packetMap = Protocol::PACKETS[$this->state->value] ?? [];
+                $packetMap = Protocol::PACKETS[$this->state->value];
                 $packetClass = $packetMap[$packetId] ?? null;
 
                 if ($packetClass === null) {
@@ -92,7 +92,10 @@ class Session
                     return;
                 }
 
-                /** @var ServerboundPacket $packet */
+                /**
+                 * @var ServerboundPacket $packet
+                 * @phpstan-ignore varTag.nativeType
+                 */
                 $packet = new $packetClass();
                 $packet->read($packetSerializer);
                 $packet->handle($this);

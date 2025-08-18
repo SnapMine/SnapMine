@@ -1132,8 +1132,8 @@ enum BlockType
     case ZOMBIE_WALL_HEAD;
 
     /**
-     * @template T of BlockData
-     * @return class-string<T>
+     * @return class-string<BlockData>
+     * @throws Exception
      */
     public function getBlockDataClass(): string
     {

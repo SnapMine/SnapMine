@@ -12,7 +12,7 @@ use Nirbose\PhpMcServ\Network\Packet\Serverbound\Login\LoginStartPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\ClientTickEndPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\ConfirmTeleportationPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\ContainerClosePacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\CustomPlayloadPacket;
+use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\CustomPlayLoadPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\KeepAlivePacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\MovePlayerPositionPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\MovePlayerPositionRotationPacket;
@@ -71,7 +71,7 @@ class Protocol
             0x26 => PlayerAbilitiesPacket::class,
             0x1A => KeepAlivePacket::class,
             0x1F => MovePlayerStatusOnlyPacket::class,
-            0x14 => CustomPlayloadPacket::class,
+            0x14 => CustomPlayLoadPacket::class,
             0x33 => SetCarriedItemPacket::class,
             0x36 => SetCreativeModeSlotPacket::class,
             0x3E => UseItemOnPacket::class,

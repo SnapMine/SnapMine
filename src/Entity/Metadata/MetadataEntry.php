@@ -39,7 +39,7 @@ class MetadataEntry
         $serializer->putVarInt($this->type->value);
 
         if (str_contains($this->type->name, "OPTIONAL")) {
-            if (is_null($this->type->value)) {
+            if (is_null($this->value)) {
                 $serializer->putBool(false);
 
                 return $serializer->get();

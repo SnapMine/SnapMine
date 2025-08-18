@@ -2,11 +2,11 @@
 
 namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
 
-use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 
-class ClientInformationPacket extends Packet
+class ClientInformationPacket extends ServerboundPacket
 {
 
     public function getId(): int
@@ -14,25 +14,16 @@ class ClientInformationPacket extends Packet
         return 0x0C;
     }
 
-    public function write(PacketSerializer $serializer): void
+    public function read(PacketSerializer $serializer): void
     {
-    }
-
-    public function read(PacketSerializer $serializer, string $buffer, int &$offset): void
-    {
-        $serializer->getString($buffer, $offset);
-        $serializer->getByte($buffer, $offset);
-        $serializer->getVarInt($buffer, $offset);
-        $serializer->getBool($buffer, $offset);
-        $serializer->getUnsignedByte($buffer, $offset);
-        $serializer->getVarInt($buffer, $offset);
-        $serializer->getBool($buffer, $offset);
-        $serializer->getBool($buffer, $offset);
-        $serializer->getVarInt($buffer, $offset);
-    }
-
-    public function handle(Session $session): void
-    {
-        // TODO: Implement handle() method.
+        $serializer->getString();
+        $serializer->getByte();
+        $serializer->getVarInt();
+        $serializer->getBool();
+        $serializer->getUnsignedByte();
+        $serializer->getVarInt();
+        $serializer->getBool();
+        $serializer->getBool();
+        $serializer->getVarInt();
     }
 }

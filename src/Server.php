@@ -8,6 +8,7 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
 use Nirbose\PhpMcServ\Block\BlockStateLoader;
+use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Entity\AreaEffectCloud;
 use Nirbose\PhpMcServ\Entity\Cow;
 use Nirbose\PhpMcServ\Entity\DragonFireball;
@@ -25,7 +26,9 @@ use Nirbose\PhpMcServ\Event\Listener;
 use Nirbose\PhpMcServ\Listener\PlayerJoinListener;
 use Nirbose\PhpMcServ\Manager\KeepAliveManager;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\AddEntityPacket;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\LevelParticles;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Particle\Particle;
 use Nirbose\PhpMcServ\Registry\Registry;
 use Nirbose\PhpMcServ\Session\Session;
 use Nirbose\PhpMcServ\World\Chunk\Chunk;
@@ -34,6 +37,7 @@ use Nirbose\PhpMcServ\World\Region;
 use Nirbose\PhpMcServ\World\RegionLoader;
 use ReflectionClass;
 use ReflectionMethod;
+use ReflectionNamedType;
 use Socket;
 use Throwable;
 
@@ -81,7 +85,7 @@ class Server
     public function start(): void
     {
         Artisan::setServer($this);
-        $this->region = RegionLoader::load(ROOT_PATH . "/mca-test/r.0.0.mca");
+        $this->region = RegionLoader::load(dirname(__DIR__) . "/mca-test/r.0.0.mca");
 
         $this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         socket_set_option($this->socket, SOL_SOCKET, SO_REUSEADDR, 1);
@@ -94,6 +98,7 @@ class Server
         $write = $except = null;
         $keepAliveManager = new KeepAliveManager();
 
+        /** @phpstan-ignore while.alwaysTrue */
         while (true) {
             $keepAliveManager->tick($this);
             $read = array_merge([$this->socket], $this->clients);
@@ -244,13 +249,17 @@ class Server
                 throw new Exception("Require one parameter"); // TODO: Change exception
             }
 
-            $isEventChild = get_parent_class($parameters[0]->getType()->getName()) === Event::class;
+            $type = $parameters[0]->getType();
 
-            if (!$isEventChild) {
-                throw new Exception("Parameter is not instance of Event"); // TODO: Change exception
+            if ($type instanceof ReflectionNamedType) {
+                $isEventChild = get_parent_class($type->getName()) === Event::class;
+
+                if (!$isEventChild) {
+                    throw new Exception("Parameter is not instance of Event"); // TODO: Change exception
+                }
+
+                $this->eventManager->register($type->getName(), $method->getClosure($listener));
             }
-
-            $this->eventManager->register($parameters[0]->getType()->getName(), $method->getClosure($listener));
         }
     }
 
@@ -457,5 +466,16 @@ class Server
     public function getChunk(int $x, int $z): Chunk|null
     {
         return $this->region->getChunk($x, $z);
+    }
+
+    public function spawnParticle(Particle $particle, float $x, float $y, float $z, ?object $data = null): void
+    {
+        $dataClass = $particle->getDataClass();
+
+        if ($data === null && $dataClass !== null) {
+            throw new Exception("error");
+        }
+
+        $this->broadcastPacket(new LevelParticles($particle, 1, $x, $y, $z, 0, 0, 0, 0, true, false, $data));
     }
 }

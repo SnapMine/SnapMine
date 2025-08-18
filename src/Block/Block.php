@@ -46,17 +46,17 @@ class Block
 
     public function getX(): int
     {
-        return $this->location->getX();
+        return (int) $this->location->getX();
     }
 
     public function getY(): int
     {
-        return $this->location->getY();
+        return (int) $this->location->getY();
     }
 
     public function getZ(): int
     {
-        return $this->location->getZ();
+        return (int) $this->location->getZ();
     }
 
     public function getChunk(): Chunk

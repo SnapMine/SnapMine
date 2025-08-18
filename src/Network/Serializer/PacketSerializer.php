@@ -373,7 +373,7 @@ class PacketSerializer
     /**
      * Lit un UUID.
      *
-     * @return string
+     * @return UUID
      */
     public function getUUID(): UUID
     {
@@ -460,20 +460,21 @@ class PacketSerializer
     /**
      * Encode un byte array binaire (comme utilisé par NBT ou d'autres données binaires).
      * 
-     * @param string $data Données binaires (ex: issues du writer NBT)
+     * @param string|array<int> $data
      * @return PacketSerializer $this
      */
     public function putByteArray(string|array $data): PacketSerializer
     {
         if (is_string($data)) {
-            $this->putVarInt(strlen($data)); // Longueur d'abord
-            $this->put($data); // Puis contenu binaire brut
+            $this->putVarInt(strlen($data));
+            $this->put($data);
 
-        } else if (is_array($data)) {
-            $this->putVarInt(count($data));
-            foreach ($data as $item) {
-                $this->putByte($item);
-            }
+            return $this;
+        }
+
+        $this->putVarInt(count($data));
+        foreach ($data as $item) {
+            $this->putByte($item);
         }
 
         return $this;
@@ -578,6 +579,13 @@ class PacketSerializer
 
             $this->putLong($value);
         }
+
+        return $this;
+    }
+
+    public function putObject(ProtocolEncodable $encodable): PacketSerializer
+    {
+        $encodable->toPacket($this);
 
         return $this;
     }

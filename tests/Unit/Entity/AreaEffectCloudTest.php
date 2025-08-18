@@ -6,31 +6,34 @@ use Nirbose\PhpMcServ\Server;
 use Nirbose\PhpMcServ\World\Location;
 
 describe('AreaEffectCloud entity', function () {
-    beforeEach(function () {
+    /** @var AreaEffectCloud $entity */
+    $entity = null;
+
+    beforeEach(function () use (&$entity) {
         $server = Mockery::mock(Server::class);
 
         $server->shouldReceive('incrementAndGetId')->andReturn(1);
 
-        $this->entity = new AreaEffectCloud($server, new Location(0, 0, 0));
+        $entity = new AreaEffectCloud($server, new Location(0, 0, 0));
     });
 
-    it('Test entity type', function () {
-        expect($this->entity->getType())->toBe(EntityType::AREA_EFFECT_CLOUD);
+    it('Test entity type', function () use (&$entity) {
+        expect($entity->getType())->toBe(EntityType::AREA_EFFECT_CLOUD);
     });
 
-    it('Test radius', function () {
-        expect($this->entity->getRadius())->toBe(3.0);
+    it('Test radius', function () use (&$entity) {
+        expect($entity->getRadius())->toBe(3.0);
 
-        $this->entity->setRadius(4.0);
+        $entity->setRadius(4.0);
 
-        expect($this->entity->getRadius())->toBe(4.0);
+        expect($entity->getRadius())->toBe(4.0);
     });
 
-    it('Test ignore radius', function () {
-        expect($this->entity->isIgnoreRadius())->toBeFalse();
+    it('Test ignore radius', function () use (&$entity) {
+        expect($entity->isIgnoreRadius())->toBeFalse();
 
-        $this->entity->setIgnoreRadius(true);
+        $entity->setIgnoreRadius(true);
 
-        expect($this->entity->isIgnoreRadius())->toBeTrue();
+        expect($entity->isIgnoreRadius())->toBeTrue();
     });
 });

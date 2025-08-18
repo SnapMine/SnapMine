@@ -6,15 +6,17 @@ use Nirbose\PhpMcServ\Server;
 use Nirbose\PhpMcServ\World\Location;
 
 describe('EvokerFrangs entity test', function () {
-    beforeEach(function () {
-        $server = Mockery::mock(Server::class);
+    /** @var EvokerFangs $entity */
+    $entity = null;
 
+    beforeEach(function () use (&$entity) {
+        $server = Mockery::mock(Server::class);
         $server->shouldReceive('incrementAndGetId')->andReturn(1);
 
-        $this->entity = new EvokerFangs($server, new Location(0, 0, 0));
+        $entity = new EvokerFangs($server, new Location(0, 0, 0));
     });
 
-    it('Test entity type', function () {
-        expect($this->entity->getType())->toBe(EntityType::EVOKER_FANGS);
+    it('Test entity type', function () use (&$entity) {
+        expect($entity->getType())->toBe(EntityType::EVOKER_FANGS);
     });
 });
