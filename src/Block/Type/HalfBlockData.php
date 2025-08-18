@@ -4,18 +4,18 @@ namespace Nirbose\PhpMcServ\Block\Type;
 
 use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Block\Data\Facing;
-use Nirbose\PhpMcServ\Block\Direction;
+use Nirbose\PhpMcServ\Block\Data\Half;
 use Nirbose\PhpMcServ\Material;
 
-class GenericFacing implements BlockData
+class HalfBlockData implements BlockData
 {
-    use Facing;
+    use Half;
 
     public function __construct(
         private readonly Material $material,
     )
     {
+
     }
 
     public function getMaterial(): Material
@@ -26,17 +26,7 @@ class GenericFacing implements BlockData
     public function computedId(BlockStateLoader $loader): int
     {
         return $loader->getBlockStateId($this->material, [
-            'facing' => $this->facing->value,
+            'half' => $this->half,
         ]);
-    }
-
-    public function getFaces(): array
-    {
-        return [
-            Direction::EAST,
-            Direction::WEST,
-            Direction::NORTH,
-            Direction::SOUTH,
-        ];
     }
 }

@@ -2,14 +2,14 @@
 
 namespace Nirbose\PhpMcServ\Block\Type;
 
-use Nirbose\PhpMcServ\Axis;
 use Nirbose\PhpMcServ\Block\BlockStateLoader;
+use Nirbose\PhpMcServ\Block\Data\Age;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Material;
 
-class GenericOrientable implements BlockData
+class AgeBlockData implements BlockData
 {
-    private Axis $axis = Axis::X;
+    use Age;
 
     public function __construct(
         private readonly Material $material,
@@ -25,23 +25,12 @@ class GenericOrientable implements BlockData
     public function computedId(BlockStateLoader $loader): int
     {
         return $loader->getBlockStateId($this->material, [
-            'axis' => $this->axis->value,
+            'age' => $this->age,
         ]);
     }
 
-    /**
-     * @param Axis $axis
-     */
-    public function setAxis(Axis $axis): void
+    public function getMaximumAge(): int
     {
-        $this->axis = $axis;
-    }
-
-    /**
-     * @return Axis
-     */
-    public function getAxis(): Axis
-    {
-        return $this->axis;
+        return 25;
     }
 }

@@ -5,12 +5,16 @@ namespace Nirbose\PhpMcServ\Block\Type;
 use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Block\Data\Facing;
+use Nirbose\PhpMcServ\Block\Data\Lightable;
+use Nirbose\PhpMcServ\Block\Data\Waterlogged;
 use Nirbose\PhpMcServ\Block\Direction;
 use Nirbose\PhpMcServ\Material;
 
-class Anvil implements BlockData
+class Campfire implements BlockData
 {
-    use Facing;
+    private bool $signalFire = false;
+
+    use Facing, Lightable, Waterlogged;
 
     public function __construct(
         private readonly Material $material,
@@ -26,7 +30,10 @@ class Anvil implements BlockData
     public function computedId(BlockStateLoader $loader): int
     {
         return $loader->getBlockStateId($this->material, [
-            'facing' => $this->facing->value,
+            'facing' => $this->facing,
+            'lit' => $this->light,
+            'signal_fire' => $this->signalFire,
+            'waterlogged' => $this->waterlogged,
         ]);
     }
 

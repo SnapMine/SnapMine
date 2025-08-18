@@ -5,16 +5,14 @@ namespace Nirbose\PhpMcServ\Block\Type;
 use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Block\Data\Facing;
-use Nirbose\PhpMcServ\Block\Data\Half;
-use Nirbose\PhpMcServ\Block\Data\Openable;
-use Nirbose\PhpMcServ\Block\Data\Powerable;
 use Nirbose\PhpMcServ\Block\Direction;
 use Nirbose\PhpMcServ\Material;
 
-class Door implements BlockData
+class Beehive implements BlockData
 {
-    use Facing, Half, Openable, Powerable;
-    private string $hinge = 'left';
+    private int $honeyLevel = 0;
+
+    use Facing;
 
     public function __construct(
         private readonly Material $material
@@ -22,9 +20,6 @@ class Door implements BlockData
     {
     }
 
-    /**
-     * @return Material
-     */
     public function getMaterial(): Material
     {
         return $this->material;
@@ -32,12 +27,9 @@ class Door implements BlockData
 
     public function computedId(BlockStateLoader $loader): int
     {
-        return $loader->getBlockStateId($this->getMaterial(), [
-            'facing' => $this->facing->value,
-            'open' => $this->open,
-            'powered' => $this->isPower(),
-            'half' => $this->getHalf(),
-            'hinge' => $this->hinge,
+        return $loader->getBlockStateId($this->material, [
+            'facing' => $this->facing,
+            'honey_level' => $this->honeyLevel,
         ]);
     }
 
@@ -52,18 +44,18 @@ class Door implements BlockData
     }
 
     /**
-     * @param string $hinge
+     * @param int $honeyLevel
      */
-    public function setHinge(string $hinge): void
+    public function setHoneyLevel(int $honeyLevel): void
     {
-        $this->hinge = $hinge;
+        $this->honeyLevel = $honeyLevel;
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getHinge(): string
+    public function getHoneyLevel(): int
     {
-        return $this->hinge;
+        return $this->honeyLevel;
     }
 }

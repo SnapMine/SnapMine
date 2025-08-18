@@ -4,12 +4,15 @@ namespace Nirbose\PhpMcServ\Block\Type;
 
 use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Block\HalfType;
+use Nirbose\PhpMcServ\Block\Data\Waterlogged;
+use Nirbose\PhpMcServ\Block\RailShape;
 use Nirbose\PhpMcServ\Material;
 
-class GenericBisected implements BlockData
+class Rail implements BlockData
 {
-    private HalfType $half = HalfType::LOWER;
+    protected RailShape $shape = RailShape::ASCENDING_EAST;
+
+    use Waterlogged;
 
     public function __construct(
         private readonly Material $material,
@@ -26,23 +29,24 @@ class GenericBisected implements BlockData
     public function computedId(BlockStateLoader $loader): int
     {
         return $loader->getBlockStateId($this->material, [
-            'half' => $this->half,
+            'waterlogged' => $this->waterlogged,
+            'shape' => $this->shape,
         ]);
     }
 
     /**
-     * @param HalfType $half
+     * @param RailShape $shape
      */
-    public function setHalf(HalfType $half): void
+    public function setShape(RailShape $shape): void
     {
-        $this->half = $half;
+        $this->shape = $shape;
     }
 
     /**
-     * @return HalfType
+     * @return RailShape
      */
-    public function getHalf(): HalfType
+    public function getShape(): RailShape
     {
-        return $this->half;
+        return $this->shape;
     }
 }

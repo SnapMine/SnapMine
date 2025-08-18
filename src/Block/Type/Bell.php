@@ -2,42 +2,31 @@
 
 namespace Nirbose\PhpMcServ\Block\Type;
 
+use Nirbose\PhpMcServ\Block\Attachment;
 use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Block\Data\Facing;
-use Nirbose\PhpMcServ\Block\Data\Half;
-use Nirbose\PhpMcServ\Block\Data\Openable;
 use Nirbose\PhpMcServ\Block\Data\Powerable;
 use Nirbose\PhpMcServ\Block\Direction;
 use Nirbose\PhpMcServ\Material;
 
-class Door implements BlockData
+class Bell implements BlockData
 {
-    use Facing, Half, Openable, Powerable;
-    private string $hinge = 'left';
+    private Attachment $attachment = Attachment::FLOOR;
 
-    public function __construct(
-        private readonly Material $material
-    )
-    {
-    }
+    use Facing, Powerable;
 
-    /**
-     * @return Material
-     */
     public function getMaterial(): Material
     {
-        return $this->material;
+        return Material::BELL;
     }
 
     public function computedId(BlockStateLoader $loader): int
     {
         return $loader->getBlockStateId($this->getMaterial(), [
-            'facing' => $this->facing->value,
-            'open' => $this->open,
-            'powered' => $this->isPower(),
-            'half' => $this->getHalf(),
-            'hinge' => $this->hinge,
+            'facing' => $this->facing,
+            'powered' => $this->isPower,
+            'attachment' => $this->attachment,
         ]);
     }
 
@@ -52,18 +41,18 @@ class Door implements BlockData
     }
 
     /**
-     * @param string $hinge
+     * @param Attachment $attachment
      */
-    public function setHinge(string $hinge): void
+    public function setAttachment(Attachment $attachment): void
     {
-        $this->hinge = $hinge;
+        $this->attachment = $attachment;
     }
 
     /**
-     * @return string
+     * @return Attachment
      */
-    public function getHinge(): string
+    public function getAttachment(): Attachment
     {
-        return $this->hinge;
+        return $this->attachment;
     }
 }

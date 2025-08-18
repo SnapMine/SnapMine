@@ -1,8 +1,8 @@
 <?php
 
-namespace Nirbose\PhpMcServ;
+namespace Nirbose\PhpMcServ\Block;
 
-enum Axis: string
+enum AxisType: string
 {
     case X = 'x';
     case Y = 'y';
