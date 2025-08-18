@@ -65,70 +65,71 @@ class ChunkSection
         }
 
         if (has_trait(Age::class, $b)) {
-            /** @var Age $b */
+            /** @phpstan-ignore method.notFound */
             $b->setAge(intval($properties->getString("age")->getValue()));
         }
 
         if (has_trait(Attached::class, $b)) {
-            /** @var Attached $b */
+            /** @phpstan-ignore method.notFound */
             $b->setAttached($properties->getString("attached")->getValue() === "true");
         }
 
         if (has_trait(FaceAttachable::class, $b)) {
-            /** @var FaceAttachable $b */
+            /** @phpstan-ignore method.notFound */
             $b->setAttachedFace(AttachedFace::from($properties->getString("face")->getValue()));
         }
 
         if (has_trait(Facing::class, $b)) {
-            /** @var Facing $b */
+            /** @phpstan-ignore method.notFound */
             $b->setFacing(Direction::from($properties->getString("facing")->getValue()));
         }
 
         if (has_trait(Level::class, $b)) {
-            /** @var Level $b */
+            /** @phpstan-ignore method.notFound */
             $b->setLevel(intval($properties->getString("level")->getValue()));
         }
 
         if (has_trait(Lightable::class, $b)) {
-            /** @var Lightable $b */
+            /** @phpstan-ignore method.notFound */
             $b->setLit($properties->getString("lit")->getValue() === "true");
         }
 
         if (has_trait(MultipleFacing::class, $b)) {
-            /** @var MultipleFacing $b */
+            /** @phpstan-ignore method.notFound */
             foreach ($b->getAllowedFaces() as $face) {
                 if ($properties->getString(strtolower($face->name))->getValue() === "true") {
+                    /** @phpstan-ignore method.notFound */
                     $b->setFace($face);
                 }
             }
         }
         if (has_trait(Openable::class, $b)) {
-            /** @var Openable $b */
+            /** @phpstan-ignore method.notFound */
             $b->setOpen($properties->getString("open")->getValue() === "true");
         }
 
         if (has_trait(Powerable::class, $b)) {
-            /** @var Powerable $b */
+            /** @phpstan-ignore method.notFound */
             $b->setPower($properties->getString("powered")->getValue() === "true");
         }
 
         if (has_trait(Rotatable::class, $b)) {
-            /** @var Rotatable $b */
+            /** @phpstan-ignore method.notFound */
             $b->setRotation(intval($properties->getString("rotation")->getValue()));
         }
 
         if (has_trait(Waterlogged::class, $b)) {
-            /** @var Waterlogged $b */
+            /** @phpstan-ignore method.notFound */
             $b->setWaterlogged($properties->getString("waterlogged")->getValue() === "true");
         }
 
         if (has_trait(Type::class, $b)) {
-            /** @var Type $b */
+            /** @phpstan-ignore method.notFound */
             $b->setType($properties->getString("type")->getValue());
         }
 
         if (has_trait(Half::class, $b)) {
-            /** @var Half $b */
+            /** @phpstan-ignore method.notFound */
             $b->setHalf(HalfType::from($properties->getString('half')->getValue()));
         }
 

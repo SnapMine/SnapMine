@@ -34,7 +34,7 @@ class Chunk
 
         $this->loadHeightmaps($nbt);
         $this->loadSections($nbt);
-        //$this->loadBlockEntities($nbt);
+        $this->loadBlockEntities($nbt);
 
         $this->loaded = true;
 

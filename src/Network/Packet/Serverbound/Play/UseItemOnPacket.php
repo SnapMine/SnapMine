@@ -43,8 +43,8 @@ class UseItemOnPacket extends ServerboundPacket
         $server = $session->getServer();
         $block = $server
             ->getRegion()
-            ->getChunk($this->position->getX() >> 4, $this->position->getZ() >> 4)
-            ->getBlock($this->position->getX(), $this->position->getY(), $this->position->getZ());
+            ->getChunk(((int)$this->position->getX()) >> 4, ((int)$this->position->getZ()) >> 4)
+            ->getBlock((int)$this->position->getX(), (int)$this->position->getY(), (int)$this->position->getZ());
 
         $server->broadcastPacket(new BlockUpdatePacket($this->position, $block));
     }

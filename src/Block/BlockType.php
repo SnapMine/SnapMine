@@ -2185,16 +2185,12 @@ enum BlockType
         };
     }
 
-    public function createBlockData(): ?BlockData
+    public function createBlockData(): BlockData
     {
         try {
             $class = $this->getBlockDataClass();
         } catch (Exception) {
             $class = BasicBlockData::class;
-        }
-
-        if (!class_exists($class)) {
-            return null;
         }
 
         $materialName = strtoupper($this->name);

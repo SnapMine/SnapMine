@@ -69,7 +69,7 @@ class Server
     public function __destruct()
     {
         foreach ($this->clients as $client) {
-            if (is_resource($client)) {
+            if ($client instanceof Socket) {
                 socket_close($client);
             }
         }
