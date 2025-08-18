@@ -150,8 +150,6 @@ class ChunkDataAndUpdateLightPacket extends ClientboundPacket
             $serializer->putByteArray($data);
         }
 
-
-        file_put_contents("yoo.txt", print_r($chunk, true), FILE_APPEND);
         //echo "Content packet: " . bin2hex($serializer->get()) . "\n";
     }
 }

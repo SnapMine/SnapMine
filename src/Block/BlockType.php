@@ -13,10 +13,10 @@ use Nirbose\PhpMcServ\Block\Type\Composter;
 use Nirbose\PhpMcServ\Block\Type\Door;
 use Nirbose\PhpMcServ\Block\Type\Fence;
 use Nirbose\PhpMcServ\Block\Type\GenericBisected;
-use Nirbose\PhpMcServ\Block\Type\GenericBlockData;
+use Nirbose\PhpMcServ\Block\Type\BasicBlockData;
 use Nirbose\PhpMcServ\Block\Type\GenericFacing;
 use Nirbose\PhpMcServ\Block\Type\GenericOrientable;
-use Nirbose\PhpMcServ\Block\Type\GenericSnowy;
+use Nirbose\PhpMcServ\Block\Type\SnowyBlockData;
 use Nirbose\PhpMcServ\Block\Type\GlassPane;
 use Nirbose\PhpMcServ\Block\Type\Sign;
 use Nirbose\PhpMcServ\Block\Type\Slab;
@@ -1138,7 +1138,7 @@ enum BlockType
     public function getBlockDataClass(): string
     {
         return match ($this) {
-            self::STONE, self::AIR, self::ACACIA_PLANKS, self::ALLIUM, self::AMETHYST_BLOCK, self::ANCIENT_DEBRIS, self::ANDESITE, self::AZURE_BLUET, self::BAMBOO_MOSAIC, self::BAMBOO_PLANKS, self::BAMBOO_SAPLING, self::BEACON, self::BEDROCK, self::BLACK_CARPET, self::BLACK_GLAZED_TERRACOTTA, self::BLACK_CONCRETE, self::BLACK_CONCRETE_POWDER, self::BLACK_STAINED_GLASS, self::BLACK_TERRACOTTA, self::BLACK_WOOL, self::BLACKSTONE, self::BLUE_CARPET, self::BLUE_CONCRETE, self::BLUE_CONCRETE_POWDER, self::BLUE_ICE, self::BLUE_ORCHID, self::DIRT, self::DIRT_PATH, self::OAK_PLANKS, self::SHORT_GRASS, self::COBBLESTONE, self::YELLOW_CARPET, self::MOSSY_COBBLESTONE, self::POTTED_DANDELION, self::FLETCHING_TABLE, self::DANDELION, self::OXEYE_DAISY, self::POPPY, self::CORNFLOWER, self::YELLOW_WOOL, self::WHITE_WOOL => GenericBlockData::class,
+            self::STONE, self::AIR, self::ACACIA_PLANKS, self::ALLIUM, self::AMETHYST_BLOCK, self::ANCIENT_DEBRIS, self::ANDESITE, self::AZURE_BLUET, self::BAMBOO_MOSAIC, self::BAMBOO_PLANKS, self::BAMBOO_SAPLING, self::BEACON, self::BEDROCK, self::BLACK_CARPET, self::BLACK_GLAZED_TERRACOTTA, self::BLACK_CONCRETE, self::BLACK_CONCRETE_POWDER, self::BLACK_STAINED_GLASS, self::BLACK_TERRACOTTA, self::BLACK_WOOL, self::BLACKSTONE, self::BLUE_CARPET, self::BLUE_CONCRETE, self::BLUE_CONCRETE_POWDER, self::BLUE_ICE, self::BLUE_ORCHID, self::DIRT, self::DIRT_PATH, self::OAK_PLANKS, self::SHORT_GRASS, self::COBBLESTONE, self::YELLOW_CARPET, self::MOSSY_COBBLESTONE, self::POTTED_DANDELION, self::FLETCHING_TABLE, self::DANDELION, self::OXEYE_DAISY, self::POPPY, self::CORNFLOWER, self::YELLOW_WOOL, self::WHITE_WOOL => BasicBlockData::class,
             self::COMPOSTER => Composter::class,
             self::RED_BED, self::WHITE_BED => Bed::class,
             self::ACACIA_BUTTON => throw new Exception('To be implemented'),
@@ -1505,7 +1505,7 @@ enum BlockType
             self::GRANITE_SLAB => throw new Exception('To be implemented'),
             self::GRANITE_STAIRS => throw new Exception('To be implemented'),
             self::GRANITE_WALL => throw new Exception('To be implemented'),
-            self::GRASS_BLOCK => GenericSnowy::class,
+            self::GRASS_BLOCK, self::PODZOL, self::MYCELIUM => SnowyBlockData::class,
             self::GRAVEL => throw new Exception('To be implemented'),
             self::GRAY_BANNER => throw new Exception('To be implemented'),
             self::GRAY_BED => throw new Exception('To be implemented'),
@@ -1694,7 +1694,6 @@ enum BlockType
             self::MUD_BRICKS => throw new Exception('To be implemented'),
             self::MUDDY_MANGROVE_ROOTS => throw new Exception('To be implemented'),
             self::MUSHROOM_STEM => throw new Exception('To be implemented'),
-            self::MYCELIUM => throw new Exception('To be implemented'),
             self::NETHER_BRICK_SLAB => throw new Exception('To be implemented'),
             self::NETHER_BRICK_STAIRS => throw new Exception('To be implemented'),
             self::NETHER_BRICK_WALL => throw new Exception('To be implemented'),
@@ -1714,7 +1713,7 @@ enum BlockType
             self::OAK_HANGING_SIGN => throw new Exception('To be implemented'),
             self::OAK_LEAVES => throw new Exception('To be implemented'),
             self::OAK_LOG, self::STRIPPED_OAK_WOOD, self::STRIPPED_OAK_LOG => GenericOrientable::class,
-            self::OAK_PRESSURE_PLATE => GenericBlockData::class, // TODO: implement real logic
+            self::OAK_PRESSURE_PLATE => BasicBlockData::class, // TODO: implement real logic
             self::OAK_SAPLING => throw new Exception('To be implemented'),
             self::OAK_SIGN => Sign::class,
             self::OAK_SLAB => Slab::class,
@@ -1798,7 +1797,6 @@ enum BlockType
             self::PITCHER_PLANT => throw new Exception('To be implemented'),
             self::PLAYER_HEAD => throw new Exception('To be implemented'),
             self::PLAYER_WALL_HEAD => throw new Exception('To be implemented'),
-            self::PODZOL => throw new Exception('To be implemented'),
             self::POINTED_DRIPSTONE => throw new Exception('To be implemented'),
             self::POLISHED_ANDESITE => throw new Exception('To be implemented'),
             self::POLISHED_ANDESITE_SLAB => throw new Exception('To be implemented'),
@@ -2192,7 +2190,7 @@ enum BlockType
         try {
             $class = $this->getBlockDataClass();
         } catch (Exception) {
-            $class = GenericBlockData::class;
+            $class = BasicBlockData::class;
         }
 
         if (!class_exists($class)) {

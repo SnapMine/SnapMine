@@ -6,7 +6,7 @@ use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Material;
 
-readonly class GenericBlockData implements BlockData
+class BasicBlockData implements BlockData
 {
     public function __construct(
         private Material $material,
