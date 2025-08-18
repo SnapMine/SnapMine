@@ -4,11 +4,12 @@ namespace Nirbose\PhpMcServ\Block\Type;
 
 use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
+use Nirbose\PhpMcServ\Block\HalfType;
 use Nirbose\PhpMcServ\Material;
 
 class GenericBisected implements BlockData
 {
-    private string $half = 'lower';
+    private HalfType $half = HalfType::LOWER;
 
     public function __construct(
         private readonly Material $material,
@@ -30,17 +31,17 @@ class GenericBisected implements BlockData
     }
 
     /**
-     * @param string $half
+     * @param HalfType $half
      */
-    public function setHalf(string $half): void
+    public function setHalf(HalfType $half): void
     {
         $this->half = $half;
     }
 
     /**
-     * @return string
+     * @return HalfType
      */
-    public function getHalf(): string
+    public function getHalf(): HalfType
     {
         return $this->half;
     }
