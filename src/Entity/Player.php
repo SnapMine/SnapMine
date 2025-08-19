@@ -133,4 +133,12 @@ class Player extends Entity
     {
         return EntityType::PLAYER;
     }
+
+    /**
+     * @throws \Exception
+     */
+    public function transfer(string $host, int $port): void
+    {
+        $this->session->transfer($host, $port);
+    }
 }
