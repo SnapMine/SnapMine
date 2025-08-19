@@ -2,10 +2,8 @@
 
 namespace Nirbose\PhpMcServ\Block\Type;
 
-use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Block\Data\Axis;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Material;
 
 class AxisBlockData extends BlockData
 {

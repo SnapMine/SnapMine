@@ -34,7 +34,7 @@ class BlockData
                 }
             },
             Openable::class => fn($obj, &$data) => $data['open'] = $obj->isOpen(),
-            Powerable::class => fn($obj, &$data) => $data['powered'] = $obj->isPower(),
+            Powerable::class => fn($obj, &$data) => $data['powered'] = $obj->isPowered(),
             Rotatable::class => fn($obj, &$data) => $data['rotation'] = $obj->getRotation(),
             Waterlogged::class => fn($obj, &$data) => $data['waterlogged'] = $obj->isWaterlogged(),
             Type::class => fn($obj, &$data) => $data['type'] = $obj->getType(),

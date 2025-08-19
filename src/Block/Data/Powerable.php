@@ -4,15 +4,15 @@ namespace Nirbose\PhpMcServ\Block\Data;
 
 trait Powerable
 {
-    protected bool $isPower = false;
+    protected bool $powered = false;
 
-    public function isPower(): bool
+    public function isPowered(): bool
     {
-        return $this->isPower;
+        return $this->powered;
     }
 
-    public function setPower(bool $power): void
+    public function setPowered(bool $powered): void
     {
-        $this->isPower = $power;
+        $this->powered = $powered;
     }
 }

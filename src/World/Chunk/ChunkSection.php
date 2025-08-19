@@ -3,36 +3,26 @@
 namespace Nirbose\PhpMcServ\World\Chunk;
 
 use Aternos\Nbt\Tag\CompoundTag;
+use Aternos\Nbt\Tag\StringTag;
 use Exception;
 use Nirbose\PhpMcServ\Block\AttachedFace;
+use Nirbose\PhpMcServ\Block\Attachment;
+use Nirbose\PhpMcServ\Block\AxisType;
 use Nirbose\PhpMcServ\Block\BlockType;
-use Nirbose\PhpMcServ\Block\Data\Age;
-use Nirbose\PhpMcServ\Block\Data\Attached;
+use Nirbose\PhpMcServ\Block\CreakingHeartState;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Block\Data\Distance;
-use Nirbose\PhpMcServ\Block\Data\Drag;
-use Nirbose\PhpMcServ\Block\Data\Dusted;
-use Nirbose\PhpMcServ\Block\Data\FaceAttachable;
-use Nirbose\PhpMcServ\Block\Data\Facing;
-use Nirbose\PhpMcServ\Block\Data\Half;
-use Nirbose\PhpMcServ\Block\Data\Hanging;
-use Nirbose\PhpMcServ\Block\Data\Hatch;
-use Nirbose\PhpMcServ\Block\Data\Layers;
-use Nirbose\PhpMcServ\Block\Data\Level;
-use Nirbose\PhpMcServ\Block\Data\Lightable;
-use Nirbose\PhpMcServ\Block\Data\MultipleFacing;
-use Nirbose\PhpMcServ\Block\Data\Ominous;
-use Nirbose\PhpMcServ\Block\Data\Openable;
-use Nirbose\PhpMcServ\Block\Data\Orientable;
-use Nirbose\PhpMcServ\Block\Data\Powerable;
-use Nirbose\PhpMcServ\Block\Data\Rotatable;
-use Nirbose\PhpMcServ\Block\Data\Triggered;
-use Nirbose\PhpMcServ\Block\Data\Type;
-use Nirbose\PhpMcServ\Block\Data\Waterlogged;
 use Nirbose\PhpMcServ\Block\Direction;
 use Nirbose\PhpMcServ\Block\HalfType;
+use Nirbose\PhpMcServ\Block\Instrument;
+use Nirbose\PhpMcServ\Block\LeavesType;
+use Nirbose\PhpMcServ\Block\Mode;
+use Nirbose\PhpMcServ\Block\Orientation;
+use Nirbose\PhpMcServ\Block\SensorPhase;
 use Nirbose\PhpMcServ\Block\StairsShape;
-use Nirbose\PhpMcServ\Block\Type\Stairs;
+use Nirbose\PhpMcServ\Block\Thickness;
+use Nirbose\PhpMcServ\Block\Tilt;
+use Nirbose\PhpMcServ\Block\TrialSpawnerState;
+use Nirbose\PhpMcServ\Block\VaultState;
 use Nirbose\PhpMcServ\Material;
 use Nirbose\PhpMcServ\World\PalettedContainer;
 
@@ -69,84 +59,65 @@ class ChunkSection
         $b = BlockType::find($blockState->getString("Name")->getValue())->createBlockData();
         $properties = $blockState->getCompound('Properties');
 
-        if ($properties == null) {
+        if ($properties === null) {
             return $b;
         }
 
-        if (has_trait(Age::class, $b)) {
-            /** @phpstan-ignore method.notFound */
-            $b->setAge(intval($properties->getString("age")->getValue()));
-        }
+        /**
+         * @var string $propName
+         * @var StringTag $tag
+         */
+        foreach ($properties as $propName => $tag) {
+            $value = $tag->getValue();
 
-        if (has_trait(Attached::class, $b)) {
-            /** @phpstan-ignore method.notFound */
-            $b->setAttached($properties->getString("attached")->getValue() === "true");
-        }
+            $method = 'set' . str_replace('_', '', ucwords($propName, '_'));
 
-        if (has_trait(FaceAttachable::class, $b)) {
-            /** @phpstan-ignore method.notFound */
-            $b->setAttachedFace(AttachedFace::from($properties->getString("face")->getValue()));
-        }
-
-        if (has_trait(Facing::class, $b)) {
-            /** @phpstan-ignore method.notFound */
-            $b->setFacing(Direction::from($properties->getString("facing")->getValue()));
-        }
-
-        if (has_trait(Level::class, $b)) {
-            /** @phpstan-ignore method.notFound */
-            $b->setLevel(intval($properties->getString("level")->getValue()));
-        }
-
-        if (has_trait(Lightable::class, $b)) {
-            /** @phpstan-ignore method.notFound */
-            $b->setLit($properties->getString("lit")->getValue() === "true");
-        }
-
-        if (has_trait(MultipleFacing::class, $b)) {
-            /** @phpstan-ignore method.notFound */
-            foreach ($b->getAllowedFaces() as $face) {
-                if ($properties->getString(strtolower($face->name))->getValue() === "true") {
-                    /** @phpstan-ignore method.notFound */
-                    $b->setFace($face);
+            if (method_exists($b, $method)) {
+                $b->$method($this->convertPropertyValue($propName, $value));
+            } else {
+                if ($properties == 'axis') {
+                    var_dump($method);
                 }
             }
         }
-        if (has_trait(Openable::class, $b)) {
-            /** @phpstan-ignore method.notFound */
-            $b->setOpen($properties->getString("open")->getValue() === "true");
-        }
-
-        if (has_trait(Powerable::class, $b)) {
-            /** @phpstan-ignore method.notFound */
-            $b->setPower($properties->getString("powered")->getValue() === "true");
-        }
-
-        if (has_trait(Rotatable::class, $b)) {
-            /** @phpstan-ignore method.notFound */
-            $b->setRotation(intval($properties->getString("rotation")->getValue()));
-        }
-
-        if (has_trait(Waterlogged::class, $b)) {
-            /** @phpstan-ignore method.notFound */
-            $b->setWaterlogged($properties->getString("waterlogged")->getValue() === "true");
-        }
-
-        if (has_trait(Type::class, $b)) {
-            /** @phpstan-ignore method.notFound */
-            $b->setType($properties->getString("type")->getValue());
-        }
-
-        if (has_trait(Half::class, $b)) {
-            /** @phpstan-ignore method.notFound */
-            $b->setHalf(HalfType::from($properties->getString('half')->getValue()));
-        }
-
-        if ($b instanceof Stairs) {
-            $b->setShape(StairsShape::from($properties->getString('shape')->getValue()));
-        }
 
         return $b;
+    }
+
+    private function convertPropertyValue(string $name, string $value): mixed
+    {
+        return match ($name) {
+            // booleans
+            'lit', 'open', 'attached', 'powered', 'waterlogged', 'hanging', 'ominous', 'drag', 'triggered', 'snowy', 'in_wall', 'persistent', 'occupied', 'has_bottle_0', 'has_bottle_1', 'has_bottle_2', 'signal_fire', 'berries', 'conditional',
+                'slot_0_occupied', 'slot_1_occupied', 'slot_2_occupied', 'slot_3_occupied', 'slot_4_occupied', 'slot_5_occupied', 'crafting', 'natural', 'inverted', 'cracked', 'eye', 'enabled', 'has_record', 'has_book', 'tip',
+                'bottom', 'extended', 'short', 'locked', 'bloom', 'can_summon', 'shrieking', 'unstable', 'disarmed'
+            => $value === 'true',
+
+            // int
+            'age', 'level', 'rotation', 'layers', 'distance', 'dusted', 'hatch', 'stage', 'honey_level', 'candles', 'bites', 'power', 'moisture', 'segment_amount', 'note', 'flower_amount', 'delay', 'charges', 'pickles', 'eggs'
+            => (int)$value,
+
+            // enums / objets
+            'facing', 'vertical_direction' => Direction::from($value),
+            'face' => AttachedFace::from($value),
+            'half' => HalfType::from($value),
+            'shape' => StairsShape::from($value),
+            'axis' => AxisType::from($value),
+            'orientation' => Orientation::from($value),
+            'attachment' => Attachment::from($value),
+            'leaves' => LeavesType::from($value),
+            'tilt' => Tilt::from($value),
+            'sculk_sensor_phase' => SensorPhase::from($value),
+            'mode' => Mode::from($value),
+            'creaking_heart_state' => CreakingHeartState::from($value),
+            'instrument' => Instrument::from($value),
+            'thickness' => Thickness::from($value),
+            'trial_spawner_state' => TrialSpawnerState::from($value),
+            'vault_state' => VaultState::from($value),
+
+            // fallback
+            default => $value,
+        };
     }
 
     /**
