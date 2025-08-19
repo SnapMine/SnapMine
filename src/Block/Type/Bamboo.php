@@ -2,14 +2,12 @@
 
 namespace Nirbose\PhpMcServ\Block\Type;
 
-use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Block\Data\Age;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Block\Data\Stage;
 use Nirbose\PhpMcServ\Block\LeavesType;
-use Nirbose\PhpMcServ\Material;
 
-class Bamboo implements BlockData
+class Bamboo extends BlockData
 {
     private LeavesType $leaves = LeavesType::LARGE;
 
@@ -20,18 +18,9 @@ class Bamboo implements BlockData
         return 1;
     }
 
-    public function getMaterial(): Material
+    public function computedId(array $data = []): int
     {
-        return Material::BAMBOO;
-    }
-
-    public function computedId(BlockStateLoader $loader): int
-    {
-        return $loader->getBlockStateId($this->getMaterial(), [
-            'age' => $this->getAge(),
-            'leaves' => $this->leaves,
-            'stage' => $this->stage,
-        ]);
+        return parent::computedId(['leaves' => $this->leaves]);
     }
 
     /**

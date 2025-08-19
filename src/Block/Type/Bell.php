@@ -3,31 +3,20 @@
 namespace Nirbose\PhpMcServ\Block\Type;
 
 use Nirbose\PhpMcServ\Block\Attachment;
-use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Block\Data\Facing;
 use Nirbose\PhpMcServ\Block\Data\Powerable;
 use Nirbose\PhpMcServ\Block\Direction;
-use Nirbose\PhpMcServ\Material;
 
-class Bell implements BlockData
+class Bell extends BlockData
 {
     private Attachment $attachment = Attachment::FLOOR;
 
     use Facing, Powerable;
 
-    public function getMaterial(): Material
+    public function computedId(array $data = []): int
     {
-        return Material::BELL;
-    }
-
-    public function computedId(BlockStateLoader $loader): int
-    {
-        return $loader->getBlockStateId($this->getMaterial(), [
-            'facing' => $this->facing,
-            'powered' => $this->isPower,
-            'attachment' => $this->attachment,
-        ]);
+        return parent::computedId(['attachment' => $this->attachment]);
     }
 
     public function getFaces(): array

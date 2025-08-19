@@ -2,17 +2,15 @@
 
 namespace Nirbose\PhpMcServ\Block\Type;
 
-use Nirbose\PhpMcServ\Block\BlockStateLoader;
+use Nirbose\PhpMcServ\Block\Data\BlockData;
 
-class SnowyBlockData extends BasicBlockData
+class SnowyBlockData extends BlockData
 {
     private bool $isSnowy = false;
 
-    public function computedId(BlockStateLoader $loader): int
+    public function computedId(array $data = []): int
     {
-        return $loader->getBlockStateId($this->getMaterial(), [
-            'snowy' => $this->isSnowy,
-        ]);
+        return parent::computedId(['snowy' => $this->isSnowy]);
     }
 
     /**
@@ -26,7 +24,7 @@ class SnowyBlockData extends BasicBlockData
     /**
      * @param bool $isSnowy
      */
-    public function setIsSnowy(bool $isSnowy): void
+    public function setSnowy(bool $isSnowy): void
     {
         $this->isSnowy = $isSnowy;
     }

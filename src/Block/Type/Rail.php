@@ -2,36 +2,19 @@
 
 namespace Nirbose\PhpMcServ\Block\Type;
 
-use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Block\Data\Waterlogged;
 use Nirbose\PhpMcServ\Block\RailShape;
-use Nirbose\PhpMcServ\Material;
 
-class Rail implements BlockData
+class Rail extends BlockData
 {
     protected RailShape $shape = RailShape::ASCENDING_EAST;
 
     use Waterlogged;
 
-    public function __construct(
-        private readonly Material $material,
-    )
+    public function computedId(array $data = []): int
     {
-
-    }
-
-    public function getMaterial(): Material
-    {
-        return $this->material;
-    }
-
-    public function computedId(BlockStateLoader $loader): int
-    {
-        return $loader->getBlockStateId($this->material, [
-            'waterlogged' => $this->waterlogged,
-            'shape' => $this->shape,
-        ]);
+        return parent::computedId(['shape' => $this->shape]);
     }
 
     /**

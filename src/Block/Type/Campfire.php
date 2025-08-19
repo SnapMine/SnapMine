@@ -2,39 +2,22 @@
 
 namespace Nirbose\PhpMcServ\Block\Type;
 
-use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Block\Data\Facing;
 use Nirbose\PhpMcServ\Block\Data\Lightable;
 use Nirbose\PhpMcServ\Block\Data\Waterlogged;
 use Nirbose\PhpMcServ\Block\Direction;
-use Nirbose\PhpMcServ\Material;
 
-class Campfire implements BlockData
+class Campfire extends BlockData
 {
     private bool $signalFire = false;
 
     use Facing, Lightable, Waterlogged;
 
-    public function __construct(
-        private readonly Material $material,
-    )
-    {
-    }
 
-    public function getMaterial(): Material
+    public function computedId(array $data = []): int
     {
-        return $this->material;
-    }
-
-    public function computedId(BlockStateLoader $loader): int
-    {
-        return $loader->getBlockStateId($this->material, [
-            'facing' => $this->facing,
-            'lit' => $this->light,
-            'signal_fire' => $this->signalFire,
-            'waterlogged' => $this->waterlogged,
-        ]);
+        return parent::computedId(['signal_fire' => $this->signalFire]);
     }
 
     public function getFaces(): array

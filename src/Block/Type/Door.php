@@ -2,43 +2,22 @@
 
 namespace Nirbose\PhpMcServ\Block\Type;
 
-use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Block\Data\Facing;
 use Nirbose\PhpMcServ\Block\Data\Half;
 use Nirbose\PhpMcServ\Block\Data\Openable;
 use Nirbose\PhpMcServ\Block\Data\Powerable;
 use Nirbose\PhpMcServ\Block\Direction;
-use Nirbose\PhpMcServ\Material;
 
-class Door implements BlockData
+class Door extends BlockData
 {
     use Facing, Half, Openable, Powerable;
     private string $hinge = 'left';
 
-    public function __construct(
-        private readonly Material $material
-    )
-    {
-    }
 
-    /**
-     * @return Material
-     */
-    public function getMaterial(): Material
+    public function computedId(array $data = []): int
     {
-        return $this->material;
-    }
-
-    public function computedId(BlockStateLoader $loader): int
-    {
-        return $loader->getBlockStateId($this->getMaterial(), [
-            'facing' => $this->facing->value,
-            'open' => $this->open,
-            'powered' => $this->isPower(),
-            'half' => $this->getHalf(),
-            'hinge' => $this->hinge,
-        ]);
+        return parent::computedId(['hinge' => $this->hinge]);
     }
 
     public function getFaces(): array

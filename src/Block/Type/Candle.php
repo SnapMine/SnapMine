@@ -2,36 +2,20 @@
 
 namespace Nirbose\PhpMcServ\Block\Type;
 
-use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Block\Data\Lightable;
 use Nirbose\PhpMcServ\Block\Data\Waterlogged;
-use Nirbose\PhpMcServ\Material;
 
-class Candle implements BlockData
+class Candle extends BlockData
 {
     private int $candles = 1;
 
     use Lightable, Waterlogged;
 
-    public function __construct(
-        private readonly Material $material,
-    )
-    {
-    }
 
-    public function getMaterial(): Material
+    public function computedId(array $data = []): int
     {
-        return $this->material;
-    }
-
-    public function computedId(BlockStateLoader $loader): int
-    {
-        return $loader->getBlockStateId($this->material, [
-            'candles' => $this->candles,
-            'lit' => $this->light,
-            'waterlogged' => $this->waterlogged,
-        ]);
+        return parent::computedId(['candles' => $this->candles]);
     }
 
     /**

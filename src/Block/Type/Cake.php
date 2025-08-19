@@ -2,20 +2,12 @@
 
 namespace Nirbose\PhpMcServ\Block\Type;
 
-use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Material;
-
-class Cake implements BlockData
+class Cake extends BlockData
 {
     private int $bits = 6;
 
-    public function getMaterial(): Material
-    {
-        return Material::CAKE;
-    }
-
-    public function computedId(BlockStateLoader $loader): int
+    public function computedId(array $data = []): int
     {
         return $this->getMaterial()->getBlockId() + $this->bits;
     }

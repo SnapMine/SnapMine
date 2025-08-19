@@ -2,35 +2,19 @@
 
 namespace Nirbose\PhpMcServ\Block\Type;
 
-use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Block\Data\Facing;
 use Nirbose\PhpMcServ\Block\Direction;
-use Nirbose\PhpMcServ\Material;
 
-class Beehive implements BlockData
+class Beehive extends BlockData
 {
     private int $honeyLevel = 0;
 
     use Facing;
 
-    public function __construct(
-        private readonly Material $material
-    )
+    public function computedId(array $data = []): int
     {
-    }
-
-    public function getMaterial(): Material
-    {
-        return $this->material;
-    }
-
-    public function computedId(BlockStateLoader $loader): int
-    {
-        return $loader->getBlockStateId($this->material, [
-            'facing' => $this->facing,
-            'honey_level' => $this->honeyLevel,
-        ]);
+        return parent::computedId(['honey_level' => $this->honeyLevel]);
     }
 
     public function getFaces(): array

@@ -9,22 +9,9 @@ use Nirbose\PhpMcServ\Block\Data\Waterlogged;
 use Nirbose\PhpMcServ\Block\Direction;
 use Nirbose\PhpMcServ\Material;
 
-class AmethystCluster implements BlockData
+class AmethystCluster extends BlockData
 {
     use Facing, Waterlogged;
-
-    public function getMaterial(): Material
-    {
-        return Material::AMETHYST_CLUSTER;
-    }
-
-    public function computedId(BlockStateLoader $loader): int
-    {
-        return $loader->getBlockStateId($this->getMaterial(), [
-            'facing' => $this->facing,
-            'waterlogged' => $this->waterlogged,
-        ]);
-    }
 
     public function getFaces(): array
     {
