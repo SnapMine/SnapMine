@@ -53,6 +53,10 @@ class BlockStateLoader
         }
 
         $blockData = $this->getBlockData($blockName);
+
+        if (!isset($blockData['coefficients']))
+            return $baseId;
+
         $coefficients = $blockData['coefficients'];
         $properties = $blockData['properties'];
 

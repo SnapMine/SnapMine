@@ -87,7 +87,7 @@ class ChunkDataAndUpdateLightPacket extends ClientboundPacket
                 ->putVarInt($paletteSize);
 
             foreach ($palette as $blockData) {
-                $blockId = $blockData->computedId(Artisan::getBlockStateLoader());
+                $blockId = $blockData->computedId();
                 $dataBuf->putVarInt($blockId);
             }
 
