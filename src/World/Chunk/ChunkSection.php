@@ -4,6 +4,7 @@ namespace Nirbose\PhpMcServ\World\Chunk;
 
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\StringTag;
+use Error;
 use Exception;
 use InvalidArgumentException;
 use Nirbose\PhpMcServ\Block\AttachedFace;
@@ -24,6 +25,7 @@ use Nirbose\PhpMcServ\Block\Thickness;
 use Nirbose\PhpMcServ\Block\Tilt;
 use Nirbose\PhpMcServ\Block\TrialSpawnerState;
 use Nirbose\PhpMcServ\Block\VaultState;
+use Nirbose\PhpMcServ\Block\WallHeight;
 use Nirbose\PhpMcServ\Material;
 use Nirbose\PhpMcServ\World\PalettedContainer;
 
@@ -71,14 +73,22 @@ class ChunkSection
         foreach ($properties as $propName => $tag) {
             $value = $tag->getValue();
 
+            try {
+                $dir = Direction::from($propName);
+
+                if (filter_var($value, FILTER_VALIDATE_BOOLEAN)) {
+                    $b->setFace($dir);
+                } else {
+                    $b->setHeight($dir, WallHeight::from($value));
+                }
+
+                continue;
+            } catch (Error) {}
+
             $method = 'set' . str_replace('_', '', ucwords($propName, '_'));
 
             if (method_exists($b, $method)) {
                 $b->$method($this->convertPropertyValue($propName, $value));
-            } else {
-                if ($properties == 'axis') {
-                    var_dump($method);
-                }
             }
         }
 
