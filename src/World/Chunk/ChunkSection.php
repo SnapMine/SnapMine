@@ -24,6 +24,7 @@ use Nirbose\PhpMcServ\Block\StairsShape;
 use Nirbose\PhpMcServ\Block\Thickness;
 use Nirbose\PhpMcServ\Block\Tilt;
 use Nirbose\PhpMcServ\Block\TrialSpawnerState;
+use Nirbose\PhpMcServ\Block\Type\BrewingStand;
 use Nirbose\PhpMcServ\Block\VaultState;
 use Nirbose\PhpMcServ\Block\WallHeight;
 use Nirbose\PhpMcServ\Material;
@@ -85,7 +86,11 @@ class ChunkSection
                 continue;
             } catch (Error) {}
 
-            $method = 'set' . str_replace('_', '', ucwords($propName, '_'));
+            if (str_contains($propName, '_state')) {
+                $method = 'setState';
+            } else {
+                $method = 'set' . str_replace('_', '', ucwords($propName, '_'));
+            }
 
             if (method_exists($b, $method)) {
                 $b->$method($this->convertPropertyValue($propName, $value));
