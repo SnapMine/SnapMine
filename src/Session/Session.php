@@ -6,6 +6,8 @@ use Exception;
 use Nirbose\PhpMcServ\Entity\GameProfile;
 use Nirbose\PhpMcServ\Entity\Player;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\Configuration\TransferPacket;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\TransferPacket as PlayTransferPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Protocol;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
@@ -160,5 +162,18 @@ class Session
         }
 
         return $this->player;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function transfer(string $host, int $port): void
+    {
+        if ($this->state == ServerState::CONFIGURATION)
+            $this->sendPacket(new TransferPacket($host, $port));
+        else if ($this->state == ServerState::PLAY)
+            $this->sendPacket(new PlayTransferPacket($host, $port));
+        else
+            throw new Exception('The server is currently not in the state of ServerState::CONFIGURATION or ServerState::PLAY');
     }
 }
