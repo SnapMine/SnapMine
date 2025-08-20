@@ -90,6 +90,7 @@ class Player extends LivingEntity
      */
     public function setGameMode(GameMode $gameMode): void
     {
+        $this->previousGameMode = $this->gameMode;
         $this->gameMode = $gameMode;
     }
 
@@ -99,14 +100,6 @@ class Player extends LivingEntity
     public function getPreviousGameMode(): ?GameMode
     {
         return $this->previousGameMode;
-    }
-
-    /**
-     * @param GameMode|null $previousGameMode
-     */
-    public function setPreviousGameMode(?GameMode $previousGameMode): void
-    {
-        $this->previousGameMode = $previousGameMode;
     }
 
     public function playSound(Entity|Location $location, Sound $sound, SoundCategory $category, float $volume = 1.0, float $pitch = 2.0, int $seed = 1): void
