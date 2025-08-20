@@ -199,7 +199,7 @@ class Chunk
             return new Block(Artisan::getServer(), $location, BlockType::AIR->createBlockData());
         }
 
-        $blockData = $this->sections[$sectionIndex]->getBlockData($x, $y & 0xF, $z);
+        $blockData = $this->sections[$sectionIndex]->getBlockData($x & 0xF, $y & 0xF, $z & 0xF);
 
         return new Block(Artisan::getServer(), $location, $blockData);
     }

@@ -18,6 +18,7 @@ class Region
 
     public function getChunk(int $x, int $z): ?Chunk
     {
+
         if (!isset($this->chunks[$x][$z])) {
             $chunk = $this->parser->getChunk($x, $z);
 

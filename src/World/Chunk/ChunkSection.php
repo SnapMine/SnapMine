@@ -35,6 +35,7 @@ class ChunkSection
     private int $blockCount = 4096;
     /** @var PalettedContainer<BlockData> */
     private PalettedContainer $palettedContainer;
+    private int $y = 0;
 
     /**
      * @throws Exception
@@ -45,6 +46,8 @@ class ChunkSection
             $this->loadPalette($tag),
             $this->loadBlocksData($tag)
         );
+
+        $this->y = $tag->getByte('Y')->getValue();
 
         $index = array_search(BlockType::AIR->createBlockData(), $this->palettedContainer->getPalette());
 
@@ -212,7 +215,7 @@ class ChunkSection
 
     public function getBlockData(int $localX, int $localY, int $localZ): BlockData
     {
-        return $this->palettedContainer[($localY << 8) + ($localZ << 4) + $localX];
+        return $this->palettedContainer[($localY * 256) + ($localZ * 16) + $localX];
     }
 
     /**

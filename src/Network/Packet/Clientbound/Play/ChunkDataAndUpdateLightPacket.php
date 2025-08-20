@@ -47,8 +47,8 @@ class ChunkDataAndUpdateLightPacket extends ClientboundPacket
         $dataBuf = new PacketSerializer('');
         $sections = $chunk->getSections();
 
-        for ($i = 0; $i < 24; $i++) {
-            $sectionY = $i - 5;
+        for ($i = -4; $i < 20; $i++) {
+            $sectionY = $i;
 
             if (!isset($sections[$sectionY])) {
                 $dataBuf->putShort(0)
