@@ -9,10 +9,7 @@ use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\AddEntityPacket;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\PlayerInfoUpdatePacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Particle\Particle;
-use Nirbose\PhpMcServ\Particle\TrailParticle;
 use Nirbose\PhpMcServ\Session\Session;
-use Nirbose\PhpMcServ\Utils\Color;
 
 class PlayerLoadedPacket extends ServerboundPacket {
     public function getId() : int {
@@ -66,7 +63,5 @@ class PlayerLoadedPacket extends ServerboundPacket {
                 $newPlayer->sendPacket($packetAddEntity);
             }
         }
-
-        $session->getServer()->spawnParticle(Particle::TRAIL, 0, 0, 0, new TrailParticle(1, 1, 0, Color::fromRGB(200, 45, 78), 1000));
     }
 }

@@ -5,6 +5,7 @@ namespace Nirbose\PhpMcServ\World\Chunk;
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\StringTag;
 use Exception;
+use InvalidArgumentException;
 use Nirbose\PhpMcServ\Block\AttachedFace;
 use Nirbose\PhpMcServ\Block\Attachment;
 use Nirbose\PhpMcServ\Block\AxisType;
@@ -184,12 +185,11 @@ class ChunkSection
 
     /**
      * @param int $blockCount
-     * @throws Exception
      */
     public function setBlockCount(int $blockCount): void
     {
         if ($blockCount < 0 || $blockCount > 4096) {
-            throw new Exception('Block count must be between 0 and 4096');
+            throw new InvalidArgumentException('Block count must be between 0 and 4096');
         }
 
         $this->blockCount = $blockCount;
@@ -197,7 +197,7 @@ class ChunkSection
 
     public function getBlockData(int $localX, int $localY, int $localZ): BlockData
     {
-        return $this->palettedContainer[$localX + $localZ << 4 + $localY << 8];
+        return $this->palettedContainer[($localY << 8) + ($localZ << 4) + $localX];
     }
 
     /**

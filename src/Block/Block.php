@@ -4,6 +4,7 @@ namespace Nirbose\PhpMcServ\Block;
 
 use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Material;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\BlockUpdatePacket;
 use Nirbose\PhpMcServ\Server;
 use Nirbose\PhpMcServ\World\Chunk\Chunk;
 use Nirbose\PhpMcServ\World\Location;
@@ -33,7 +34,7 @@ class Block
     {
         $this->blockData = BlockType::find($material)->createBlockData();
 
-        // TODO: Update for player client
+        $this->server->broadcastPacket(new BlockUpdatePacket($this->location, $this));
     }
 
     /**
@@ -65,5 +66,13 @@ class Block
         $z = $this->getZ() >> 4;
 
         return $this->server->getRegion()->getChunk($x, $z);
+    }
+
+    /**
+     * @return BlockData
+     */
+    public function getBlockData(): BlockData
+    {
+        return $this->blockData;
     }
 }

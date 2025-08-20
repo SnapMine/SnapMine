@@ -19,7 +19,7 @@ class BlockUpdatePacket extends ClientboundPacket
     public function write(PacketSerializer $serializer): void
     {
         $serializer->putPosition($this->position)
-            ->putVarInt($this->block->getMaterial()->getBlockId()); // TODO: use block data
+            ->putVarInt($this->block->getBlockData()->computedId());
     }
 
     public function getId(): int

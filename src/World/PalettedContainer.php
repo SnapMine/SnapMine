@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use Iterator;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Material;
+use OutOfBoundsException;
 use RuntimeException;
 
 
@@ -77,10 +78,18 @@ class PalettedContainer implements ArrayAccess
         $inLongIdx = $offset % $valsPerLong;
         $bitInLong = $inLongIdx * $bpe;
 
-        $mask = (1 << $bpe) - 1;
+        if (!isset($this->data[$longIndex])) {
+            throw new OutOfBoundsException("Long index {$longIndex} does not exist in the data array.");
+        }
 
-        $lo = $this->data[$longIndex] ?? 0;
+        $mask = (1 << $bpe) - 1;
+        $lo = $this->data[$longIndex];
+
         $indexInPalette = ($lo >> $bitInLong) & $mask;
+
+        if (!isset($this->palette[$indexInPalette])) {
+            throw new OutOfBoundsException("Palette index {$indexInPalette} is out of bounds for the current palette.");
+        }
 
         return $this->palette[$indexInPalette];
     }
