@@ -23,6 +23,7 @@ class BlockData
     {
         $traitHandlers = [
             Age::class => fn($obj, &$data) => $data['age'] = $obj->getAge(),
+            Axis::class => fn($obj, &$data) => $data['axis'] = $obj->getAxis(),
             Attached::class => fn($obj, &$data) => $data['attached'] = $obj->isAttached(),
             FaceAttachable::class => fn($obj, &$data) => $data['face'] = $obj->getAttachedFace(),
             Facing::class => fn($obj, &$data) => $data['facing'] = $obj->getFacing(),
