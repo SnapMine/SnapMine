@@ -10,7 +10,9 @@ use Monolog\Logger;
 use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Entity\Animal\Armadillo;
 use Nirbose\PhpMcServ\Entity\Animal\Bee;
+use Nirbose\PhpMcServ\Entity\Animal\Chicken;
 use Nirbose\PhpMcServ\Entity\Animal\Cow;
+use Nirbose\PhpMcServ\Entity\Animal\Fox;
 use Nirbose\PhpMcServ\Entity\Animal\Sheep;
 use Nirbose\PhpMcServ\Entity\AreaEffectCloud;
 use Nirbose\PhpMcServ\Entity\DragonFireball;
@@ -298,7 +300,7 @@ class Server
             EntityType::CHERRY_BOAT => throw new \Exception('To be implemented'),
             EntityType::CHERRY_CHEST_BOAT => throw new \Exception('To be implemented'),
             EntityType::CHEST_MINECART => throw new \Exception('To be implemented'),
-            EntityType::CHICKEN => throw new \Exception('To be implemented'),
+            EntityType::CHICKEN => new Chicken($this, $location),
             EntityType::COD => throw new \Exception('To be implemented'),
             EntityType::COMMAND_BLOCK_MINECART => throw new \Exception('To be implemented'),
             EntityType::COW => new Cow($this, $location),
@@ -326,7 +328,7 @@ class Server
             EntityType::FIREBALL => throw new \Exception('To be implemented'),
             EntityType::FIREWORK_ROCKET => throw new \Exception('To be implemented'),
             EntityType::FISHING_BOBBER => throw new \Exception('To be implemented'),
-            EntityType::FOX => throw new \Exception('To be implemented'),
+            EntityType::FOX => new Fox($this, $location),
             EntityType::FROG => throw new \Exception('To be implemented'),
             EntityType::FURNACE_MINECART => throw new \Exception('To be implemented'),
             EntityType::GHAST => throw new \Exception('To be implemented'),
