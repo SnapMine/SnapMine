@@ -64,7 +64,7 @@ class Axolotl extends Animal
     /**
      * @inheritDoc
      */
-    function getType(): EntityType
+    public function getType(): EntityType
     {
         return EntityType::AXOLOTL;
     }

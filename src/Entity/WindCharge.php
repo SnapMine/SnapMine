@@ -8,7 +8,7 @@ class WindCharge extends Entity
     /**
      * @inheritDoc
      */
-    function getType(): EntityType
+    public function getType(): EntityType
     {
         return EntityType::WIND_CHARGE;
     }

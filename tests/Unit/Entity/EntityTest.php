@@ -19,7 +19,7 @@ describe('Test Entity class', function () {
                 parent::__construct($server, new Location(0, 0, 0));
             }
 
-            function getType(): EntityType
+            public function getType(): EntityType
             {
                 return EntityType::ALLAY;
             }

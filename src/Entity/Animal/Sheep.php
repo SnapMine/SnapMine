@@ -12,7 +12,7 @@ class Sheep extends Animal
         parent::__construct($server, $location);
     }
 
-    function getType(): EntityType
+    public function getType(): EntityType
     {
         return EntityType::SHEEP;
     }

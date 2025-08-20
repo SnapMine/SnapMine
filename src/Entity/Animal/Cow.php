@@ -40,7 +40,7 @@ class Cow extends Animal
         $this->setMetadata(17, MetadataType::COW_VARIANT, $variant->getId());
     }
 
-    function getType(): EntityType
+    public function getType(): EntityType
     {
         return EntityType::COW;
     }

@@ -31,7 +31,7 @@ class Armadillo extends Animal
     /**
      * @inheritDoc
      */
-    function getType(): EntityType
+    public function getType(): EntityType
     {
         return EntityType::ARMADILLO;
     }

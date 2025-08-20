@@ -8,7 +8,7 @@ class EvokerFangs extends Entity
     /**
      * @inheritDoc
      */
-    function getType(): EntityType
+    public function getType(): EntityType
     {
         return EntityType::EVOKER_FANGS;
     }

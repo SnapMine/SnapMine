@@ -129,7 +129,7 @@ class Player extends LivingEntity
         $this->sendPacket($packet);
     }
 
-    function getType(): EntityType
+    public function getType(): EntityType
     {
         return EntityType::PLAYER;
     }

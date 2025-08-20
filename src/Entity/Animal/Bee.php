@@ -89,7 +89,7 @@ class Bee extends Animal
     /**
      * @inheritDoc
      */
-    function getType(): EntityType
+    public function getType(): EntityType
     {
         return EntityType::BEE;
     }
