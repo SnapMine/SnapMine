@@ -3,17 +3,18 @@
 namespace Nirbose\PhpMcServ\Block;
 
 use Nirbose\PhpMcServ\Block\Data\BlockData;
+use Nirbose\PhpMcServ\Block\Data\Waterlogged;
 use Nirbose\PhpMcServ\Material;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\BlockUpdatePacket;
 use Nirbose\PhpMcServ\Server;
 use Nirbose\PhpMcServ\World\Chunk\Chunk;
-use Nirbose\PhpMcServ\World\Location;
+use Nirbose\PhpMcServ\World\Position;
 
 class Block
 {
     public function __construct(
         private readonly Server   $server,
-        private readonly Location $location,
+        private readonly Position $location,
         private BlockData         $blockData,
     )
     {
@@ -38,9 +39,9 @@ class Block
     }
 
     /**
-     * @return Location
+     * @return Position
      */
-    public function getLocation(): Location
+    public function getLocation(): Position
     {
         return $this->location;
     }
@@ -74,5 +75,19 @@ class Block
     public function getBlockData(): BlockData
     {
         return $this->blockData;
+    }
+
+    public function getRelative(Direction $direction): Block
+    {
+        $loc = clone $this->location;
+
+        $loc->add($direction);
+
+        return $this->getChunk()->getBlock($loc->getX(), $loc->getY(), $loc->getZ());
+    }
+    
+    public function isWaterloggable(): bool
+    {
+        return has_trait(Waterlogged::class, $this->blockData);
     }
 }

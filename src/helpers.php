@@ -21,28 +21,11 @@ if (!function_exists('packet_dump')) {
     }
 }
 
-if (!function_exists('class_uses_recursive')) {
-    function class_uses_recursive(string $class): array
-    {
-        $results = [];
-
-        $results = array_merge($results, class_uses($class) ?: []);
-
-        if ($parent = get_parent_class($class)) {
-            $results = array_merge($results, class_uses_recursive($parent));
-        }
-
-        foreach (class_uses($class) ?: [] as $usedTrait) {
-            $results = array_merge($results, class_uses_recursive($usedTrait));
-        }
-
-        return array_unique($results);
-    }
-}
-
 if (!function_exists('has_trait')) {
     function has_trait(string $trait, object $object): bool
     {
-        return in_array($trait, class_uses_recursive($object::class), true);
+        $traits = class_uses($object);
+
+        return in_array($trait, $traits);
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Nirbose\PhpMcServ\World;
 
+use Nirbose\PhpMcServ\Block\Direction;
+
 class Position {
     private float $x;
     private float $y;
@@ -35,5 +37,14 @@ class Position {
 
     public function setZ(float $z): void {
         $this->z = $z;
+    }
+
+    public function add(Direction $direction): void
+    {
+        [$x, $y, $z] = $direction->getVec3();
+
+        $this->x += $x;
+        $this->y += $y;
+        $this->z += $z;
     }
 }

@@ -2,6 +2,9 @@
 
 namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
 
+use Nirbose\PhpMcServ\Block\Block;
+use Nirbose\PhpMcServ\Block\BlockType;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\BlockUpdatePacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
@@ -36,5 +39,19 @@ class PlayerActionPacket extends ServerboundPacket {
 
     public function handle(Session $session): void
     {
+        switch ($this->status) {
+            case 0:
+                $this->destroyBlock($session);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private function destroyBlock(Session $session): void
+    {
+        $block = new Block($session->getServer(), $this->position, BlockType::AIR->createBlockData());
+
+        $session->getServer()->broadcastPacket(new BlockUpdatePacket($this->position, $block));
     }
 }
