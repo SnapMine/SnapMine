@@ -473,4 +473,4 @@ composer.lock
 *.scss.map
 
 # Custom
-./resources/worlds/*/
+/resources/worlds/*/
