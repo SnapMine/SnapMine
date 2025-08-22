@@ -8,7 +8,6 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
 use Nirbose\PhpMcServ\Block\BlockStateLoader;
-use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Entity\AreaEffectCloud;
 use Nirbose\PhpMcServ\Entity\Cow;
 use Nirbose\PhpMcServ\Entity\DragonFireball;
@@ -34,7 +33,7 @@ use Nirbose\PhpMcServ\Session\Session;
 use Nirbose\PhpMcServ\World\Chunk\Chunk;
 use Nirbose\PhpMcServ\World\Location;
 use Nirbose\PhpMcServ\World\Region;
-use Nirbose\PhpMcServ\World\RegionLoader;
+use Nirbose\PhpMcServ\World\World;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionNamedType;
@@ -52,7 +51,8 @@ class Server
 
     private static Logger|null $logger = null;
     private static string $logFormat = "[%datetime%] %level_name%: %message%\n";
-    private Region $region;
+    /** @var World[] */
+    private array $worlds = [];
     private int $maxPlayer = 20;
     private BlockStateLoader $blockStateLoader;
 
@@ -64,6 +64,10 @@ class Server
         $this->eventManager = new EventManager();
         $this->blockStateLoader = new BlockStateLoader(__DIR__ . '/../resources/blocks.json');
         Registry::load(dirname(__DIR__) . '/resources/registries/');
+
+        foreach (glob(dirname(__DIR__) . '/resources/worlds/*/') as $folder) {
+            $this->worlds[basename($folder)] = new World($folder);
+        }
     }
 
     public function __destruct()
@@ -85,7 +89,6 @@ class Server
     public function start(): void
     {
         Artisan::setServer($this);
-        $this->region = RegionLoader::load(dirname(__DIR__) . "/mca-test/r.0.0.mca");
 
         $this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         socket_set_option($this->socket, SOL_SOCKET, SO_REUSEADDR, 1);
@@ -177,6 +180,19 @@ class Server
         return $this->entityIdCounter++;
     }
 
+    public function getWorld(string $name): ?World
+    {
+        return $this->worlds[$name] ?? null;
+    }
+
+    /**
+     * @return array
+     */
+    public function getWorlds(): array
+    {
+        return $this->worlds;
+    }
+
     public static function getLogger(): Logger
     {
         if (self::$logger === null) {
@@ -215,14 +231,6 @@ class Server
     public function getPlayerByUUID(string $uuid): ?Player
     {
         return $this->players[$uuid] ?? null;
-    }
-
-    /**
-     * @return Region
-     */
-    public function getRegion(): Region
-    {
-        return $this->region;
     }
 
     /**
@@ -461,11 +469,6 @@ class Server
     public function getBlockStateLoader(): BlockStateLoader
     {
         return $this->blockStateLoader;
-    }
-
-    public function getChunk(int $x, int $z): Chunk|null
-    {
-        return $this->region->getChunk($x, $z);
     }
 
     public function spawnParticle(Particle $particle, float $x, float $y, float $z, ?object $data = null): void

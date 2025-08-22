@@ -21,7 +21,6 @@ It aims to provide a flexible and modular foundation to quickly develop custom M
 - `resources/`: Registry data and other resources
 - `scripts/`: Automatic generation scripts (Python)
 - `tests/`: Unit and integration tests
-- `mca-test/`: Test files for regions/chunks
 
 ## Quick Start
 

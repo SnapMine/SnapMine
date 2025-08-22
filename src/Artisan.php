@@ -27,11 +27,6 @@ class Artisan
         return self::$server->getPlayers();
     }
 
-    public static function getRegion(): Region
-    {
-        return self::$server->getRegion();
-    }
-
     public static function getBlockStateLoader(): BlockStateLoader
     {
         return self::$server->getBlockStateLoader();

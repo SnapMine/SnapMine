@@ -23,7 +23,8 @@
     "aternos/nbt": "^1.12",
     "amphp/parallel": "^2.3",
     "ext-sockets": "*",
-    "ext-gmp": "*"
+    "ext-gmp": "*",
+    "ext-parallel": "*"
   },
   "require-dev": {
     "pestphp/pest": "^3.8",

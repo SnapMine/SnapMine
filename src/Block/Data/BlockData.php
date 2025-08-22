@@ -49,6 +49,7 @@ class BlockData
             Distance::class => fn($obj, &$data) => $data['distance'] = $obj->getDistance(),
             Hanging::class => fn($obj, &$data) => $data['hanging'] = $obj->isHanging(),
             Ominous::class => fn($obj, &$data) => $data['ominous'] = $obj->isOminous(),
+            Power::class => fn($obj, &$data) => $data['power'] = $obj->getPower(),
         ];
 
         $traits = class_uses($this);

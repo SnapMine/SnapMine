@@ -29,8 +29,7 @@ class ChunkDataAndUpdateLightPacket extends ClientboundPacket
         $serializer->putInt($this->chunkX) // Chunk X
         ->putInt($this->chunkZ); // Chunk Z
 
-        $chunk = Artisan::getRegion()->getChunk($this->chunkX, $this->chunkZ);
-
+        $chunk = Artisan::getServer()->getWorld("world")->getChunk($this->chunkX, $this->chunkZ);
 
         $heightmaps = $chunk->getHeightmaps();
 
