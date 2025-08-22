@@ -18,6 +18,7 @@
   ],
   "require": {
     "php": "^8.2",
+    "php-64bit": "*",
     "monolog/monolog": "^3.9",
     "aternos/nbt": "^1.12",
     "amphp/parallel": "^2.3",

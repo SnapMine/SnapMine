@@ -45,8 +45,15 @@ class Session
         $packet->write($serializer);
 
         // echo "Sending packet ID: " . dechex($packet->getId()) . " (len: " . bin2hex($length) . ") with data: " . bin2hex($length . $data) . "\n";
+//        if ($this->socket == null || !is_resource($this->socket)) {
+//            echo "Socket is not valid, cannot send packet.\n";
+//            return;
+//        }
+        $fail = socket_write($this->socket, $serializer->getLengthPrefixedData());
 
-        socket_write($this->socket, $serializer->getLengthPrefixedData());
+        if($fail === false) {
+            exit(1);
+        }
     }
 
     public function close(): void

@@ -9,6 +9,7 @@ use Nirbose\PhpMcServ\Session\Session;
 use Nirbose\PhpMcServ\Sound\Sound;
 use Nirbose\PhpMcServ\Sound\SoundCategory;
 use Nirbose\PhpMcServ\Utils\UUID;
+use Nirbose\PhpMcServ\World\Chunk\Chunk;
 use Nirbose\PhpMcServ\World\Location;
 use Nirbose\PhpMcServ\World\Position;
 
@@ -140,5 +141,10 @@ class Player extends Entity
     public function transfer(string $host, int $port): void
     {
         $this->session->transfer($host, $port);
+    }
+
+    public function getChunk(): Chunk
+    {
+        return $this->server->getChunk($this->location->getX() >> 4, $this->location->getZ() >> 4);
     }
 }

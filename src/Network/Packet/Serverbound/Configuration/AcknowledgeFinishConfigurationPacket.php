@@ -32,7 +32,6 @@ class AcknowledgeFinishConfigurationPacket extends ServerboundPacket
         $player = $session->getPlayer();
 
         $session->sendPacket(new JoinGamePacket($player));
-        $session->sendPacket(new PlayerAbilitiesPacket());
         $session->sendPacket(new SetDefaultSpawnPositionPacket());
         $session->sendPacket(new SynchronizePlayerPositionPacket(
             $player,

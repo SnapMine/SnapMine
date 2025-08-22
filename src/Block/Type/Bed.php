@@ -2,13 +2,11 @@
 
 namespace Nirbose\PhpMcServ\Block\Type;
 
-use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Block\Data\Facing;
 use Nirbose\PhpMcServ\Block\Direction;
-use Nirbose\PhpMcServ\Material;
 
-class Bed implements BlockData
+class Bed extends BlockData
 {
     use Facing;
 
@@ -17,17 +15,6 @@ class Bed implements BlockData
 
     private bool $occupied = false;
     private string $part = Bed::FOOT;
-
-    public function __construct(
-        private readonly Material $material
-    )
-    {
-    }
-
-    public function getMaterial(): Material
-    {
-        return $this->material;
-    }
 
     public function getFaces(): array
     {
@@ -63,12 +50,8 @@ class Bed implements BlockData
         $this->part = $part;
     }
 
-    public function computedId(BlockStateLoader $loader): int
+    public function computedId(array $data = []): int
     {
-        return $loader->getBlockStateId($this->getMaterial(), [
-            'facing' => $this->facing->value,
-            'occupied' => $this->occupied,
-            'part' => $this->part,
-        ]);
+        return parent::computedId(['part' => $this->part, 'occupied' => $this->occupied]);
     }
 }

@@ -15,12 +15,11 @@ trait Level
      */
     public function setLevel(int $level): void
     {
-        if ($level <= $this->getMaximumLevel()) {
-            $this->level = $level;
-            return;
+        if ($level > $this->getMaximumLevel()) {
+            throw new Exception("Level $level is out of bounds.");
         }
 
-        throw new Exception("Level $level is out of bounds.");
+        $this->level = $level;
     }
     public function getLevel(): int
     {

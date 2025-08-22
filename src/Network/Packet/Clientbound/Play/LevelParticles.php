@@ -44,7 +44,6 @@ class LevelParticles extends ClientboundPacket
         if ($this->data !== null) {
             $dataClass = $this->particle->getDataClass();
 
-            var_dump($dataClass);
             if ($dataClass == 'varint') {
                 $serializer->putVarInt($this->data);
             } else if ($dataClass == 'float') {

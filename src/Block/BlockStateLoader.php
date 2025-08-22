@@ -53,6 +53,10 @@ class BlockStateLoader
         }
 
         $blockData = $this->getBlockData($blockName);
+
+        if (!isset($blockData['coefficients']))
+            return $baseId;
+
         $coefficients = $blockData['coefficients'];
         $properties = $blockData['properties'];
 
@@ -69,7 +73,11 @@ class BlockStateLoader
         for ($i = 0; $i < count($propertyNames); $i++) {
             $propertyName = $propertyNames[$i];
 
+            if (!isset($propertyValues[$propertyName])) {
+                throw new Exception("Property '{$propertyName}' is missing in the provided property values for block {$blockName}.");
+            }
             $propertyValue = $propertyValues[$propertyName];
+
 
             if (is_bool($propertyValue)) {
                 $propertyValue = $propertyValue ? 'true' : 'false';

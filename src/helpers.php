@@ -20,3 +20,12 @@ if (!function_exists('packet_dump')) {
         echo "  - Hex : $packetData\n";
     }
 }
+
+if (!function_exists('has_trait')) {
+    function has_trait(string $trait, object $object): bool
+    {
+        $traits = class_uses($object);
+
+        return in_array($trait, $traits);
+    }
+}
