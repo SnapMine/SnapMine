@@ -81,8 +81,10 @@ class ChunkSection
                 $dir = Direction::from($propName);
 
                 if (filter_var($value, FILTER_VALIDATE_BOOLEAN)) {
+                    /** @phpstan-ignore method.notFound */
                     $b->setFace($dir);
                 } else {
+                    /** @phpstan-ignore method.notFound */
                     $b->setHeight($dir, WallHeight::from($value));
                 }
 

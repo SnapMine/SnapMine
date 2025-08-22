@@ -13,13 +13,10 @@ use Nirbose\PhpMcServ\Session\Session;
 use Nirbose\PhpMcServ\World\Position;
 
 class PlayerActionPacket extends ServerboundPacket {
-    /** @phpstan-ignore property.onlyWritten */
     private int $status;
-    /** @phpstan-ignore property.onlyWritten */
     private Position $position;
     /** @phpstan-ignore property.onlyWritten */
     private int $face;
-    /** @phpstan-ignore property.onlyWritten */
     private int $sequence;
 
     public function getId(): int

@@ -83,7 +83,7 @@ class Block
 
         $loc->add($direction);
 
-        return $this->getChunk()->getBlock($loc->getX(), $loc->getY(), $loc->getZ());
+        return $this->getChunk()->getBlock((int)$loc->getX(), (int)$loc->getY(), (int)$loc->getZ());
     }
     
     public function isWaterloggable(): bool
