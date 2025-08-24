@@ -21,11 +21,11 @@
     "php-64bit": "*",
     "monolog/monolog": "^3.9",
     "aternos/nbt": "^1.12",
-    "amphp/parallel": "^2.3",
     "ext-sockets": "*",
     "ext-gmp": "*",
-    "ext-parallel": "*",
-    "react/socket": "^1.16"
+    "react/socket": "^1.16",
+    "react/async": "^4.3.0",
+    "react/promise": "^3.2.0"
   },
   "require-dev": {
     "pestphp/pest": "^3.8",

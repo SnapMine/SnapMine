@@ -23,7 +23,6 @@ use Nirbose\PhpMcServ\Event\EventBinding;
 use Nirbose\PhpMcServ\Event\EventManager;
 use Nirbose\PhpMcServ\Event\Listener;
 use Nirbose\PhpMcServ\Listener\PlayerJoinListener;
-use Nirbose\PhpMcServ\Manager\ChunkManager;
 use Nirbose\PhpMcServ\Manager\KeepAliveManager;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\AddEntityPacket;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\LevelParticles;
@@ -42,6 +41,7 @@ use React\EventLoop\Loop;
 use React\Socket\ConnectionInterface;
 use React\Socket\SocketServer;
 use Throwable;
+use function React\Async\async;
 
 class Server
 {
@@ -59,7 +59,6 @@ class Server
     private array $worlds = [];
     private int $maxPlayer = 20;
     private BlockStateLoader $blockStateLoader;
-    private ChunkManager $chunkManager;
 
     public function __construct(
         private readonly string $host,
@@ -73,8 +72,6 @@ class Server
         foreach (glob(dirname(__DIR__) . '/resources/worlds/*/') as $folder) {
             $this->worlds[basename($folder)] = new World($folder);
         }
-
-        $this->chunkManager = new ChunkManager();
     }
 
     public function __destruct()
@@ -127,7 +124,7 @@ class Server
                 /** @var Session $session */
                 $session = $this->sessions[$id];
                 $session->serializer->put($data);
-                $session->handle();
+                async(function () use ($session) {$session->handle();})();
             });
 
             $connection->on('close', function () use ($id, $connection) {
@@ -143,14 +140,6 @@ class Server
 
         // Run the loop until stopped
         $loop->run();
-    }
-
-    /**
-     * @return ChunkManager
-     */
-    public function getChunkManager(): ChunkManager
-    {
-        return $this->chunkManager;
     }
 
     public function closeSession(Session $session, ConnectionInterface $socket): void

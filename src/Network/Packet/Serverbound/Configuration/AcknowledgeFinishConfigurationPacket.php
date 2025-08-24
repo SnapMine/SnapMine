@@ -12,7 +12,8 @@ use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Network\ServerState;
 use Nirbose\PhpMcServ\Session\Session;
-use function Amp\async;
+use function React\Async\async;
+use function React\Promise\all;
 
 class AcknowledgeFinishConfigurationPacket extends ServerboundPacket
 {
@@ -43,27 +44,42 @@ class AcknowledgeFinishConfigurationPacket extends ServerboundPacket
 
         $player->sendPacket(new ChunkDataAndUpdateLightPacket($player->getServer()->getWorld("world")->getChunk(0, 0)));
 
-        async(static function() use($player) {
-            $player->sendPacket(new ChunkDataAndUpdateLightPacket($player->getServer()->getWorld("world")->getChunk(0, 0)));
-        })->finally(static function() use ($player)  {
-            $player->sendPacket(new SynchronizePlayerPositionPacket(
-                $player,
-                0.0,
-                0.0,
-                0.0,
-            ));
-        });
+
+        $promises = [];
 
         for ($i = -5; $i < 5; $i++) {
-            for ($j = -5; $j < 5; $j++) {
+                for ($j = -5; $j < 5; $j++) {
+                    if ($j == 0 && $i == 0) {
+                        continue;
+                    }
+
+                    $promises[] = async(function () use ($player, $i, $j) {
+
+                        $chunk = $player->getServer()->getWorld("world")->getChunk($i, $j);
+                        $player->sendPacket(new ChunkDataAndUpdateLightPacket($chunk));
+                    })();
+                }
+        }
+
+        all($promises)->finally(function () {
+            echo memory_get_usage() . "\n";
+        });
+
+
+        $player->sendPacket(new SynchronizePlayerPositionPacket($player, 0.0, 0.0, 0.0));
+        /*
+        for ($i = -8; $i < 8; $i++) {
+            for ($j = -8; $j < 8; $j++) {
                 if ($j == 0 && $i == 0) {
                     continue;
                 }
 
-                $session->getServer()->getChunkManager()->requestChunk($i, $j, $player);
+                $chunk = $player->getServer()->getWorld("world")->getChunk($i, $j);
+                $player->sendPacket(new ChunkDataAndUpdateLightPacket($chunk));
             }
         }
-//        $player->getServer()->getChunkManager()->requestChunk(0, 0, $player);
+        */
+
 
 
         var_dump(microtime(true) - $time);

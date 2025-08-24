@@ -70,5 +70,6 @@ class MovePlayerPositionRotationPacket extends ServerboundPacket
         $headRotatePacket = new RotateHeadPacket($player);
 
         $player->getServer()->broadcastPacket($outPacket, fn (Player $p) => $p->getUuid() != $player->getUuid());
+        $player->getServer()->broadcastPacket($headRotatePacket, fn (Player $p) => $p->getUuid() != $player->getUuid());
     }
 }
