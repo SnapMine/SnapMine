@@ -2,6 +2,7 @@
 
 namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
 
+use Nirbose\PhpMcServ\Entity\Player;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\MoveEntityPosPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
@@ -57,12 +58,6 @@ class MovePlayerPositionPacket extends ServerboundPacket
             false
         );
 
-        foreach ($session->getServer()->getPlayers() as $player) {
-            if ($player->getUuid() === $session->getPlayer()->getUuid()) {
-                continue;
-            }
-
-            $player->sendPacket($outPacket);
-        }
+        $player->getServer()->broadcastPacket($outPacket, fn (Player $p) => $p->getUuid() != $player->getUuid());
     }
 }

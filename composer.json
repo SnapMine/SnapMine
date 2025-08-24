@@ -24,7 +24,8 @@
     "amphp/parallel": "^2.3",
     "ext-sockets": "*",
     "ext-gmp": "*",
-    "ext-parallel": "*"
+    "ext-parallel": "*",
+    "react/socket": "^1.16"
   },
   "require-dev": {
     "pestphp/pest": "^3.8",

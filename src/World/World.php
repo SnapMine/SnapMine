@@ -31,9 +31,14 @@ class World
     {
         $regX = $x >> 5;
         $regZ = $z >> 5;
+        $key = 'r.' . $regX . '.' . $regZ;
 
-        $region = $this->regions['r.' . $regX . '.' . $regZ];
+        if (isset($this->regions[$key])) {
+            $region = $this->regions[$key];
 
-        return $region->getChunk($x & 0x1F, $z & 0x1F);
+            return $region->getChunk($x & 0x1F, $z & 0x1F);
+        }
+
+        return null;
     }
 }

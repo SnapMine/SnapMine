@@ -15,7 +15,7 @@ use Nirbose\PhpMcServ\Network\ServerState;
 use Nirbose\PhpMcServ\Server;
 use Nirbose\PhpMcServ\Utils\UUID;
 use Nirbose\PhpMcServ\World\Location;
-use Socket;
+use React\Socket\ConnectionInterface;
 
 class Session
 {
@@ -29,7 +29,7 @@ class Session
 
     public function __construct(
         private readonly Server $server,
-        private readonly Socket $socket
+        private readonly ConnectionInterface $socket
     )
     {
         $this->state = ServerState::HANDSHAKE;
@@ -49,11 +49,7 @@ class Session
 //            echo "Socket is not valid, cannot send packet.\n";
 //            return;
 //        }
-        $fail = socket_write($this->socket, $serializer->getLengthPrefixedData());
-
-        if($fail === false) {
-            exit(1);
-        }
+        $this->socket->write($serializer->getLengthPrefixedData());
     }
 
     public function close(): void

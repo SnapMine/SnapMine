@@ -11,18 +11,17 @@ use Nirbose\PhpMcServ\World\Chunk\Chunk;
 
 class Region
 {
-    /** @var resource */
-    private $handle;
+    private string $file;              // chemin du fichier
     private string $offsetTable;
-    /** @var array<int, array<int, Chunk>> $chunks */
-    private array $chunks = []; // [chunkX][chunkZ] => Chunk
+    /** @var resource|null */
+    private $handle = null;            // handle actif si dispo
+    /** @var array<int, array<int, Chunk>> */
+    private array $chunks = [];        // cache des chunks
 
     public function __construct(string $file)
     {
-        $this->handle = fopen($file, 'rb');
-        if (!$this->handle) {
-            throw new Error("Cannot open: $file");
-        }
+        $this->file = $file;
+        $this->openHandle();
 
         $this->offsetTable = fread($this->handle, 4096);
         if (!$this->offsetTable || strlen($this->offsetTable) < 4096) {
@@ -30,11 +29,46 @@ class Region
         }
     }
 
-    public function __destruct()
+    private function openHandle(): void
+    {
+        if ($this->handle === null) {
+            $this->handle = fopen($this->file, 'rb');
+            if (!$this->handle) {
+                throw new Error("Cannot open: {$this->file}");
+            }
+        }
+    }
+
+    private function closeHandle(): void
     {
         if (is_resource($this->handle)) {
             fclose($this->handle);
         }
+        $this->handle = null;
+    }
+
+    public function __destruct()
+    {
+        $this->closeHandle();
+    }
+
+    /** Sérialisation "safe" : on ne garde pas le handle */
+    public function __serialize(): array
+    {
+        return [
+            'file' => $this->file,
+            'offsetTable' => $this->offsetTable,
+            'chunks' => $this->chunks
+        ];
+    }
+
+    /** Rechargement après désérialisation */
+    public function __unserialize(array $data): void
+    {
+        $this->file = $data['file'];
+        $this->offsetTable = $data['offsetTable'];
+        $this->chunks = $data['chunks'];
+        $this->handle = null; // sera rouvert si besoin
     }
 
     public function getChunk(int $x, int $z): ?Chunk
@@ -62,6 +96,9 @@ class Region
         if ($offset === 0 || $sectors === 0) {
             return null; // empty chunk
         }
+
+        // assure qu’on a un handle ouvert
+        $this->openHandle();
 
         fseek($this->handle, $offset * 4096);
         $lengthData = fread($this->handle, 4);

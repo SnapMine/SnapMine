@@ -2,19 +2,16 @@
 
 namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Play;
 
-use Nirbose\PhpMcServ\Artisan;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Utils\BitSet;
-use Nirbose\PhpMcServ\World\Chunk\ChunkSection;
+use Nirbose\PhpMcServ\World\Chunk\Chunk;
 use Nirbose\PhpMcServ\World\Chunk\HeightmapType;
-use Nirbose\PhpMcServ\World\PalettedContainer;
 
 class ChunkDataAndUpdateLightPacket extends ClientboundPacket
 {
     public function __construct(
-        private readonly int $chunkX,
-        private readonly int $chunkZ
+        private readonly Chunk $chunk,
     )
     {
     }
@@ -26,11 +23,10 @@ class ChunkDataAndUpdateLightPacket extends ClientboundPacket
 
     public function write(PacketSerializer $serializer): void
     {
-        $serializer->putInt($this->chunkX) // Chunk X
-        ->putInt($this->chunkZ); // Chunk Z
+        $serializer->putInt($this->chunk->getX()) // Chunk X
+        ->putInt($this->chunk->getZ()); // Chunk Z
 
-        $chunk = Artisan::getServer()->getWorld("world")->getChunk($this->chunkX, $this->chunkZ);
-
+        $chunk = $this->chunk;
         $heightmaps = $chunk->getHeightmaps();
 
         $serializer->putVarInt(count($heightmaps));
