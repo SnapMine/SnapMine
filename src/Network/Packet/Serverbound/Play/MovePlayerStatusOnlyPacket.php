@@ -2,12 +2,12 @@
 
 namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
 
-use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
 
 class MovePlayerStatusOnlyPacket extends ServerboundPacket {
+    /** @phpstan-ignore property.onlyWritten */
     private int $flags;
 
     public function getId(): int

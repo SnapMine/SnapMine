@@ -2,35 +2,22 @@
 
 namespace Nirbose\PhpMcServ\Block\Type;
 
-use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Block\Data\Facing;
+use Nirbose\PhpMcServ\Block\Data\Half;
 use Nirbose\PhpMcServ\Block\Data\Openable;
 use Nirbose\PhpMcServ\Block\Data\Powerable;
-use Nirbose\PhpMcServ\Block\Data\Waterlogged;
 use Nirbose\PhpMcServ\Block\Direction;
-use Nirbose\PhpMcServ\Material;
 
-class Door extends GenericBisected implements BlockData
+class Door extends BlockData
 {
-    use Facing, Openable, Powerable, Waterlogged;
+    use Facing, Half, Openable, Powerable;
     private string $hinge = 'left';
 
-    public function __construct(Material $material)
-    {
-        parent::__construct($material);
-    }
 
-    public function computedId(BlockStateLoader $loader): int
+    public function computedId(array $data = []): int
     {
-        return $loader->getBlockStateId($this->getMaterial(), [
-            'facing' => $this->facing->value,
-            'open' => $this->open,
-            'waterlogged' => $this->waterlogged,
-            'power' => $this->isPower(),
-            'half' => $this->getHalf(),
-            'hinge' => $this->hinge,
-        ]);
+        return parent::computedId(['hinge' => $this->hinge]);
     }
 
     public function getFaces(): array

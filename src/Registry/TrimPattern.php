@@ -5,6 +5,8 @@ namespace Nirbose\PhpMcServ\Registry;
 use Aternos\Nbt\Tag\ByteTag;
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\StringTag;
+use Nirbose\PhpMcServ\Keyed;
+
 /**
  * @method static TrimPattern BOLT()
  * @method static TrimPattern COAST()
@@ -25,7 +27,7 @@ use Aternos\Nbt\Tag\StringTag;
  * @method static TrimPattern WAYFINDER()
  * @method static TrimPattern WILD()
  */
-class TrimPattern
+class TrimPattern implements EncodableToNbt, Keyed
 {
     /** @var array<string, self> */
     protected static array $entries = [];
@@ -39,7 +41,7 @@ class TrimPattern
 
     public static function register(string $name, string $key, array $data): self
     {
-        $instance = new static($key, $data);
+        $instance = new self($key, $data);
         self::$entries[strtoupper($name)] = $instance;
 
         return $instance;

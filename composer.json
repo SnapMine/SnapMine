@@ -18,15 +18,20 @@
   ],
   "require": {
     "php": "^8.2",
+    "php-64bit": "*",
     "monolog/monolog": "^3.9",
     "aternos/nbt": "^1.12",
-    "amphp/parallel": "^2.3",
     "ext-sockets": "*",
-    "ext-gmp": "*"
+    "ext-gmp": "*",
+    "react/socket": "^1.16",
+    "react/async": "^4.3.0",
+    "react/promise": "^3.2.0",
+    "symfony/yaml": "^7.3"
   },
   "require-dev": {
     "pestphp/pest": "^3.8",
-    "mockery/mockery": "^1.6"
+    "mockery/mockery": "^1.6",
+    "phpstan/phpstan": "^2.1"
   },
   "config": {
     "allow-plugins": {

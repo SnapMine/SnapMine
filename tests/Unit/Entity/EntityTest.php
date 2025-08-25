@@ -8,12 +8,14 @@ use Nirbose\PhpMcServ\Server;
 use Nirbose\PhpMcServ\World\Location;
 
 describe('Test Entity class', function () {
-    beforeEach(function () {
-        $server = Mockery::mock(Server::class);
+    /** @var Entity */
+    $entity = null;
 
+    beforeEach(function () use (&$entity) {
+        $server = Mockery::mock(Server::class);
         $server->shouldReceive('incrementAndGetId')->andReturn(1);
 
-        $this->entity = new class($server) extends Entity {
+        $entity = new class($server) extends Entity {
             public function __construct(Server $server)
             {
                 parent::__construct($server, new Location(0, 0, 0));
@@ -26,112 +28,100 @@ describe('Test Entity class', function () {
         };
     });
 
-    it('Test getId', function () {
-        expect($this->entity->getId())->toBe(1);
+    it('Test getId', function () use (&$entity) {
+        expect($entity->getId())->toBe(1);
     });
 
-    it('Test entity is on fire', function () {
-        expect($this->entity->isOnFire())->toBeFalse();
+    it('Test entity is on fire', function () use (&$entity) {
+        expect($entity->isOnFire())->toBeFalse();
 
-        $this->entity->setOnFire(true);
+        $entity->setOnFire(true);
+        expect($entity->isOnFire())->toBeTrue();
 
-        expect($this->entity->isOnFire())->toBeTrue();
-
-        $this->entity->setOnFire(false);
-
-        expect($this->entity->isOnFire())->toBeFalse();
+        $entity->setOnFire(false);
+        expect($entity->isOnFire())->toBeFalse();
     });
 
-    it('Test entity is sneaking', function () {
-        expect($this->entity->isSneaking())->toBeFalse();
+    it('Test entity is sneaking', function () use (&$entity) {
+        expect($entity->isSneaking())->toBeFalse();
 
-        $this->entity->setSneaking(true);
-
-        expect($this->entity->isSneaking())->toBeTrue();
+        $entity->setSneaking(true);
+        expect($entity->isSneaking())->toBeTrue();
     });
 
-    it('Test entity is sprinting', function () {
-        expect($this->entity->isSprinting())->toBeFalse();
+    it('Test entity is sprinting', function () use (&$entity) {
+        expect($entity->isSprinting())->toBeFalse();
 
-        $this->entity->setSprinting(true);
-
-        expect($this->entity->isSprinting())->toBeTrue();
+        $entity->setSprinting(true);
+        expect($entity->isSprinting())->toBeTrue();
     });
 
-    it('Test entity is swimming', function () {
-        expect($this->entity->isSwimming())->toBeFalse();
+    it('Test entity is swimming', function () use (&$entity) {
+        expect($entity->isSwimming())->toBeFalse();
 
-        $this->entity->setSwimming(true);
-
-        expect($this->entity->isSwimming())->toBeTrue();
+        $entity->setSwimming(true);
+        expect($entity->isSwimming())->toBeTrue();
     });
 
-    it('Test entity is invisible', function () {
-        expect($this->entity->isInvisible())->toBeFalse();
+    it('Test entity is invisible', function () use (&$entity) {
+        expect($entity->isInvisible())->toBeFalse();
 
-        $this->entity->setInvisible(true);
-
-        expect($this->entity->isInvisible())->toBeTrue();
+        $entity->setInvisible(true);
+        expect($entity->isInvisible())->toBeTrue();
     });
 
-    it('Test entity is glowing', function () {
-        expect($this->entity->isGlowing())->toBeFalse();
+    it('Test entity is glowing', function () use (&$entity) {
+        expect($entity->isGlowing())->toBeFalse();
 
-        $this->entity->setGlowing(true);
-
-        expect($this->entity->isGlowing())->toBeTrue();
+        $entity->setGlowing(true);
+        expect($entity->isGlowing())->toBeTrue();
     });
 
-    it('Test air ticks', function () {
-        expect($this->entity->getAirTicks())->toBe(300);
+    it('Test air ticks', function () use (&$entity) {
+        expect($entity->getAirTicks())->toBe(300);
 
-        $this->entity->setAirTicks(400);
-
-        expect($this->entity->getAirTicks())->toBe(400);
+        $entity->setAirTicks(400);
+        expect($entity->getAirTicks())->toBe(400);
     });
 
-    it('Test customName', function () {
-        expect($this->entity->getCustomName())->toBeNull();
+    it('Test customName', function () use (&$entity) {
+        expect($entity->getCustomName())->toBeNull();
 
         $customName = TextComponent::text("hello");
 
-        $this->entity->setCustomName($customName);
-        expect($this->entity->getCustomName())->toBe($customName);
+        $entity->setCustomName($customName);
+        expect($entity->getCustomName())->toBe($customName);
     });
 
-    it('Test customName visibility', function () {
-        expect($this->entity->isCustomNameVisible())->toBeFalse();
+    it('Test customName visibility', function () use (&$entity) {
+        expect($entity->isCustomNameVisible())->toBeFalse();
 
-        $this->entity->setCustomNameVisible(true);
-
-        expect($this->entity->isCustomNameVisible())->toBeTrue();
+        $entity->setCustomNameVisible(true);
+        expect($entity->isCustomNameVisible())->toBeTrue();
     });
 
-    it('Test silent', function () {
-        expect($this->entity->isSilent())->toBeFalse();
+    it('Test silent', function () use (&$entity) {
+        expect($entity->isSilent())->toBeFalse();
 
-        $this->entity->setSilent(true);
-
-        expect($this->entity->isSilent())->toBeTrue();
+        $entity->setSilent(true);
+        expect($entity->isSilent())->toBeTrue();
     });
 
-    it('Test hasGravity', function () {
-        expect($this->entity->hasGravity())->toBeFalse();
+    it('Test hasGravity', function () use (&$entity) {
+        expect($entity->hasGravity())->toBeFalse();
 
-        $this->entity->setGravity(true);
-
-        expect($this->entity->hasGravity())->toBeTrue();
+        $entity->setGravity(true);
+        expect($entity->hasGravity())->toBeTrue();
     });
 
-    it('Test entity pose', function () {
-        expect($this->entity->getPose())->toBe(Pose::STANDING);
+    it('Test entity pose', function () use (&$entity) {
+        expect($entity->getPose())->toBe(Pose::STANDING);
 
-        $this->entity->setPose(Pose::DYING);
-
-        expect($this->entity->getPose())->toBe(Pose::DYING);
+        $entity->setPose(Pose::DYING);
+        expect($entity->getPose())->toBe(Pose::DYING);
     });
 
-    it('Test getType', function () {
-        expect($this->entity->getType())->toBe(EntityType::ALLAY);
+    it('Test getType', function () use (&$entity) {
+        expect($entity->getType())->toBe(EntityType::ALLAY);
     });
 });

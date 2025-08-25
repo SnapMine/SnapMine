@@ -1,0 +1,6 @@
+host: localhost
+port: 25565
+difficulty: easy
+gamemode: survive
+max-player: 20
+motd: SnapMine PHP server

@@ -27,8 +27,8 @@ class JoinGamePacket extends ClientboundPacket
             ->putString("minecraft:overworld")
 
             ->putVarInt($this->player->getServer()->getMaxPlayer()) // Max player
-            ->putVarInt(50) // View distance
-            ->putVarInt(50) // Simulation Distance
+            ->putVarInt(8) // View distance
+            ->putVarInt(8) // Simulation Distance
             ->putBool(false) // Reduced Debug Info
             ->putBool(true) // Enable Respawn Screen
             ->putBool(false) // Do Limit Crafting
@@ -36,9 +36,9 @@ class JoinGamePacket extends ClientboundPacket
             ->putString('minecraft:overworld') // Dimension Name
             ->putLong(234345456) // Hashed Seed
             ->putUnsignedByte($this->player->getGameMode()->value) // Game Mode
-            ->putByte($this->player->getPreviousGameMode()?->value ?? -1) // Previous Game Mode (-1 undefined)
+            ->putByte($this->player->getPreviousGameMode()->value ?? -1) // Previous Game Mode (-1 undefined)
             ->putBool(false) // Is Debug
-            ->putBool(false) // Is Flat
+            ->putBool(true) // Is Flat
             ->putBool(false) // Has Death Location
             ->putVarInt(0) // Portal Cooldown
             ->putVarInt(63) // Sea Level

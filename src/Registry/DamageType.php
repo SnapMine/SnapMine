@@ -5,8 +5,9 @@ namespace Nirbose\PhpMcServ\Registry;
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\FloatTag;
 use Aternos\Nbt\Tag\StringTag;
+use Nirbose\PhpMcServ\Keyed;
 
-class DamageType implements EncodableToNbt
+class DamageType implements EncodableToNbt, Keyed
 {
     /** @var array<string, self> */
     protected static array $entries = [];
@@ -20,7 +21,7 @@ class DamageType implements EncodableToNbt
 
     public static function register(string $name, string $key, array $data): self
     {
-        $instance = new static($key, $data);
+        $instance = new self($key, $data);
         self::$entries[strtoupper($name)] = $instance;
 
         return $instance;

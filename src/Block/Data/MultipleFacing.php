@@ -42,6 +42,6 @@ trait MultipleFacing
 
     public function hasFace(Direction $face): bool
     {
-        return !in_array($face, $this->getAllowedFaces()) && in_array($face, $this->getFaces());
+        return in_array($face, $this->getAllowedFaces()) && in_array($face, $this->getFaces());
     }
 }

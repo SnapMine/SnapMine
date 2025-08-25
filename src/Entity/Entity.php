@@ -63,7 +63,7 @@ abstract class Entity
 
     public function isOnFire(): bool
     {
-        return $this->state & 0x01;
+        return ($this->state & 0x01) !== 0;
     }
 
     public function setOnFire(bool $state): void
@@ -73,7 +73,7 @@ abstract class Entity
 
     public function isSneaking(): bool
     {
-        return $this->state & 0x02;
+        return ($this->state & 0x02) !== 0;
     }
 
     public function setSneaking(bool $state): void
@@ -83,7 +83,7 @@ abstract class Entity
 
     public function isSprinting(): bool
     {
-        return $this->state & 0x08;
+        return ($this->state & 0x08) !== 0;
     }
 
     public function setSprinting(bool $state): void
@@ -93,7 +93,7 @@ abstract class Entity
 
     public function isSwimming(): bool
     {
-        return $this->state & 0x10;
+        return ($this->state & 0x10) !== 0;
     }
 
     public function setSwimming(bool $state): void
@@ -103,7 +103,7 @@ abstract class Entity
 
     public function isInvisible(): bool
     {
-        return $this->state & 0x20;
+        return ($this->state & 0x20) !== 0;
     }
 
     public function setInvisible(bool $state): void
@@ -113,7 +113,7 @@ abstract class Entity
 
     public function isGlowing(): bool
     {
-        return $this->state & 0x40;
+        return ($this->state & 0x40) !== 0;
     }
 
     public function setGlowing(bool $state): void
@@ -131,6 +131,7 @@ abstract class Entity
 
         $this->setMetadata(0, MetadataType::BYTE, $this->state);
     }
+
 
     /**
      * @return int

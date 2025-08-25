@@ -2,9 +2,9 @@
 
 namespace Nirbose\PhpMcServ\Block;
 
-enum AttachedFace: int
+enum AttachedFace: string
 {
-    case CEILING = 0;
-    case FLOOR = 1;
-    case WALL = 2;
+    case CEILING = 'ceiling';
+    case FLOOR = 'floor';
+    case WALL = 'wall';
 }

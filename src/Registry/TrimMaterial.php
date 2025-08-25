@@ -4,6 +4,7 @@ namespace Nirbose\PhpMcServ\Registry;
 
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\StringTag;
+use Nirbose\PhpMcServ\Keyed;
 
 /**
  * @method static TrimMaterial AMETHYST()
@@ -18,7 +19,7 @@ use Aternos\Nbt\Tag\StringTag;
  * @method static TrimMaterial REDSTONE()
  * @method static TrimMaterial RESIN()
  */
-class TrimMaterial
+class TrimMaterial implements EncodableToNbt, Keyed
 {
     /** @var array<string, self> */
     protected static array $entries = [];
@@ -32,7 +33,7 @@ class TrimMaterial
 
     public static function register(string $name, string $key, array $data): self
     {
-        $instance = new static($key, $data);
+        $instance = new self($key, $data);
         self::$entries[strtoupper($name)] = $instance;
 
         return $instance;

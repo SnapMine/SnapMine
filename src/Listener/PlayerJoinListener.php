@@ -39,10 +39,7 @@ class PlayerJoinListener implements Listener
             0,
         );
 
-        /** @var Player $player */
-        foreach (Artisan::getPlayers() as $player) {
-            $player->sendPacket($playerInfoPacket);
-            $player->sendPacket($addEntityPacket);
-        }
+        Artisan::getServer()->broadcastPacket($playerInfoPacket);
+        Artisan::getServer()->broadcastPacket($addEntityPacket);
     }
 }

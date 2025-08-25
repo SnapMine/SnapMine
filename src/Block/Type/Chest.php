@@ -2,32 +2,15 @@
 
 namespace Nirbose\PhpMcServ\Block\Type;
 
-use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\Block\Data\BlockData;
 use Nirbose\PhpMcServ\Block\Data\Facing;
+use Nirbose\PhpMcServ\Block\Data\Type;
 use Nirbose\PhpMcServ\Block\Data\Waterlogged;
 use Nirbose\PhpMcServ\Block\Direction;
-use Nirbose\PhpMcServ\Material;
 
-class Chest implements BlockData
+class Chest extends BlockData
 {
-    use Facing, Waterlogged;
-
-    private string $type = 'left';
-
-    public function getMaterial(): Material
-    {
-        return Material::CHEST;
-    }
-
-    public function computedId(BlockStateLoader $loader): int
-    {
-        return $loader->getBlockStateId($this->getMaterial(), [
-            'facing' => $this->facing->value,
-            'waterlogged' => $this->waterlogged,
-            'type' => $this->type,
-        ]);
-    }
+    use Facing, Waterlogged, Type;
 
     public function getFaces(): array
     {
@@ -39,16 +22,5 @@ class Chest implements BlockData
         ];
     }
 
-    public function setType(string $type): void
-    {
-        $this->type = $type;
-    }
 
-    /**
-     * @return string
-     */
-    public function getType(): string
-    {
-        return $this->type;
-    }
 }

@@ -9,6 +9,7 @@ use Nirbose\PhpMcServ\Session\Session;
 use Nirbose\PhpMcServ\Sound\Sound;
 use Nirbose\PhpMcServ\Sound\SoundCategory;
 use Nirbose\PhpMcServ\Utils\UUID;
+use Nirbose\PhpMcServ\World\Chunk\Chunk;
 use Nirbose\PhpMcServ\World\Location;
 use Nirbose\PhpMcServ\World\Position;
 
@@ -111,9 +112,9 @@ class Player extends LivingEntity
         $packet = new SoundPacket(
             $sound,
             $category,
-            $location->getX(),
-            $location->getY(),
-            $location->getZ(),
+            (int)$location->getX(),
+            (int)$location->getY(),
+            (int)$location->getZ(),
             $volume,
             $pitch,
             $seed
@@ -125,5 +126,18 @@ class Player extends LivingEntity
     public function getType(): EntityType
     {
         return EntityType::PLAYER;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function transfer(string $host, int $port): void
+    {
+        $this->session->transfer($host, $port);
+    }
+
+    public function getChunk(): Chunk
+    {
+        return $this->server->getWorld("world")->getChunk($this->location->getX() >> 4, $this->location->getZ() >> 4);
     }
 }

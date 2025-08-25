@@ -6,6 +6,8 @@ use Exception;
 use Nirbose\PhpMcServ\Entity\GameProfile;
 use Nirbose\PhpMcServ\Entity\Player;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\Configuration\TransferPacket;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\TransferPacket as PlayTransferPacket;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Protocol;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
@@ -13,7 +15,7 @@ use Nirbose\PhpMcServ\Network\ServerState;
 use Nirbose\PhpMcServ\Server;
 use Nirbose\PhpMcServ\Utils\UUID;
 use Nirbose\PhpMcServ\World\Location;
-use Socket;
+use React\Socket\ConnectionInterface;
 
 class Session
 {
@@ -27,7 +29,7 @@ class Session
 
     public function __construct(
         private readonly Server $server,
-        private readonly Socket $socket
+        private readonly ConnectionInterface $socket
     )
     {
         $this->state = ServerState::HANDSHAKE;
@@ -43,8 +45,11 @@ class Session
         $packet->write($serializer);
 
         // echo "Sending packet ID: " . dechex($packet->getId()) . " (len: " . bin2hex($length) . ") with data: " . bin2hex($length . $data) . "\n";
-
-        socket_write($this->socket, $serializer->getLengthPrefixedData());
+//        if ($this->socket == null || !is_resource($this->socket)) {
+//            echo "Socket is not valid, cannot send packet.\n";
+//            return;
+//        }
+        $this->socket->write($serializer->getLengthPrefixedData());
     }
 
     public function close(): void
@@ -75,7 +80,7 @@ class Session
 
                 $packetId = $packetSerializer->getVarInt();
 
-                $packetMap = Protocol::PACKETS[$this->state->value] ?? [];
+                $packetMap = Protocol::PACKETS[$this->state->value];
                 $packetClass = $packetMap[$packetId] ?? null;
 
                 if ($packetClass === null) {
@@ -85,7 +90,10 @@ class Session
                     return;
                 }
 
-                /** @var ServerboundPacket $packet */
+                /**
+                 * @var ServerboundPacket $packet
+                 * @phpstan-ignore varTag.nativeType
+                 */
                 $packet = new $packetClass();
                 $packet->read($packetSerializer);
                 $packet->handle($this);
@@ -150,5 +158,18 @@ class Session
         }
 
         return $this->player;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function transfer(string $host, int $port): void
+    {
+        if ($this->state == ServerState::CONFIGURATION)
+            $this->sendPacket(new TransferPacket($host, $port));
+        else if ($this->state == ServerState::PLAY)
+            $this->sendPacket(new PlayTransferPacket($host, $port));
+        else
+            throw new Exception('The server is currently not in the state of ServerState::CONFIGURATION or ServerState::PLAY');
     }
 }

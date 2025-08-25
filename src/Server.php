@@ -27,22 +27,29 @@ use Nirbose\PhpMcServ\Event\EventBinding;
 use Nirbose\PhpMcServ\Event\EventManager;
 use Nirbose\PhpMcServ\Event\Listener;
 use Nirbose\PhpMcServ\Listener\PlayerJoinListener;
+use Nirbose\PhpMcServ\Manager\ChunkManager\ChunkManager;
 use Nirbose\PhpMcServ\Manager\KeepAliveManager;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\AddEntityPacket;
+use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\LevelParticles;
 use Nirbose\PhpMcServ\Network\Packet\Packet;
+use Nirbose\PhpMcServ\Particle\Particle;
 use Nirbose\PhpMcServ\Registry\Registry;
 use Nirbose\PhpMcServ\Session\Session;
-use Nirbose\PhpMcServ\World\Chunk\Chunk;
 use Nirbose\PhpMcServ\World\Location;
-use Nirbose\PhpMcServ\World\Region;
-use Nirbose\PhpMcServ\World\RegionLoader;
+use Nirbose\PhpMcServ\World\World;
+use React\EventLoop\Loop;
+use React\Socket\ConnectionInterface;
+use React\Socket\SocketServer;
 use ReflectionClass;
 use ReflectionMethod;
-use Socket;
+use ReflectionNamedType;
 use Throwable;
+use function React\Async\async;
 
 class Server
 {
+    private SocketServer $socket;
+    /** @var ConnectionInterface[] */
     private array $clients = [];
     private array $sessions = [];
     private array $players = [];
@@ -51,9 +58,12 @@ class Server
 
     private static Logger|null $logger = null;
     private static string $logFormat = "[%datetime%] %level_name%: %message%\n";
-    private Region $region;
+    /** @var World[] */
+    private array $worlds = [];
     private int $maxPlayer = 20;
     private BlockStateLoader $blockStateLoader;
+    private ChunkManager $chunkManager;
+    private ServerConfig $config;
 
     public function __construct(
         private readonly string $host,
@@ -62,83 +72,94 @@ class Server
     {
         $this->eventManager = new EventManager();
         $this->blockStateLoader = new BlockStateLoader(__DIR__ . '/../resources/blocks.json');
+        $this->config = new ServerConfig(dirname(__DIR__) . "/config.yml");
+
         Registry::load(dirname(__DIR__) . '/resources/registries/');
+        $this->chunkManager = new ChunkManager();
+
+        foreach (glob(dirname(__DIR__) . '/resources/worlds/*/') as $folder) {
+            $this->worlds[basename($folder)] = new World($folder);
+        }
+    }
+
+    public function __destruct()
+    {
+        foreach ($this->clients as $client) {
+            try { $client->close(); } catch (Throwable) {}
+        }
+
+        if (isset($this->socket)) {
+            try { $this->socket->close(); } catch (Throwable) {}
+        }
+
+        $this->clients = [];
+        $this->sessions = [];
+        $this->players = [];
+        self::getLogger()->info("Server stopped.");
     }
 
     public function start(): void
     {
         Artisan::setServer($this);
-        $this->region = RegionLoader::load(ROOT_PATH . "/mca-test/r.0.0.mca");
 
-        $socket1 = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-        socket_bind($socket1, $this->host, $this->port);
-        socket_listen($socket1);
+        $loop = Loop::get();
+
+        $this->socket = new SocketServer("{$this->host}:{$this->port}", [], $loop);
         self::getLogger()->info("Serveur démarré sur {$this->host}:{$this->port}");
 
         $this->registerListener(new PlayerJoinListener());
 
-        $write = $except = null;
         $keepAliveManager = new KeepAliveManager();
-
-        while (true) {
+        // Tick keep-alives periodically
+        $loop->addPeriodicTimer(1.0, function () use ($keepAliveManager) {
             $keepAliveManager->tick($this);
-            $read = array_merge([$socket1], $this->clients);
+        });
 
-            try {
-                socket_select($read, $write, $except, null);
-            } catch (Throwable) {
-                $read = array_merge([$socket1], $this->clients);
-            }
+        // Handle new connections
+        $this->socket->on('connection', function (ConnectionInterface $connection) {
+            $this->clients[] = $connection;
+            $id = spl_object_id($connection);
+            $this->sessions[$id] = new Session($this, $connection);
+            echo "Nouveau client connecté.\n";
 
-            foreach ($read as $socket) {
-                if ($socket === $socket1) {
-                    $client = socket_accept($socket1);
-
-                    if ($client) {
-                        socket_set_nonblock($client);
-                        $this->clients[] = $client;
-                        $this->sessions[spl_object_id($client)] = new Session($this, $client);
-                        echo "Nouveau client connecté.\n";
-                    }
-                } else {
-                    $id = spl_object_id($socket);
-
-                    if (!isset($this->sessions[$id])) {
-                        $key = array_search($socket, $this->clients, true);
-                        if ($key !== false) {
-                            unset($this->clients[$key]);
-                        }
-                        continue;
-                    }
-
-                    $data = @socket_read($socket, 2048);
-
-                    if ($data === '' || $data === false) {
-                        $this->clients = array_values($this->clients);
-                        $this->sessions[$id]->close();
-                        continue;
-                    }
-
-                    if (!isset($this->sessions[$id])) continue;
-
-                    /** @var Session $session */
-                    $session = $this->sessions[$id];
-                    $session->serializer->put($data);
-
-//                     echo "Paquet brut reçu (hex) : " . bin2hex($data) . "\n";
-
-                    $session->handle();
+            $connection->on('data', function (string $data) use ($id) {
+                if (!isset($this->sessions[$id])) {
+                    return;
                 }
-            }
-        }
+
+                /** @var Session $session */
+                $session = $this->sessions[$id];
+                $session->serializer->put($data);
+                async(function () use ($session) {$session->handle();})();
+            });
+
+            $connection->on('close', function () use ($id, $connection) {
+                if (!isset($this->sessions[$id])) {
+                    return;
+                }
+
+                /** @var Session $session */
+                $session = $this->sessions[$id];
+                $this->closeSession($session, $connection);
+            });
+        });
+
+        // Run the loop until stopped
+        $loop->run();
     }
 
-    public function closeSession(Session $session, Socket $socket): void
+    public function closeSession(Session $session, ConnectionInterface $socket): void
     {
         try {
             $id = spl_object_id($socket);
 
-            unset($this->clients[$id]);
+            // Remove from clients list
+            $key = array_search($socket, $this->clients, true);
+            if ($key !== false) {
+                unset($this->clients[$key]);
+                // reindex array
+                $this->clients = array_values($this->clients);
+            }
 
             if ($session->getPlayer() !== null) {
                 if (isset($this->players[$session->getPlayer()->getUuid()->toString()])) {
@@ -147,8 +168,7 @@ class Server
             }
 
             unset($this->sessions[$id]);
-
-            socket_close($socket);
+            try { $socket->close(); } catch (Throwable) {}
         } catch (Exception) {
         }
     }
@@ -156,6 +176,24 @@ class Server
     public function incrementAndGetId(): int
     {
         return $this->entityIdCounter++;
+    }
+
+    public function getWorld(string $name): ?World
+    {
+        return $this->worlds[$name] ?? null;
+    }
+
+    /**
+     * @return array
+     */
+    public function getWorlds(): array
+    {
+        return $this->worlds;
+    }
+
+    public function getChunkManager(): ChunkManager
+    {
+        return $this->chunkManager;
     }
 
     public static function getLogger(): Logger
@@ -199,14 +237,6 @@ class Server
     }
 
     /**
-     * @return Region
-     */
-    public function getRegion(): Region
-    {
-        return $this->region;
-    }
-
-    /**
      * Register listener
      *
      * @param Listener $listener
@@ -230,13 +260,17 @@ class Server
                 throw new Exception("Require one parameter"); // TODO: Change exception
             }
 
-            $isEventChild = get_parent_class($parameters[0]->getType()->getName()) === Event::class;
+            $type = $parameters[0]->getType();
 
-            if (!$isEventChild) {
-                throw new Exception("Parameter is not instance of Event"); // TODO: Change exception
+            if ($type instanceof ReflectionNamedType) {
+                $isEventChild = get_parent_class($type->getName()) === Event::class;
+
+                if (!$isEventChild) {
+                    throw new Exception("Parameter is not instance of Event"); // TODO: Change exception
+                }
+
+                $this->eventManager->register($type->getName(), $method->getClosure($listener));
             }
-
-            $this->eventManager->register($parameters[0]->getType()->getName(), $method->getClosure($listener));
         }
     }
 
@@ -245,7 +279,7 @@ class Server
      */
     public function getMaxPlayer(): int
     {
-        return $this->maxPlayer;
+        return $this->config->get('max-player');
     }
 
     /**
@@ -253,17 +287,20 @@ class Server
      */
     public function setMaxPlayer(int $maxPlayer): void
     {
-        $this->maxPlayer = $maxPlayer;
+        $this->config->set('max-player', $maxPlayer);
     }
 
     /**
      * Broadcast packet for all players
      * @param Packet $packet
+     * @param callable|null $filter
      */
-    public function broadcastPacket(Packet $packet): void
+    public function broadcastPacket(Packet $packet, ?callable $filter = null): void
     {
         foreach ($this->players as $player) {
-            $player->sendPacket($packet);
+            if (is_null($filter) || $filter($player)) {
+                $player->sendPacket($packet);
+            }
         }
     }
 
@@ -440,8 +477,22 @@ class Server
         return $this->blockStateLoader;
     }
 
-    public function getChunk(int $x, int $z): Chunk|null
+    public function spawnParticle(Particle $particle, float $x, float $y, float $z, ?object $data = null): void
     {
-        return $this->region->getChunk($x, $z);
+        $dataClass = $particle->getDataClass();
+
+        if ($data === null && $dataClass !== null) {
+            throw new Exception("error");
+        }
+
+        $this->broadcastPacket(new LevelParticles($particle, 1, $x, $y, $z, 0, 0, 0, 0, true, false, $data));
+    }
+
+    /**
+     * @return ServerConfig
+     */
+    public function getConfig(): ServerConfig
+    {
+        return $this->config;
     }
 }

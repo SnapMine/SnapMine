@@ -2,6 +2,7 @@
 
 namespace Nirbose\PhpMcServ;
 
+use Monolog\Logger;
 use Nirbose\PhpMcServ\Block\BlockStateLoader;
 use Nirbose\PhpMcServ\World\Region;
 
@@ -14,14 +15,22 @@ class Artisan
         self::$server = $server;
     }
 
+    /**
+     * @return Server|null
+     */
+    public static function getServer(): ?Server
+    {
+        return self::$server;
+    }
+
+    public static function getLogger(): ?Logger
+    {
+        return self::$server?->getLogger();
+    }
+
     public static function getPlayers(): array
     {
         return self::$server->getPlayers();
-    }
-
-    public static function getRegion(): Region
-    {
-        return self::$server->getRegion();
     }
 
     public static function getBlockStateLoader(): BlockStateLoader

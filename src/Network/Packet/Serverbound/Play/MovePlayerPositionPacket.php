@@ -2,8 +2,8 @@
 
 namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
 
+use Nirbose\PhpMcServ\Entity\Player;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\MoveEntityPosPacket;
-use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
 use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Session\Session;
@@ -13,6 +13,7 @@ class MovePlayerPositionPacket extends ServerboundPacket
     private float $x;
     private float $feetY;
     private float $z;
+    /** @phpstan-ignore property.onlyWritten */
     private bool $flags;
 
     public function getId(): int
@@ -25,7 +26,7 @@ class MovePlayerPositionPacket extends ServerboundPacket
         $this->x = $serializer->getDouble();
         $this->feetY = $serializer->getDouble();
         $this->z = $serializer->getDouble();
-        $this->flags = $serializer->getByte();
+        $this->flags = $serializer->getBool();
     }
 
     public function handle(Session $session): void
@@ -57,12 +58,6 @@ class MovePlayerPositionPacket extends ServerboundPacket
             false
         );
 
-        foreach ($session->getServer()->getPlayers() as $player) {
-            if ($player->getUuid() === $session->getPlayer()->getUuid()) {
-                continue;
-            }
-
-            $player->sendPacket($outPacket);
-        }
+        $player->getServer()->broadcastPacket($outPacket, fn (Player $p) => $p->getUuid() != $player->getUuid());
     }
 }
