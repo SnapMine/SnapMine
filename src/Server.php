@@ -59,6 +59,7 @@ class Server
     private int $maxPlayer = 20;
     private BlockStateLoader $blockStateLoader;
     private ChunkManager $chunkManager;
+    private ServerConfig $config;
 
     public function __construct(
         private readonly string $host,
@@ -67,6 +68,8 @@ class Server
     {
         $this->eventManager = new EventManager();
         $this->blockStateLoader = new BlockStateLoader(__DIR__ . '/../resources/blocks.json');
+        $this->config = new ServerConfig(dirname(__DIR__) . "/config.yml");
+
         Registry::load(dirname(__DIR__) . '/resources/registries/');
         $this->chunkManager = new ChunkManager();
 
@@ -272,7 +275,7 @@ class Server
      */
     public function getMaxPlayer(): int
     {
-        return $this->maxPlayer;
+        return $this->config->get('max-player');
     }
 
     /**
@@ -280,7 +283,7 @@ class Server
      */
     public function setMaxPlayer(int $maxPlayer): void
     {
-        $this->maxPlayer = $maxPlayer;
+        $this->config->set('max-player', $maxPlayer);
     }
 
     /**
@@ -479,5 +482,13 @@ class Server
         }
 
         $this->broadcastPacket(new LevelParticles($particle, 1, $x, $y, $z, 0, 0, 0, 0, true, false, $data));
+    }
+
+    /**
+     * @return ServerConfig
+     */
+    public function getConfig(): ServerConfig
+    {
+        return $this->config;
     }
 }

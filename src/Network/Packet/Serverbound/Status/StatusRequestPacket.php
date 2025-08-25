@@ -32,7 +32,7 @@ class StatusRequestPacket extends ServerboundPacket
                 "sample" => [],
             ],
             "description" => [
-                "text" => "Welcome to the server!",
+                "text" => $session->getServer()->getConfig()->get('motd'),
             ],
         ])));
     }

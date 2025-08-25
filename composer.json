@@ -25,7 +25,8 @@
     "ext-gmp": "*",
     "react/socket": "^1.16",
     "react/async": "^4.3.0",
-    "react/promise": "^3.2.0"
+    "react/promise": "^3.2.0",
+    "symfony/yaml": "^7.3"
   },
   "require-dev": {
     "pestphp/pest": "^3.8",
