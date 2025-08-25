@@ -23,6 +23,7 @@ use Nirbose\PhpMcServ\Event\EventBinding;
 use Nirbose\PhpMcServ\Event\EventManager;
 use Nirbose\PhpMcServ\Event\Listener;
 use Nirbose\PhpMcServ\Listener\PlayerJoinListener;
+use Nirbose\PhpMcServ\Manager\ChunkManager\ChunkManager;
 use Nirbose\PhpMcServ\Manager\KeepAliveManager;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\AddEntityPacket;
 use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\LevelParticles;
@@ -30,16 +31,14 @@ use Nirbose\PhpMcServ\Network\Packet\Packet;
 use Nirbose\PhpMcServ\Particle\Particle;
 use Nirbose\PhpMcServ\Registry\Registry;
 use Nirbose\PhpMcServ\Session\Session;
-use Nirbose\PhpMcServ\World\Chunk\Chunk;
 use Nirbose\PhpMcServ\World\Location;
-use Nirbose\PhpMcServ\World\Region;
 use Nirbose\PhpMcServ\World\World;
-use ReflectionClass;
-use ReflectionMethod;
-use ReflectionNamedType;
 use React\EventLoop\Loop;
 use React\Socket\ConnectionInterface;
 use React\Socket\SocketServer;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionNamedType;
 use Throwable;
 use function React\Async\async;
 
@@ -59,6 +58,7 @@ class Server
     private array $worlds = [];
     private int $maxPlayer = 20;
     private BlockStateLoader $blockStateLoader;
+    private ChunkManager $chunkManager;
 
     public function __construct(
         private readonly string $host,
@@ -68,6 +68,7 @@ class Server
         $this->eventManager = new EventManager();
         $this->blockStateLoader = new BlockStateLoader(__DIR__ . '/../resources/blocks.json');
         Registry::load(dirname(__DIR__) . '/resources/registries/');
+        $this->chunkManager = new ChunkManager();
 
         foreach (glob(dirname(__DIR__) . '/resources/worlds/*/') as $folder) {
             $this->worlds[basename($folder)] = new World($folder);
@@ -183,6 +184,11 @@ class Server
     public function getWorlds(): array
     {
         return $this->worlds;
+    }
+
+    public function getChunkManager(): ChunkManager
+    {
+        return $this->chunkManager;
     }
 
     public static function getLogger(): Logger
