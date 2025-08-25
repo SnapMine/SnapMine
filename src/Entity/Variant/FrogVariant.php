@@ -20,13 +20,22 @@ class FrogVariant implements EncodableToNbt, Keyed
     public function __construct(
         protected readonly string $key,
         protected readonly array $data,
+        protected readonly int $id,
     )
     {
     }
 
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
     public static function register(string $name, string $key, array $data): self
     {
-        $instance = new self($key, $data);
+        $instance = new self($key, $data, count(self::$entries));
         self::$entries[strtoupper($name)] = $instance;
 
         return $instance;

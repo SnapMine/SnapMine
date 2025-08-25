@@ -1,13 +1,14 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Entity;
+namespace Nirbose\PhpMcServ\Entity\Animal;
 
+use Nirbose\PhpMcServ\Entity\EntityType;
 use Nirbose\PhpMcServ\Entity\Metadata\MetadataType;
 use Nirbose\PhpMcServ\Entity\Variant\CowVariant;
 use Nirbose\PhpMcServ\Server;
 use Nirbose\PhpMcServ\World\Location;
 
-class Cow extends Entity
+class Cow extends Animal
 {
     private CowVariant $variant;
 
@@ -39,7 +40,7 @@ class Cow extends Entity
         $this->setMetadata(17, MetadataType::COW_VARIANT, $variant->getId());
     }
 
-    function getType(): EntityType
+    public function getType(): EntityType
     {
         return EntityType::COW;
     }

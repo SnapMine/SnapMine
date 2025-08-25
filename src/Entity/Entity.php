@@ -232,5 +232,5 @@ abstract class Entity
     /**
      * @return EntityType
      */
-    abstract function getType(): EntityType;
+    abstract public function getType(): EntityType;
 }

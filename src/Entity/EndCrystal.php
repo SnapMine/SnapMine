@@ -35,7 +35,7 @@ class EndCrystal extends Entity
     /**
      * @inheritDoc
      */
-    function getType(): EntityType
+    public function getType(): EntityType
     {
         return EntityType::END_CRYSTAL;
     }

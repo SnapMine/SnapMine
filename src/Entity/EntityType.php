@@ -2,6 +2,24 @@
 
 namespace Nirbose\PhpMcServ\Entity;
 
+use Nirbose\PhpMcServ\Entity\Animal\Armadillo;
+use Nirbose\PhpMcServ\Entity\Animal\Bee;
+use Nirbose\PhpMcServ\Entity\Animal\Chicken;
+use Nirbose\PhpMcServ\Entity\Animal\Cow;
+use Nirbose\PhpMcServ\Entity\Animal\Fox;
+use Nirbose\PhpMcServ\Entity\Animal\Frog;
+use Nirbose\PhpMcServ\Entity\Animal\Goat;
+use Nirbose\PhpMcServ\Entity\Animal\Hoglin;
+use Nirbose\PhpMcServ\Entity\Animal\Mooshroom;
+use Nirbose\PhpMcServ\Entity\Animal\Ocelot;
+use Nirbose\PhpMcServ\Entity\Animal\Panda;
+use Nirbose\PhpMcServ\Entity\Animal\Pig;
+use Nirbose\PhpMcServ\Entity\Animal\Rabbit;
+use Nirbose\PhpMcServ\Entity\Animal\Sheep;
+use Nirbose\PhpMcServ\Entity\Animal\Sniffer;
+use Nirbose\PhpMcServ\Entity\Animal\Strider;
+use Nirbose\PhpMcServ\Entity\Animal\Turtle;
+
 enum EntityType: int
 {
 	case ACACIA_BOAT = 0;
@@ -154,4 +172,164 @@ enum EntityType: int
 	case ZOMBIE_HORSE = 145;
 	case ZOMBIE_VILLAGER = 146;
 	case ZOMBIFIED_PIGLIN = 147;
+
+    /**
+     * @return class-string
+     * @throws \Exception
+     */
+    public function getClass(): string
+    {
+        return match ($this) {
+            EntityType::ACACIA_BOAT => throw new \Exception('To be implemented'),
+            EntityType::ACACIA_CHEST_BOAT => throw new \Exception('To be implemented'),
+            EntityType::ALLAY => throw new \Exception('To be implemented'),
+            EntityType::AREA_EFFECT_CLOUD => AreaEffectCloud::class,
+            EntityType::ARMADILLO => Armadillo::class,
+            EntityType::ARMOR_STAND => throw new \Exception('To be implemented'),
+            EntityType::ARROW => throw new \Exception('To be implemented'),
+            EntityType::AXOLOTL => throw new \Exception('To be implemented'),
+            EntityType::BAMBOO_CHEST_RAFT => throw new \Exception('To be implemented'),
+            EntityType::BAMBOO_RAFT => throw new \Exception('To be implemented'),
+            EntityType::BAT => throw new \Exception('To be implemented'),
+            EntityType::BEE => Bee::class,
+            EntityType::BIRCH_BOAT => throw new \Exception('To be implemented'),
+            EntityType::BIRCH_CHEST_BOAT => throw new \Exception('To be implemented'),
+            EntityType::BLAZE => throw new \Exception('To be implemented'),
+            EntityType::BLOCK_DISPLAY => throw new \Exception('To be implemented'),
+            EntityType::BOGGED => throw new \Exception('To be implemented'),
+            EntityType::BREEZE => throw new \Exception('To be implemented'),
+            EntityType::BREEZE_WIND_CHARGE => throw new \Exception('To be implemented'),
+            EntityType::CAMEL => throw new \Exception('To be implemented'),
+            EntityType::CAT => throw new \Exception('To be implemented'),
+            EntityType::CAVE_SPIDER => throw new \Exception('To be implemented'),
+            EntityType::CHERRY_BOAT => throw new \Exception('To be implemented'),
+            EntityType::CHERRY_CHEST_BOAT => throw new \Exception('To be implemented'),
+            EntityType::CHEST_MINECART => throw new \Exception('To be implemented'),
+            EntityType::CHICKEN => Chicken::class,
+            EntityType::COD => throw new \Exception('To be implemented'),
+            EntityType::COMMAND_BLOCK_MINECART => throw new \Exception('To be implemented'),
+            EntityType::COW => Cow::class,
+            EntityType::CREAKING => throw new \Exception('To be implemented'),
+            EntityType::CREEPER => throw new \Exception('To be implemented'),
+            EntityType::DARK_OAK_BOAT => throw new \Exception('To be implemented'),
+            EntityType::DARK_OAK_CHEST_BOAT => throw new \Exception('To be implemented'),
+            EntityType::DOLPHIN => throw new \Exception('To be implemented'),
+            EntityType::DONKEY => throw new \Exception('To be implemented'),
+            EntityType::DRAGON_FIREBALL => DragonFireball::class,
+            EntityType::DROWNED => throw new \Exception('To be implemented'),
+            EntityType::EGG => throw new \Exception('To be implemented'),
+            EntityType::ELDER_GUARDIAN => throw new \Exception('To be implemented'),
+            EntityType::END_CRYSTAL => EndCrystal::class,
+            EntityType::ENDER_DRAGON => throw new \Exception('To be implemented'),
+            EntityType::ENDER_PEARL => throw new \Exception('To be implemented'),
+            EntityType::ENDERMAN => throw new \Exception('To be implemented'),
+            EntityType::ENDERMITE => throw new \Exception('To be implemented'),
+            EntityType::EVOKER => throw new \Exception('To be implemented'),
+            EntityType::EVOKER_FANGS => EvokerFangs::class,
+            EntityType::EXPERIENCE_BOTTLE => throw new \Exception('To be implemented'),
+            EntityType::EXPERIENCE_ORB => throw new \Exception('To be implemented'),
+            EntityType::EYE_OF_ENDER => throw new \Exception('To be implemented'),
+            EntityType::FALLING_BLOCK => throw new \Exception('To be implemented'),
+            EntityType::FIREBALL => throw new \Exception('To be implemented'),
+            EntityType::FIREWORK_ROCKET => throw new \Exception('To be implemented'),
+            EntityType::FISHING_BOBBER => throw new \Exception('To be implemented'),
+            EntityType::FOX => Fox::class,
+            EntityType::FROG => Frog::class,
+            EntityType::FURNACE_MINECART => throw new \Exception('To be implemented'),
+            EntityType::GHAST => throw new \Exception('To be implemented'),
+            EntityType::GIANT => throw new \Exception('To be implemented'),
+            EntityType::GLOW_ITEM_FRAME => throw new \Exception('To be implemented'),
+            EntityType::GLOW_SQUID => throw new \Exception('To be implemented'),
+            EntityType::GOAT => Goat::class,
+            EntityType::GUARDIAN => throw new \Exception('To be implemented'),
+            EntityType::HOGLIN => Hoglin::class,
+            EntityType::HOPPER_MINECART => throw new \Exception('To be implemented'),
+            EntityType::HORSE => throw new \Exception('To be implemented'),
+            EntityType::HUSK => throw new \Exception('To be implemented'),
+            EntityType::ILLUSIONER => throw new \Exception('To be implemented'),
+            EntityType::INTERACTION => throw new \Exception('To be implemented'),
+            EntityType::IRON_GOLEM => throw new \Exception('To be implemented'),
+            EntityType::ITEM => throw new \Exception('To be implemented'),
+            EntityType::ITEM_DISPLAY => throw new \Exception('To be implemented'),
+            EntityType::ITEM_FRAME => throw new \Exception('To be implemented'),
+            EntityType::JUNGLE_BOAT => throw new \Exception('To be implemented'),
+            EntityType::JUNGLE_CHEST_BOAT => throw new \Exception('To be implemented'),
+            EntityType::LEASH_KNOT => throw new \Exception('To be implemented'),
+            EntityType::LIGHTNING_BOLT => throw new \Exception('To be implemented'),
+            EntityType::LINGERING_POTION => throw new \Exception('To be implemented'),
+            EntityType::LLAMA => throw new \Exception('To be implemented'),
+            EntityType::LLAMA_SPIT => throw new \Exception('To be implemented'),
+            EntityType::MAGMA_CUBE => throw new \Exception('To be implemented'),
+            EntityType::MANGROVE_BOAT => throw new \Exception('To be implemented'),
+            EntityType::MANGROVE_CHEST_BOAT => throw new \Exception('To be implemented'),
+            EntityType::MARKER => throw new \Exception('To be implemented'),
+            EntityType::MINECART => throw new \Exception('To be implemented'),
+            EntityType::MOOSHROOM => Mooshroom::class,
+            EntityType::MULE => throw new \Exception('To be implemented'),
+            EntityType::OAK_BOAT => throw new \Exception('To be implemented'),
+            EntityType::OAK_CHEST_BOAT => throw new \Exception('To be implemented'),
+            EntityType::OCELOT => Ocelot::class,
+            EntityType::OMINOUS_ITEM_SPAWNER => throw new \Exception('To be implemented'),
+            EntityType::PAINTING => throw new \Exception('To be implemented'),
+            EntityType::PALE_OAK_BOAT => throw new \Exception('To be implemented'),
+            EntityType::PALE_OAK_CHEST_BOAT => throw new \Exception('To be implemented'),
+            EntityType::PANDA => Panda::class,
+            EntityType::PARROT => throw new \Exception('To be implemented'),
+            EntityType::PHANTOM => throw new \Exception('To be implemented'),
+            EntityType::PIG => Pig::class,
+            EntityType::PIGLIN => throw new \Exception('To be implemented'),
+            EntityType::PIGLIN_BRUTE => throw new \Exception('To be implemented'),
+            EntityType::PILLAGER => throw new \Exception('To be implemented'),
+            EntityType::PLAYER => Player::class,
+            EntityType::POLAR_BEAR => throw new \Exception('To be implemented'),
+            EntityType::PUFFERFISH => throw new \Exception('To be implemented'),
+            EntityType::RABBIT => Rabbit::class,
+            EntityType::RAVAGER => throw new \Exception('To be implemented'),
+            EntityType::SALMON => throw new \Exception('To be implemented'),
+            EntityType::SHEEP => Sheep::class,
+            EntityType::SHULKER => throw new \Exception('To be implemented'),
+            EntityType::SHULKER_BULLET => throw new \Exception('To be implemented'),
+            EntityType::SILVERFISH => throw new \Exception('To be implemented'),
+            EntityType::SKELETON => throw new \Exception('To be implemented'),
+            EntityType::SKELETON_HORSE => throw new \Exception('To be implemented'),
+            EntityType::SLIME => throw new \Exception('To be implemented'),
+            EntityType::SMALL_FIREBALL => throw new \Exception('To be implemented'),
+            EntityType::SNIFFER => Sniffer::class,
+            EntityType::SNOW_GOLEM => throw new \Exception('To be implemented'),
+            EntityType::SNOWBALL => throw new \Exception('To be implemented'),
+            EntityType::SPAWNER_MINECART => throw new \Exception('To be implemented'),
+            EntityType::SPECTRAL_ARROW => throw new \Exception('To be implemented'),
+            EntityType::SPIDER => throw new \Exception('To be implemented'),
+            EntityType::SPLASH_POTION => throw new \Exception('To be implemented'),
+            EntityType::SPRUCE_BOAT => throw new \Exception('To be implemented'),
+            EntityType::SPRUCE_CHEST_BOAT => throw new \Exception('To be implemented'),
+            EntityType::SQUID => throw new \Exception('To be implemented'),
+            EntityType::STRAY => throw new \Exception('To be implemented'),
+            EntityType::STRIDER => Strider::class,
+            EntityType::TADPOLE => throw new \Exception('To be implemented'),
+            EntityType::TEXT_DISPLAY => throw new \Exception('To be implemented'),
+            EntityType::TNT => throw new \Exception('To be implemented'),
+            EntityType::TNT_MINECART => throw new \Exception('To be implemented'),
+            EntityType::TRADER_LLAMA => throw new \Exception('To be implemented'),
+            EntityType::TRIDENT => throw new \Exception('To be implemented'),
+            EntityType::TROPICAL_FISH => throw new \Exception('To be implemented'),
+            EntityType::TURTLE => Turtle::class,
+            EntityType::VEX => throw new \Exception('To be implemented'),
+            EntityType::VILLAGER => throw new \Exception('To be implemented'),
+            EntityType::VINDICATOR => throw new \Exception('To be implemented'),
+            EntityType::WANDERING_TRADER => throw new \Exception('To be implemented'),
+            EntityType::WARDEN => throw new \Exception('To be implemented'),
+            EntityType::WIND_CHARGE => WindCharge::class,
+            EntityType::WITCH => throw new \Exception('To be implemented'),
+            EntityType::WITHER => throw new \Exception('To be implemented'),
+            EntityType::WITHER_SKELETON => throw new \Exception('To be implemented'),
+            EntityType::WITHER_SKULL => throw new \Exception('To be implemented'),
+            EntityType::WOLF => throw new \Exception('To be implemented'),
+            EntityType::ZOGLIN => throw new \Exception('To be implemented'),
+            EntityType::ZOMBIE => throw new \Exception('To be implemented'),
+            EntityType::ZOMBIE_HORSE => throw new \Exception('To be implemented'),
+            EntityType::ZOMBIE_VILLAGER => throw new \Exception('To be implemented'),
+            EntityType::ZOMBIFIED_PIGLIN => throw new \Exception('To be implemented'),
+        };
+    }
 }

@@ -8,7 +8,7 @@ class DragonFireball extends Entity
     /**
      * @inheritDoc
      */
-    function getType(): EntityType
+    public function getType(): EntityType
     {
         return EntityType::DRAGON_FIREBALL;
     }

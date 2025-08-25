@@ -47,7 +47,7 @@ class AreaEffectCloud extends Entity
     /**
      * @inheritDoc
      */
-    function getType(): EntityType
+    public function getType(): EntityType
     {
         return EntityType::AREA_EFFECT_CLOUD;
     }
