@@ -17,20 +17,22 @@ use function React\Async\delay;
 class ChunkManager
 {
     private array $queues = [];
-    private const QUEUE_COUNT = 8;
+    private const QUEUE_COUNT = 2;
     public function __construct()
     {
         for ($i = 0; $i < self::QUEUE_COUNT; $i++) {
             $this->queues[] = [];
-            Loop::addPeriodicTimer(0.0015, function () use ($i) {
+
+            Loop::addPeriodicTimer(0.0001, async(function () use ($i) {
                 if(count($this->queues[$i]) > 0) {
                     $request = array_shift($this->queues[$i]);
 
                     //Artisan::getLogger()->info("Callback chunk {$request->getX()}, {$request->getZ()}");
 
-                    $request->getCallback()($request->getWorld()->getChunk($request->getX(), $request->getZ()));
+                    $request->runCallbacks($request->getWorld()->getChunk($request->getX(), $request->getZ()));
                 }
-            });
+            }));
+
 
 
 
@@ -43,12 +45,19 @@ class ChunkManager
     public function addToQueue(ChunkRequest $request): void
     {
         // Artisan::getLogger()->info("Requesting chunk {$request->getX()}, {$request->getZ()}");
-        if($request->chunkExists()) {
+        if($request->exists()) {
             //Artisan::getLogger()->info("[CACHED] Callback chunk {$request->getX()}, {$request->getZ()}");
-            $request->getCallback()($request->getWorld()->getChunk($request->getX(), $request->getZ()));
+            $request->runCallbacks($request->getWorld()->getChunk($request->getX(), $request->getZ()));
             return;
         }
         $queue = $request->getX() + $request->getZ() & (self::QUEUE_COUNT - 1);
+
+        foreach ($this->queues[$queue] as $queuedRequest) {
+            if($queuedRequest->getX() == $request->getX() && $queuedRequest->getZ() == $request->getZ()) {
+                $queuedRequest->addCallbacks($request->getCallbacks());
+                return;
+            }
+        }
 
         //Artisan::getLogger()->info("Queueing chunk {$request->getX()}, {$request->getZ()} in queue $queue");
         $this->queues[$queue][] = $request;

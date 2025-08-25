@@ -2,18 +2,21 @@
 
 namespace Nirbose\PhpMcServ\Manager\ChunkManager;
 
+use Nirbose\PhpMcServ\World\Chunk\Chunk;
 use Nirbose\PhpMcServ\World\World;
 
 class ChunkRequest
 {
-    protected ?\Closure $callback = null;
+    /** @var callable[] */
+    protected array $callbacks = [];
     public function __construct(
         protected World $world,
         protected int $x,
         protected int $z,
         ?callable $callback = null
     ) {
-        $this->callback = $callback;
+
+        $this->callbacks[] = $callback;
     }
 
     public function getX(): int
@@ -31,12 +34,23 @@ class ChunkRequest
         return $this->world;
     }
 
-    public function getCallback(): ?\Closure
-    {
-        return $this->callback;
+    public function getCallbacks(): array {
+        return $this->callbacks;
     }
 
-    public function chunkExists(): bool
+    public function runCallbacks(Chunk $chunk): void
+    {
+        foreach ($this->callbacks as $callback) {
+            $callback($chunk);
+        }
+    }
+
+    public function addCallbacks(array $callbacks): void
+    {
+        $this->callbacks = array_merge($this->callbacks, $callbacks);
+    }
+
+    public function exists(): bool
     {
         return $this->world->hasChunk($this->x, $this->z);
     }

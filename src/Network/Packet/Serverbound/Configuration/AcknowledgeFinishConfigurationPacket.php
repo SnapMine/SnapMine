@@ -14,6 +14,7 @@ use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Network\ServerState;
 use Nirbose\PhpMcServ\Session\Session;
 use React\EventLoop\Loop;
+use function React\Async\async;
 
 class AcknowledgeFinishConfigurationPacket extends ServerboundPacket
 {
@@ -33,6 +34,8 @@ class AcknowledgeFinishConfigurationPacket extends ServerboundPacket
 
         $player = $session->getPlayer();
 
+        $session->sendPacket(new JoinGamePacket($player));
+
         // Load and send the center chunk lazily via ChunkManager
         $world = $player->getServer()->getWorld("world");
         $callback = function ($chunk) use ($player) {
@@ -41,10 +44,7 @@ class AcknowledgeFinishConfigurationPacket extends ServerboundPacket
             }
         };
 
-        $session->sendPacket(new JoinGamePacket($player));
         $session->sendPacket(new SetDefaultSpawnPositionPacket());
-
-
 
         $session->sendPacket(
             new GameEventPacket(13, 0.0)
@@ -54,12 +54,12 @@ class AcknowledgeFinishConfigurationPacket extends ServerboundPacket
         );
 
         $cm = $player->getServer()->getChunkManager();
-        Loop::addTimer(0.1, function () use ($world, $callback, $cm) {
+        Loop::addTimer(0.1, async(function () use ($world, $callback, $cm) {
             $cm->loadRadius($world, 0, 0, 20, $callback);
-        });
+        }));
         $cm->addToQueue(new ChunkRequest($world, 0, 0, $callback));
 
-        $player->sendPacket(new SynchronizePlayerPositionPacket($player, 0, 0, 0, SynchronizePlayerPositionPacket::RELATIVE_X | SynchronizePlayerPositionPacket::RELATIVE_Y | SynchronizePlayerPositionPacket::RELATIVE_Z));
+        $player->sendPacket(new SynchronizePlayerPositionPacket($player, 0, 0, 0));
 
         var_dump(microtime(true) - $time);
     }
