@@ -54,7 +54,7 @@ class AcknowledgeFinishConfigurationPacket extends ServerboundPacket
         );
 
         $cm = $player->getServer()->getChunkManager();
-        Loop::addTimer(0.1, function () use ($world, $callback, $player, $cm) {
+        Loop::addTimer(0.1, function () use ($world, $callback, $cm) {
             $cm->loadRadius($world, 0, 0, 20, $callback);
         });
         $cm->addToQueue(new ChunkRequest($world, 0, 0, $callback));
