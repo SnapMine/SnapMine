@@ -66,7 +66,7 @@ class Block
         $x = $this->getX() >> 4;
         $z = $this->getZ() >> 4;
 
-        return $this->server->getRegion()->getChunk($x, $z);
+        return $this->server->getWorld("world")->getChunk($x, $z);
     }
 
     /**

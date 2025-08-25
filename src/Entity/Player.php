@@ -145,6 +145,6 @@ class Player extends Entity
 
     public function getChunk(): Chunk
     {
-        return $this->server->getChunk($this->location->getX() >> 4, $this->location->getZ() >> 4);
+        return $this->server->getWorld("world")->getChunk($this->location->getX() >> 4, $this->location->getZ() >> 4);
     }
 }

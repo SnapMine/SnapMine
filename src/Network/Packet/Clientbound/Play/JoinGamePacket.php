@@ -38,7 +38,7 @@ class JoinGamePacket extends ClientboundPacket
             ->putUnsignedByte($this->player->getGameMode()->value) // Game Mode
             ->putByte($this->player->getPreviousGameMode()->value ?? -1) // Previous Game Mode (-1 undefined)
             ->putBool(false) // Is Debug
-            ->putBool(false) // Is Flat
+            ->putBool(true) // Is Flat
             ->putBool(false) // Has Death Location
             ->putVarInt(0) // Portal Cooldown
             ->putVarInt(63) // Sea Level
