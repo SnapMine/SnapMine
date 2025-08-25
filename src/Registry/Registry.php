@@ -1,17 +1,17 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Registry;
+namespace SnapMine\Registry;
 
-use Nirbose\PhpMcServ\Entity\Variant\CatVariant;
-use Nirbose\PhpMcServ\Entity\Variant\ChickenVariant;
-use Nirbose\PhpMcServ\Entity\Variant\CowVariant;
-use Nirbose\PhpMcServ\Entity\Variant\FrogVariant;
-use Nirbose\PhpMcServ\Entity\Variant\PaintingVariant;
-use Nirbose\PhpMcServ\Entity\Variant\PigVariant;
-use Nirbose\PhpMcServ\Entity\Variant\WolfSoundVariant;
-use Nirbose\PhpMcServ\Entity\Variant\WolfVariant;
-use Nirbose\PhpMcServ\World\Biome;
-use Nirbose\PhpMcServ\World\DimensionType;
+use SnapMine\Entity\Variant\CatVariant;
+use SnapMine\Entity\Variant\ChickenVariant;
+use SnapMine\Entity\Variant\CowVariant;
+use SnapMine\Entity\Variant\FrogVariant;
+use SnapMine\Entity\Variant\PaintingVariant;
+use SnapMine\Entity\Variant\PigVariant;
+use SnapMine\Entity\Variant\WolfSoundVariant;
+use SnapMine\Entity\Variant\WolfVariant;
+use SnapMine\World\Biome;
+use SnapMine\World\DimensionType;
 
 enum Registry: string
 {

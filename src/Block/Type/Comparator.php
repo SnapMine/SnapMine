@@ -1,12 +1,12 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Type;
+namespace SnapMine\Block\Type;
 
-use Nirbose\PhpMcServ\Block\ComparatorMode;
-use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Block\Data\Facing;
-use Nirbose\PhpMcServ\Block\Data\Powerable;
-use Nirbose\PhpMcServ\Block\Direction;
+use SnapMine\Block\ComparatorMode;
+use SnapMine\Block\Data\BlockData;
+use SnapMine\Block\Data\Facing;
+use SnapMine\Block\Data\Powerable;
+use SnapMine\Block\Direction;
 
 class Comparator extends BlockData
 {

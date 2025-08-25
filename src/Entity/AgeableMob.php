@@ -1,9 +1,9 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Entity;
+namespace SnapMine\Entity;
 
-use Nirbose\PhpMcServ\Entity\Creature\Creature;
-use Nirbose\PhpMcServ\Entity\Metadata\MetadataType;
+use SnapMine\Entity\Creature\Creature;
+use SnapMine\Entity\Metadata\MetadataType;
 
 abstract class AgeableMob extends Creature
 {

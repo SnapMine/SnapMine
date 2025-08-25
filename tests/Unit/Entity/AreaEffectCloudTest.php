@@ -1,9 +1,9 @@
 <?php
 
-use Nirbose\PhpMcServ\Entity\AreaEffectCloud;
-use Nirbose\PhpMcServ\Entity\EntityType;
-use Nirbose\PhpMcServ\Server;
-use Nirbose\PhpMcServ\World\Location;
+use SnapMine\Entity\AreaEffectCloud;
+use SnapMine\Entity\EntityType;
+use SnapMine\Server;
+use SnapMine\World\Location;
 
 describe('AreaEffectCloud entity', function () {
     /** @var AreaEffectCloud $entity */

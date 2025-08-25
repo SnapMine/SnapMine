@@ -1,10 +1,10 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Entity\Animal;
+namespace SnapMine\Entity\Animal;
 
-use Nirbose\PhpMcServ\Entity\EntityType;
-use Nirbose\PhpMcServ\Entity\Metadata\MetadataType;
-use Nirbose\PhpMcServ\Entity\Variant\MooshroomVariant;
+use SnapMine\Entity\EntityType;
+use SnapMine\Entity\Metadata\MetadataType;
+use SnapMine\Entity\Variant\MooshroomVariant;
 
 class Mooshroom extends Animal
 {

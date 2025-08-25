@@ -1,10 +1,10 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Entity\Animal;
+namespace SnapMine\Entity\Animal;
 
-use Nirbose\PhpMcServ\Entity\EntityType;
-use Nirbose\PhpMcServ\Server;
-use Nirbose\PhpMcServ\World\Location;
+use SnapMine\Entity\EntityType;
+use SnapMine\Server;
+use SnapMine\World\Location;
 
 class Sheep extends Animal
 {

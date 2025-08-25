@@ -1,12 +1,12 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Entity\Metadata;
+namespace SnapMine\Entity\Metadata;
 
 use Aternos\Nbt\IO\Writer\StringWriter;
 use Aternos\Nbt\NbtFormat;
 use BackedEnum;
-use Nirbose\PhpMcServ\Component\TextComponent;
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
+use SnapMine\Component\TextComponent;
+use SnapMine\Network\Serializer\PacketSerializer;
 
 class MetadataEntry
 {

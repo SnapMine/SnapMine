@@ -1,23 +1,23 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Component;
+namespace SnapMine\Component;
 
-use Nirbose\PhpMcServ\Component\Item\BlockPredicates;
-use Nirbose\PhpMcServ\Component\Item\CustomModelData;
-use Nirbose\PhpMcServ\Component\Item\DyeItemColor;
-use Nirbose\PhpMcServ\Component\Item\FoodProperties;
-use Nirbose\PhpMcServ\Component\Item\ItemLore;
-use Nirbose\PhpMcServ\Component\Item\TooltipDisplay;
-use Nirbose\PhpMcServ\Entity\Variant\AxolotlVariant;
-use Nirbose\PhpMcServ\Entity\Variant\FoxVariant;
-use Nirbose\PhpMcServ\Entity\Variant\HorseVariant;
-use Nirbose\PhpMcServ\Entity\Variant\LlamaVariant;
-use Nirbose\PhpMcServ\Entity\Variant\MooshroomVariant;
-use Nirbose\PhpMcServ\Entity\Variant\RabbitVariant;
-use Nirbose\PhpMcServ\Entity\Variant\SalmonVariant;
-use Nirbose\PhpMcServ\Entity\Variant\TropicalFishVariant;
-use Nirbose\PhpMcServ\Inventory\ItemRarity;
-use Nirbose\PhpMcServ\Utils\DyeColor;
+use SnapMine\Component\Item\BlockPredicates;
+use SnapMine\Component\Item\CustomModelData;
+use SnapMine\Component\Item\DyeItemColor;
+use SnapMine\Component\Item\FoodProperties;
+use SnapMine\Component\Item\ItemLore;
+use SnapMine\Component\Item\TooltipDisplay;
+use SnapMine\Entity\Variant\AxolotlVariant;
+use SnapMine\Entity\Variant\FoxVariant;
+use SnapMine\Entity\Variant\HorseVariant;
+use SnapMine\Entity\Variant\LlamaVariant;
+use SnapMine\Entity\Variant\MooshroomVariant;
+use SnapMine\Entity\Variant\RabbitVariant;
+use SnapMine\Entity\Variant\SalmonVariant;
+use SnapMine\Entity\Variant\TropicalFishVariant;
+use SnapMine\Inventory\ItemRarity;
+use SnapMine\Utils\DyeColor;
 
 enum DataComponentType
 {

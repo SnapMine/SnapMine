@@ -1,13 +1,13 @@
 <?php
 
-namespace Nirbose\PhpMcServ\World;
+namespace SnapMine\World;
 
 use Aternos\Nbt\IO\Reader\ZLibCompressedStringReader;
 use Aternos\Nbt\NbtFormat;
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\Tag;
 use Error;
-use Nirbose\PhpMcServ\World\Chunk\Chunk;
+use SnapMine\World\Chunk\Chunk;
 
 class Region
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Entity\Animal;
+namespace SnapMine\Entity\Animal;
 
-use Nirbose\PhpMcServ\Entity\Animal\Animal;
-use Nirbose\PhpMcServ\Entity\EntityType;
-use Nirbose\PhpMcServ\Entity\Metadata\MetadataType;
+use SnapMine\Entity\Animal\Animal;
+use SnapMine\Entity\EntityType;
+use SnapMine\Entity\Metadata\MetadataType;
 
 class Armadillo extends Animal
 {

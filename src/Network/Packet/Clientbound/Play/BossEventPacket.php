@@ -1,11 +1,11 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Play;
+namespace SnapMine\Network\Packet\Clientbound\Play;
 
-use Nirbose\PhpMcServ\BossBar\BossBar;
-use Nirbose\PhpMcServ\BossBar\BossBarAction;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
+use SnapMine\BossBar\BossBar;
+use SnapMine\BossBar\BossBarAction;
+use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
+use SnapMine\Network\Serializer\PacketSerializer;
 
 class BossEventPacket extends ClientboundPacket
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Network;
+namespace SnapMine\Network;
 
 enum ServerState: int
 {

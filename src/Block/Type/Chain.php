@@ -1,10 +1,10 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Type;
+namespace SnapMine\Block\Type;
 
-use Nirbose\PhpMcServ\Block\Data\Axis;
-use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Block\Data\Waterlogged;
+use SnapMine\Block\Data\Axis;
+use SnapMine\Block\Data\BlockData;
+use SnapMine\Block\Data\Waterlogged;
 
 class Chain extends BlockData
 {

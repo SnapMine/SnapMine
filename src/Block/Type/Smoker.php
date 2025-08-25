@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Type;
+namespace SnapMine\Block\Type;
 
 class Smoker extends Furnace
 {

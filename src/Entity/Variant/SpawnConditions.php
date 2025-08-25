@@ -1,13 +1,13 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Entity\Variant;
+namespace SnapMine\Entity\Variant;
 
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\FloatTag;
 use Aternos\Nbt\Tag\IntTag;
 use Aternos\Nbt\Tag\ListTag;
 use Aternos\Nbt\Tag\StringTag;
-use Nirbose\PhpMcServ\Registry\EncodableToNbt;
+use SnapMine\Registry\EncodableToNbt;
 
 readonly class SpawnConditions implements EncodableToNbt
 {

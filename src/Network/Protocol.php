@@ -1,35 +1,35 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Network;
+namespace SnapMine\Network;
 
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Configuration\AcknowledgeFinishConfigurationPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Configuration\ClientInformationPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Configuration\KnownPacksPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Configuration\PluginMessagePacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Handshaking\HandshakePacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Login\LoginAcknowledgedPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Login\LoginStartPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\ClientTickEndPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\ConfirmTeleportationPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\ContainerClosePacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\CustomPlayLoadPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\KeepAlivePacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\MovePlayerPositionPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\MovePlayerPositionRotationPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\MovePlayerRotationPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\MovePlayerStatusOnlyPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\PickItemFromBlockPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\PlayerAbilitiesPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\PlayerActionPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\PlayerCommandPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\PlayerInputPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\PlayerLoadedPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\SetCarriedItemPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\SetCreativeModeSlotPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\SwingPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Play\UseItemOnPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Status\PingPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\Status\StatusRequestPacket;
+use SnapMine\Network\Packet\Serverbound\Configuration\AcknowledgeFinishConfigurationPacket;
+use SnapMine\Network\Packet\Serverbound\Configuration\ClientInformationPacket;
+use SnapMine\Network\Packet\Serverbound\Configuration\KnownPacksPacket;
+use SnapMine\Network\Packet\Serverbound\Configuration\PluginMessagePacket;
+use SnapMine\Network\Packet\Serverbound\Handshaking\HandshakePacket;
+use SnapMine\Network\Packet\Serverbound\Login\LoginAcknowledgedPacket;
+use SnapMine\Network\Packet\Serverbound\Login\LoginStartPacket;
+use SnapMine\Network\Packet\Serverbound\Play\ClientTickEndPacket;
+use SnapMine\Network\Packet\Serverbound\Play\ConfirmTeleportationPacket;
+use SnapMine\Network\Packet\Serverbound\Play\ContainerClosePacket;
+use SnapMine\Network\Packet\Serverbound\Play\CustomPlayLoadPacket;
+use SnapMine\Network\Packet\Serverbound\Play\KeepAlivePacket;
+use SnapMine\Network\Packet\Serverbound\Play\MovePlayerPositionPacket;
+use SnapMine\Network\Packet\Serverbound\Play\MovePlayerPositionRotationPacket;
+use SnapMine\Network\Packet\Serverbound\Play\MovePlayerRotationPacket;
+use SnapMine\Network\Packet\Serverbound\Play\MovePlayerStatusOnlyPacket;
+use SnapMine\Network\Packet\Serverbound\Play\PickItemFromBlockPacket;
+use SnapMine\Network\Packet\Serverbound\Play\PlayerAbilitiesPacket;
+use SnapMine\Network\Packet\Serverbound\Play\PlayerActionPacket;
+use SnapMine\Network\Packet\Serverbound\Play\PlayerCommandPacket;
+use SnapMine\Network\Packet\Serverbound\Play\PlayerInputPacket;
+use SnapMine\Network\Packet\Serverbound\Play\PlayerLoadedPacket;
+use SnapMine\Network\Packet\Serverbound\Play\SetCarriedItemPacket;
+use SnapMine\Network\Packet\Serverbound\Play\SetCreativeModeSlotPacket;
+use SnapMine\Network\Packet\Serverbound\Play\SwingPacket;
+use SnapMine\Network\Packet\Serverbound\Play\UseItemOnPacket;
+use SnapMine\Network\Packet\Serverbound\Status\PingPacket;
+use SnapMine\Network\Packet\Serverbound\Status\StatusRequestPacket;
 
 class Protocol
 {

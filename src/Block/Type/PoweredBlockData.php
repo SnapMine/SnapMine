@@ -1,9 +1,9 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Type;
+namespace SnapMine\Block\Type;
 
-use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Block\Data\Powerable;
+use SnapMine\Block\Data\BlockData;
+use SnapMine\Block\Data\Powerable;
 
 class PoweredBlockData extends BlockData
 {

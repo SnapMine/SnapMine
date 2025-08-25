@@ -1,13 +1,13 @@
 <?php
 
-namespace Nirbose\PhpMcServ\World;
+namespace SnapMine\World;
 
 use ArrayAccess;
 use Aternos\Nbt\Tag\CompoundTag;
 use InvalidArgumentException;
 use Iterator;
-use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Material;
+use SnapMine\Block\Data\BlockData;
+use SnapMine\Material;
 use OutOfBoundsException;
 use RuntimeException;
 

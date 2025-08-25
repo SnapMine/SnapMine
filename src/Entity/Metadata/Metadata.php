@@ -1,8 +1,8 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Entity\Metadata;
+namespace SnapMine\Entity\Metadata;
 
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
+use SnapMine\Network\Serializer\PacketSerializer;
 
 trait Metadata
 {

@@ -1,12 +1,12 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Play;
+namespace SnapMine\Network\Packet\Clientbound\Play;
 
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Utils\BitSet;
-use Nirbose\PhpMcServ\World\Chunk\Chunk;
-use Nirbose\PhpMcServ\World\Chunk\HeightmapType;
+use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
+use SnapMine\Network\Serializer\PacketSerializer;
+use SnapMine\Utils\BitSet;
+use SnapMine\World\Chunk\Chunk;
+use SnapMine\World\Chunk\HeightmapType;
 
 class ChunkDataAndUpdateLightPacket extends ClientboundPacket
 {

@@ -1,13 +1,13 @@
 <?php
 
-use Nirbose\PhpMcServ\Artisan;
-use Nirbose\PhpMcServ\Block\BlockStateLoader;
-use Nirbose\PhpMcServ\Block\BlockType;
-use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Block\Direction;
-use Nirbose\PhpMcServ\Block\Type\Bed;
-use Nirbose\PhpMcServ\Material;
-use Nirbose\PhpMcServ\Server;
+use SnapMine\Artisan;
+use SnapMine\Block\BlockStateLoader;
+use SnapMine\Block\BlockType;
+use SnapMine\Block\Data\BlockData;
+use SnapMine\Block\Direction;
+use SnapMine\Block\Type\Bed;
+use SnapMine\Material;
+use SnapMine\Server;
 
 it('Test createBlockData()', function () {
     $loader = new BlockStateLoader(__DIR__ . '/../../../resources/blocks.json');
@@ -37,7 +37,7 @@ test('Test chest getId', function () {
     $server->shouldReceive('getBlockStateLoader')->andReturn($loader);
     Artisan::setServer($server);
 
-    /** @var \Nirbose\PhpMcServ\Block\Type\Chest $chest */
+    /** @var \SnapMine\Block\Type\Chest $chest */
     $chest = BlockType::CHEST->createBlockData();
 
     $chest->setWaterlogged(false);

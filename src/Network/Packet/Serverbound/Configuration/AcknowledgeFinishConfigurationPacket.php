@@ -1,18 +1,18 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Configuration;
+namespace SnapMine\Network\Packet\Serverbound\Configuration;
 
-use Nirbose\PhpMcServ\Manager\ChunkManager\ChunkRequest;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\ChunkDataAndUpdateLightPacket;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\GameEventPacket;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\JoinGamePacket;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\SetCenterChunk;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\SetDefaultSpawnPositionPacket;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\SynchronizePlayerPositionPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Network\ServerState;
-use Nirbose\PhpMcServ\Session\Session;
+use SnapMine\Manager\ChunkManager\ChunkRequest;
+use SnapMine\Network\Packet\Clientbound\Play\ChunkDataAndUpdateLightPacket;
+use SnapMine\Network\Packet\Clientbound\Play\GameEventPacket;
+use SnapMine\Network\Packet\Clientbound\Play\JoinGamePacket;
+use SnapMine\Network\Packet\Clientbound\Play\SetCenterChunk;
+use SnapMine\Network\Packet\Clientbound\Play\SetDefaultSpawnPositionPacket;
+use SnapMine\Network\Packet\Clientbound\Play\SynchronizePlayerPositionPacket;
+use SnapMine\Network\Packet\Serverbound\ServerboundPacket;
+use SnapMine\Network\Serializer\PacketSerializer;
+use SnapMine\Network\ServerState;
+use SnapMine\Session\Session;
 use React\EventLoop\Loop;
 use function React\Async\async;
 

@@ -1,12 +1,12 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Type;
+namespace SnapMine\Block\Type;
 
 use InvalidArgumentException;
-use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Block\Data\Facing;
-use Nirbose\PhpMcServ\Block\Data\Powerable;
-use Nirbose\PhpMcServ\Block\Direction;
+use SnapMine\Block\Data\BlockData;
+use SnapMine\Block\Data\Facing;
+use SnapMine\Block\Data\Powerable;
+use SnapMine\Block\Direction;
 
 class Repeater extends BlockData
 {

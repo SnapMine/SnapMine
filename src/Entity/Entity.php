@@ -1,15 +1,15 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Entity;
+namespace SnapMine\Entity;
 
-use Nirbose\PhpMcServ\Component\TextComponent;
-use Nirbose\PhpMcServ\Entity\Metadata\Metadata;
-use Nirbose\PhpMcServ\Entity\Metadata\MetadataType;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\SetEntityDataPacket;
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Server;
-use Nirbose\PhpMcServ\Utils\UUID;
-use Nirbose\PhpMcServ\World\Location;
+use SnapMine\Component\TextComponent;
+use SnapMine\Entity\Metadata\Metadata;
+use SnapMine\Entity\Metadata\MetadataType;
+use SnapMine\Network\Packet\Clientbound\Play\SetEntityDataPacket;
+use SnapMine\Network\Serializer\PacketSerializer;
+use SnapMine\Server;
+use SnapMine\Utils\UUID;
+use SnapMine\World\Location;
 
 abstract class Entity
 {

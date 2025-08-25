@@ -1,11 +1,11 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Configuration;
+namespace SnapMine\Network\Packet\Clientbound\Configuration;
 
-use Nirbose\PhpMcServ\Keyed;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Registry\EncodableToNbt;
+use SnapMine\Keyed;
+use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
+use SnapMine\Network\Serializer\PacketSerializer;
+use SnapMine\Registry\EncodableToNbt;
 
 class RegistryDataPacket extends ClientboundPacket
 {

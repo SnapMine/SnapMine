@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Particle\Vibration;
+namespace SnapMine\Particle\Vibration;
 
 interface VibrationDestination
 {

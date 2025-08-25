@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Entity\Variant;
+namespace SnapMine\Entity\Variant;
 
 enum SalmonVariant
 {

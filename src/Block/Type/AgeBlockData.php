@@ -1,11 +1,11 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Type;
+namespace SnapMine\Block\Type;
 
-use Nirbose\PhpMcServ\Block\BlockStateLoader;
-use Nirbose\PhpMcServ\Block\Data\Age;
-use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Material;
+use SnapMine\Block\BlockStateLoader;
+use SnapMine\Block\Data\Age;
+use SnapMine\Block\Data\BlockData;
+use SnapMine\Material;
 
 class AgeBlockData extends BlockData
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Network\Serializer;
+namespace SnapMine\Network\Serializer;
 
 interface ProtocolEncodable
 {

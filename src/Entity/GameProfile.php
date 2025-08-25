@@ -1,8 +1,8 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Entity;
+namespace SnapMine\Entity;
 
-use Nirbose\PhpMcServ\Utils\UUID;
+use SnapMine\Utils\UUID;
 
 class GameProfile
 {

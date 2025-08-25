@@ -1,12 +1,12 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Play;
+namespace SnapMine\Network\Packet\Clientbound\Play;
 
-use Nirbose\PhpMcServ\Entity\Player;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
-use Nirbose\PhpMcServ\Network\Packet\Packet;
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Session\Session;
+use SnapMine\Entity\Player;
+use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
+use SnapMine\Network\Packet\Packet;
+use SnapMine\Network\Serializer\PacketSerializer;
+use SnapMine\Session\Session;
 
 class SynchronizePlayerPositionPacket extends ClientboundPacket
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block;
+namespace SnapMine\Block;
 
 use BackedEnum;
 use Exception;
-use Nirbose\PhpMcServ\Material;
+use SnapMine\Material;
 
 class BlockStateLoader
 {

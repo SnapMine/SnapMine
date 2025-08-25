@@ -1,16 +1,16 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
+namespace SnapMine\Network\Packet\Serverbound\Play;
 
-use Nirbose\PhpMcServ\Block\Block;
-use Nirbose\PhpMcServ\Block\BlockType;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\BlockChangedAckPacket;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\BlockDestructionPacket;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\BlockUpdatePacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Session\Session;
-use Nirbose\PhpMcServ\World\Position;
+use SnapMine\Block\Block;
+use SnapMine\Block\BlockType;
+use SnapMine\Network\Packet\Clientbound\Play\BlockChangedAckPacket;
+use SnapMine\Network\Packet\Clientbound\Play\BlockDestructionPacket;
+use SnapMine\Network\Packet\Clientbound\Play\BlockUpdatePacket;
+use SnapMine\Network\Packet\Serverbound\ServerboundPacket;
+use SnapMine\Network\Serializer\PacketSerializer;
+use SnapMine\Session\Session;
+use SnapMine\World\Position;
 
 class PlayerActionPacket extends ServerboundPacket {
     private int $status;

@@ -1,8 +1,8 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Component\Item;
+namespace SnapMine\Component\Item;
 
-use Nirbose\PhpMcServ\Component\DataComponent;
+use SnapMine\Component\DataComponent;
 
 class ItemLore implements DataComponent
 {

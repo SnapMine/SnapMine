@@ -1,9 +1,9 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Particle\Vibration;
+namespace SnapMine\Particle\Vibration;
 
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Network\Serializer\ProtocolEncodable;
+use SnapMine\Network\Serializer\PacketSerializer;
+use SnapMine\Network\Serializer\ProtocolEncodable;
 
 class VibrationParticle implements ProtocolEncodable
 {

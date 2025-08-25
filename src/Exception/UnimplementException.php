@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Exception;
+namespace SnapMine\Exception;
 
 use Exception;
 

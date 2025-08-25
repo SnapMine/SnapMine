@@ -1,17 +1,17 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Entity;
+namespace SnapMine\Entity;
 
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\SoundPacket;
-use Nirbose\PhpMcServ\Network\Packet\Packet;
-use Nirbose\PhpMcServ\Session\Session;
-use Nirbose\PhpMcServ\Sound\Sound;
-use Nirbose\PhpMcServ\Sound\SoundCategory;
-use Nirbose\PhpMcServ\Utils\UUID;
-use Nirbose\PhpMcServ\World\Chunk\Chunk;
-use Nirbose\PhpMcServ\World\Location;
-use Nirbose\PhpMcServ\World\Position;
+use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
+use SnapMine\Network\Packet\Clientbound\Play\SoundPacket;
+use SnapMine\Network\Packet\Packet;
+use SnapMine\Session\Session;
+use SnapMine\Sound\Sound;
+use SnapMine\Sound\SoundCategory;
+use SnapMine\Utils\UUID;
+use SnapMine\World\Chunk\Chunk;
+use SnapMine\World\Location;
+use SnapMine\World\Position;
 
 class Player extends LivingEntity
 {

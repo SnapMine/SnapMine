@@ -1,9 +1,9 @@
 <?php
 
-use Nirbose\PhpMcServ\Entity\DragonFireball;
-use Nirbose\PhpMcServ\Entity\EntityType;
-use Nirbose\PhpMcServ\Server;
-use Nirbose\PhpMcServ\World\Location;
+use SnapMine\Entity\DragonFireball;
+use SnapMine\Entity\EntityType;
+use SnapMine\Server;
+use SnapMine\World\Location;
 
 describe('DragonFireball entity test', function () {
     /** @var DragonFireball $entity */

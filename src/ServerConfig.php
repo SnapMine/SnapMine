@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ;
+namespace SnapMine;
 
 use Symfony\Component\Yaml\Yaml;
 

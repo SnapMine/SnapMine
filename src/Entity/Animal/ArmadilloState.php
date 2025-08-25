@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Entity\Animal;
+namespace SnapMine\Entity\Animal;
 
 enum ArmadilloState: int
 {

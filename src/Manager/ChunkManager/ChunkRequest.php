@@ -1,9 +1,9 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Manager\ChunkManager;
+namespace SnapMine\Manager\ChunkManager;
 
-use Nirbose\PhpMcServ\World\Chunk\Chunk;
-use Nirbose\PhpMcServ\World\World;
+use SnapMine\World\Chunk\Chunk;
+use SnapMine\World\World;
 
 class ChunkRequest
 {

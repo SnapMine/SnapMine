@@ -1,13 +1,13 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Type;
+namespace SnapMine\Block\Type;
 
-use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Block\Data\Facing;
-use Nirbose\PhpMcServ\Block\Data\Half;
-use Nirbose\PhpMcServ\Block\Data\Openable;
-use Nirbose\PhpMcServ\Block\Data\Powerable;
-use Nirbose\PhpMcServ\Block\Direction;
+use SnapMine\Block\Data\BlockData;
+use SnapMine\Block\Data\Facing;
+use SnapMine\Block\Data\Half;
+use SnapMine\Block\Data\Openable;
+use SnapMine\Block\Data\Powerable;
+use SnapMine\Block\Direction;
 
 class Door extends BlockData
 {

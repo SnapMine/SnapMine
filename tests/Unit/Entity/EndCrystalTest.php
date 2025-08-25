@@ -1,10 +1,10 @@
 <?php
 
-use Nirbose\PhpMcServ\Entity\EndCrystal;
-use Nirbose\PhpMcServ\Entity\EntityType;
-use Nirbose\PhpMcServ\Server;
-use Nirbose\PhpMcServ\World\Location;
-use Nirbose\PhpMcServ\World\Position;
+use SnapMine\Entity\EndCrystal;
+use SnapMine\Entity\EntityType;
+use SnapMine\Server;
+use SnapMine\World\Location;
+use SnapMine\World\Position;
 
 describe('EndCrystal entity test', function () {
     /** @var EndCrystal */

@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Event;
+namespace SnapMine\Event;
 
 interface Listener
 {

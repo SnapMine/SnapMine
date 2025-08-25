@@ -1,9 +1,9 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Type;
+namespace SnapMine\Block\Type;
 
-use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Block\Data\Half;
+use SnapMine\Block\Data\BlockData;
+use SnapMine\Block\Data\Half;
 
 class HalfBlockData extends BlockData
 {

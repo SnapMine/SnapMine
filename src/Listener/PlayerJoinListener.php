@@ -1,14 +1,14 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Listener;
+namespace SnapMine\Listener;
 
-use Nirbose\PhpMcServ\Artisan;
-use Nirbose\PhpMcServ\Entity\Player;
-use Nirbose\PhpMcServ\Event\EventBinding;
-use Nirbose\PhpMcServ\Event\Listener;
-use Nirbose\PhpMcServ\Event\Player\PlayerJoinEvent;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\AddEntityPacket;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\PlayerInfoUpdatePacket;
+use SnapMine\Artisan;
+use SnapMine\Entity\Player;
+use SnapMine\Event\EventBinding;
+use SnapMine\Event\Listener;
+use SnapMine\Event\Player\PlayerJoinEvent;
+use SnapMine\Network\Packet\Clientbound\Play\AddEntityPacket;
+use SnapMine\Network\Packet\Clientbound\Play\PlayerInfoUpdatePacket;
 
 class PlayerJoinListener implements Listener
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Utils;
+namespace SnapMine\Utils;
 
 use Exception;
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Network\Serializer\ProtocolEncodable;
+use SnapMine\Network\Serializer\PacketSerializer;
+use SnapMine\Network\Serializer\ProtocolEncodable;
 
 readonly class Color implements ProtocolEncodable
 {

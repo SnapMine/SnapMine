@@ -1,11 +1,11 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Component;
+namespace SnapMine\Component;
 
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\StringTag;
 use JsonSerializable;
-use Nirbose\PhpMcServ\Utils\DyeColor;
+use SnapMine\Utils\DyeColor;
 
 class TextComponent implements JsonSerializable
 {

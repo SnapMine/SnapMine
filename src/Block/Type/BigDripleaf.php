@@ -1,8 +1,8 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Type;
+namespace SnapMine\Block\Type;
 
-use Nirbose\PhpMcServ\Block\Tilt;
+use SnapMine\Block\Tilt;
 
 class BigDripleaf extends BigDripleafStem
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
+namespace SnapMine\Network\Packet\Serverbound\Play;
 
 use Exception;
-use Nirbose\PhpMcServ\Inventory\ItemStack;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
+use SnapMine\Inventory\ItemStack;
+use SnapMine\Network\Packet\Serverbound\ServerboundPacket;
+use SnapMine\Network\Serializer\PacketSerializer;
 
 class SetCreativeModeSlotPacket extends ServerboundPacket
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Type;
+namespace SnapMine\Block\Type;
 
-use Nirbose\PhpMcServ\Block\Data\Powerable;
+use SnapMine\Block\Data\Powerable;
 
 class RedstoneRail extends Rail
 {

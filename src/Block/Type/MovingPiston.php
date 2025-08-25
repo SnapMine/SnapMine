@@ -1,11 +1,11 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Type;
+namespace SnapMine\Block\Type;
 
-use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Block\Data\Facing;
-use Nirbose\PhpMcServ\Block\Data\Type;
-use Nirbose\PhpMcServ\Block\Direction;
+use SnapMine\Block\Data\BlockData;
+use SnapMine\Block\Data\Facing;
+use SnapMine\Block\Data\Type;
+use SnapMine\Block\Direction;
 
 class MovingPiston extends BlockData
 {

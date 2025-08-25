@@ -1,9 +1,9 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Entity;
+namespace SnapMine\Entity;
 
-use Nirbose\PhpMcServ\Entity\Metadata\MetadataType;
-use Nirbose\PhpMcServ\Exception\UnimplementException;
+use SnapMine\Entity\Metadata\MetadataType;
+use SnapMine\Exception\UnimplementException;
 
 class AreaEffectCloud extends Entity
 {

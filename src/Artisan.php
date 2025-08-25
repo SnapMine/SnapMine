@@ -1,10 +1,10 @@
 <?php
 
-namespace Nirbose\PhpMcServ;
+namespace SnapMine;
 
 use Monolog\Logger;
-use Nirbose\PhpMcServ\Block\BlockStateLoader;
-use Nirbose\PhpMcServ\World\Region;
+use SnapMine\Block\BlockStateLoader;
+use SnapMine\World\Region;
 
 class Artisan
 {

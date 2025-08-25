@@ -1,8 +1,8 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Entity\Animal;
+namespace SnapMine\Entity\Animal;
 
-use Nirbose\PhpMcServ\Entity\AgeableMob;
+use SnapMine\Entity\AgeableMob;
 
 abstract class Animal extends AgeableMob
 {

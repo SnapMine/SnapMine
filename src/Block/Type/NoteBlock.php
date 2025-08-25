@@ -1,10 +1,10 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Type;
+namespace SnapMine\Block\Type;
 
-use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Block\Data\Powerable;
-use Nirbose\PhpMcServ\Block\Instrument;
+use SnapMine\Block\Data\BlockData;
+use SnapMine\Block\Data\Powerable;
+use SnapMine\Block\Instrument;
 
 class NoteBlock extends BlockData
 {

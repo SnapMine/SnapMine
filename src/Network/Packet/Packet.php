@@ -1,9 +1,9 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Network\Packet;
+namespace SnapMine\Network\Packet;
 
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Session\Session;
+use SnapMine\Network\Serializer\PacketSerializer;
+use SnapMine\Session\Session;
 
 interface Packet
 {

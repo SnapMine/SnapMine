@@ -1,12 +1,12 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Entity\Animal;
+namespace SnapMine\Entity\Animal;
 
-use Nirbose\PhpMcServ\Entity\EntityType;
-use Nirbose\PhpMcServ\Entity\Metadata\MetadataType;
-use Nirbose\PhpMcServ\Entity\Player;
-use Nirbose\PhpMcServ\Entity\Variant\FoxVariant;
-use Nirbose\PhpMcServ\Exception\UnimplementException;
+use SnapMine\Entity\EntityType;
+use SnapMine\Entity\Metadata\MetadataType;
+use SnapMine\Entity\Player;
+use SnapMine\Entity\Variant\FoxVariant;
+use SnapMine\Exception\UnimplementException;
 
 class Fox extends Animal
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block;
+namespace SnapMine\Block;
 
-use Nirbose\PhpMcServ\World\Position;
+use SnapMine\World\Position;
 
 enum Direction: string
 {

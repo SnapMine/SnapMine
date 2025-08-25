@@ -1,12 +1,12 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Status;
+namespace SnapMine\Network\Packet\Serverbound\Status;
 
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Status\StatusResponsePacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
-use Nirbose\PhpMcServ\Network\Protocol;
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Session\Session;
+use SnapMine\Network\Packet\Clientbound\Status\StatusResponsePacket;
+use SnapMine\Network\Packet\Serverbound\ServerboundPacket;
+use SnapMine\Network\Protocol;
+use SnapMine\Network\Serializer\PacketSerializer;
+use SnapMine\Session\Session;
 
 class StatusRequestPacket extends ServerboundPacket
 {

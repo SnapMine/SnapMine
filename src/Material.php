@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ;
+namespace SnapMine;
 
 enum Material: int
 {

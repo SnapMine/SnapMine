@@ -1,10 +1,10 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Network\Packet\Clientbound;
+namespace SnapMine\Network\Packet\Clientbound;
 
-use Nirbose\PhpMcServ\Network\Packet\Packet;
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Session\Session;
+use SnapMine\Network\Packet\Packet;
+use SnapMine\Network\Serializer\PacketSerializer;
+use SnapMine\Session\Session;
 
 abstract class ClientboundPacket implements Packet
 {

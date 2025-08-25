@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ\World\Chunk;
+namespace SnapMine\World\Chunk;
 
 use Mockery\Exception;
 

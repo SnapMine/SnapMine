@@ -1,9 +1,9 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Event\Player;
+namespace SnapMine\Event\Player;
 
-use Nirbose\PhpMcServ\Entity\Player;
-use Nirbose\PhpMcServ\Event\Event;
+use SnapMine\Entity\Player;
+use SnapMine\Event\Event;
 
 class PlayerJoinEvent extends Event
 {

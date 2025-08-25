@@ -1,11 +1,11 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Type;
+namespace SnapMine\Block\Type;
 
-use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Block\Data\FaceAttachable;
-use Nirbose\PhpMcServ\Block\Data\Facing;
-use Nirbose\PhpMcServ\Block\Direction;
+use SnapMine\Block\Data\BlockData;
+use SnapMine\Block\Data\FaceAttachable;
+use SnapMine\Block\Data\Facing;
+use SnapMine\Block\Direction;
 
 class Grindstone extends BlockData
 {

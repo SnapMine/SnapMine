@@ -1,13 +1,13 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Type;
+namespace SnapMine\Block\Type;
 
-use Nirbose\PhpMcServ\Block\BlockStateLoader;
-use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Block\Data\Facing;
-use Nirbose\PhpMcServ\Block\Data\Waterlogged;
-use Nirbose\PhpMcServ\Block\Direction;
-use Nirbose\PhpMcServ\Material;
+use SnapMine\Block\BlockStateLoader;
+use SnapMine\Block\Data\BlockData;
+use SnapMine\Block\Data\Facing;
+use SnapMine\Block\Data\Waterlogged;
+use SnapMine\Block\Direction;
+use SnapMine\Material;
 
 class AmethystCluster extends BlockData
 {

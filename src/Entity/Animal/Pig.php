@@ -1,12 +1,12 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Entity\Animal;
+namespace SnapMine\Entity\Animal;
 
-use Nirbose\PhpMcServ\Entity\EntityType;
-use Nirbose\PhpMcServ\Entity\Metadata\MetadataType;
-use Nirbose\PhpMcServ\Entity\Variant\PigVariant;
-use Nirbose\PhpMcServ\Server;
-use Nirbose\PhpMcServ\World\Location;
+use SnapMine\Entity\EntityType;
+use SnapMine\Entity\Metadata\MetadataType;
+use SnapMine\Entity\Variant\PigVariant;
+use SnapMine\Server;
+use SnapMine\World\Location;
 
 class Pig extends Animal
 {

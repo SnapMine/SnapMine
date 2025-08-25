@@ -1,10 +1,10 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Type;
+namespace SnapMine\Block\Type;
 
-use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Block\Data\Orientable;
-use Nirbose\PhpMcServ\Block\Data\Triggered;
+use SnapMine\Block\Data\BlockData;
+use SnapMine\Block\Data\Orientable;
+use SnapMine\Block\Data\Triggered;
 
 class Crafter extends BlockData
 {

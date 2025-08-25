@@ -1,14 +1,14 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
+namespace SnapMine\Network\Packet\Serverbound\Play;
 
-use Nirbose\PhpMcServ\Entity\Player;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\MoveEntityRotPacket;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\RotateHeadPacket;
-use Nirbose\PhpMcServ\Network\Packet\Packet;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Session\Session;
+use SnapMine\Entity\Player;
+use SnapMine\Network\Packet\Clientbound\Play\MoveEntityRotPacket;
+use SnapMine\Network\Packet\Clientbound\Play\RotateHeadPacket;
+use SnapMine\Network\Packet\Packet;
+use SnapMine\Network\Packet\Serverbound\ServerboundPacket;
+use SnapMine\Network\Serializer\PacketSerializer;
+use SnapMine\Session\Session;
 
 class MovePlayerRotationPacket extends ServerboundPacket {
     private float $yaw;

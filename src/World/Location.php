@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ\World;
+namespace SnapMine\World;
 
 class Location extends Position {
     private float $yaw;

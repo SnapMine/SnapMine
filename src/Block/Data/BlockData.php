@@ -1,9 +1,9 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Data;
+namespace SnapMine\Block\Data;
 
-use Nirbose\PhpMcServ\Artisan;
-use Nirbose\PhpMcServ\Material;
+use SnapMine\Artisan;
+use SnapMine\Material;
 
 class BlockData
 {

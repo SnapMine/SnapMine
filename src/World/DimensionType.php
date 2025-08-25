@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ\World;
+namespace SnapMine\World;
 
 use Aternos\Nbt\Tag\ByteTag;
 use Aternos\Nbt\Tag\CompoundTag;
@@ -8,8 +8,8 @@ use Aternos\Nbt\Tag\FloatTag;
 use Aternos\Nbt\Tag\IntTag;
 use Aternos\Nbt\Tag\StringTag;
 use Aternos\Nbt\Tag\Tag;
-use Nirbose\PhpMcServ\Keyed;
-use Nirbose\PhpMcServ\Registry\EncodableToNbt;
+use SnapMine\Keyed;
+use SnapMine\Registry\EncodableToNbt;
 
 class DimensionType implements EncodableToNbt, Keyed
 {

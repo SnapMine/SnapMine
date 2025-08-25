@@ -1,8 +1,8 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Type;
+namespace SnapMine\Block\Type;
 
-use Nirbose\PhpMcServ\Block\Data\Age;
+use SnapMine\Block\Data\Age;
 
 class CaveVines extends CaveVinesPlant
 {

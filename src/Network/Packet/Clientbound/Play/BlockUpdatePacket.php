@@ -1,11 +1,11 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Play;
+namespace SnapMine\Network\Packet\Clientbound\Play;
 
-use Nirbose\PhpMcServ\Block\Block;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\World\Position;
+use SnapMine\Block\Block;
+use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
+use SnapMine\Network\Serializer\PacketSerializer;
+use SnapMine\World\Position;
 
 class BlockUpdatePacket extends ClientboundPacket
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Entity\Mob;
+namespace SnapMine\Entity\Mob;
 
-use Nirbose\PhpMcServ\Entity\LivingEntity;
-use Nirbose\PhpMcServ\Entity\Metadata\MetadataType;
+use SnapMine\Entity\LivingEntity;
+use SnapMine\Entity\Metadata\MetadataType;
 
 abstract class Mob extends LivingEntity
 {

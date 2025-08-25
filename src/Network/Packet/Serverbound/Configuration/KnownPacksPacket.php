@@ -1,13 +1,13 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Configuration;
+namespace SnapMine\Network\Packet\Serverbound\Configuration;
 
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Configuration\FinishConfigurationPacket;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Configuration\RegistryDataPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Registry\Registry;
-use Nirbose\PhpMcServ\Session\Session;
+use SnapMine\Network\Packet\Clientbound\Configuration\FinishConfigurationPacket;
+use SnapMine\Network\Packet\Clientbound\Configuration\RegistryDataPacket;
+use SnapMine\Network\Packet\Serverbound\ServerboundPacket;
+use SnapMine\Network\Serializer\PacketSerializer;
+use SnapMine\Registry\Registry;
+use SnapMine\Session\Session;
 
 class KnownPacksPacket extends ServerboundPacket
 {

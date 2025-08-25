@@ -1,10 +1,10 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Entity;
+namespace SnapMine\Entity;
 
-use Nirbose\PhpMcServ\Entity\Metadata\MetadataType;
-use Nirbose\PhpMcServ\Exception\UnimplementException;
-use Nirbose\PhpMcServ\World\Position;
+use SnapMine\Entity\Metadata\MetadataType;
+use SnapMine\Exception\UnimplementException;
+use SnapMine\World\Position;
 
 abstract class LivingEntity extends Entity
 {

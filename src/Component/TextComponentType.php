@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Component;
+namespace SnapMine\Component;
 
 enum TextComponentType
 {

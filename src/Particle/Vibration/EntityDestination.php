@@ -1,8 +1,8 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Particle\Vibration;
+namespace SnapMine\Particle\Vibration;
 
-use Nirbose\PhpMcServ\Entity\Entity;
+use SnapMine\Entity\Entity;
 
 class EntityDestination implements VibrationDestination
 {

@@ -1,12 +1,12 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Status;
+namespace SnapMine\Network\Packet\Serverbound\Status;
 
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Status\PongPacket;
-use Nirbose\PhpMcServ\Network\Packet\Packet;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Session\Session;
+use SnapMine\Network\Packet\Clientbound\Status\PongPacket;
+use SnapMine\Network\Packet\Packet;
+use SnapMine\Network\Packet\Serverbound\ServerboundPacket;
+use SnapMine\Network\Serializer\PacketSerializer;
+use SnapMine\Session\Session;
 
 class PingPacket extends ServerboundPacket
 {

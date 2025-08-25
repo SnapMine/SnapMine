@@ -1,9 +1,9 @@
 <?php
 
-use Nirbose\PhpMcServ\Entity\EntityType;
-use Nirbose\PhpMcServ\Entity\WindCharge;
-use Nirbose\PhpMcServ\Server;
-use Nirbose\PhpMcServ\World\Location;
+use SnapMine\Entity\EntityType;
+use SnapMine\Entity\WindCharge;
+use SnapMine\Server;
+use SnapMine\World\Location;
 
 describe('WindCharge entity test', function () {
     /** @var WindCharge $entity */

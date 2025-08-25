@@ -1,7 +1,7 @@
 <?php
 
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
+use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
+use SnapMine\Network\Serializer\PacketSerializer;
 
 if (!function_exists('packet_dump')) {
     function packet_dump(ClientboundPacket $packet): void

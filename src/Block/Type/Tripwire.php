@@ -1,12 +1,12 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Type;
+namespace SnapMine\Block\Type;
 
-use Nirbose\PhpMcServ\Block\Data\Attached;
-use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Block\Data\MultipleFacing;
-use Nirbose\PhpMcServ\Block\Data\Powerable;
-use Nirbose\PhpMcServ\Block\Direction;
+use SnapMine\Block\Data\Attached;
+use SnapMine\Block\Data\BlockData;
+use SnapMine\Block\Data\MultipleFacing;
+use SnapMine\Block\Data\Powerable;
+use SnapMine\Block\Direction;
 
 class Tripwire extends BlockData
 {

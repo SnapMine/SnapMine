@@ -1,8 +1,8 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Entity\Creature;
+namespace SnapMine\Entity\Creature;
 
-use Nirbose\PhpMcServ\Entity\Mob\Mob;
+use SnapMine\Entity\Mob\Mob;
 
 abstract class Creature extends Mob
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ\BossBar;
+namespace SnapMine\BossBar;
 
 enum BossBarAction: int
 {

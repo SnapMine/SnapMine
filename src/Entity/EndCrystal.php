@@ -1,9 +1,9 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Entity;
+namespace SnapMine\Entity;
 
-use Nirbose\PhpMcServ\Entity\Metadata\MetadataType;
-use Nirbose\PhpMcServ\World\Position;
+use SnapMine\Entity\Metadata\MetadataType;
+use SnapMine\World\Position;
 
 class EndCrystal extends Entity
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Particle;
+namespace SnapMine\Particle;
 
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Network\Serializer\ProtocolEncodable;
-use Nirbose\PhpMcServ\Utils\Color;
+use SnapMine\Network\Serializer\PacketSerializer;
+use SnapMine\Network\Serializer\ProtocolEncodable;
+use SnapMine\Utils\Color;
 
 class DustColorTransitionParticle implements ProtocolEncodable
 {

@@ -1,14 +1,14 @@
 <?php
 
-namespace Nirbose\PhpMcServ\World\Chunk;
+namespace SnapMine\World\Chunk;
 
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\LongArrayTag;
 use Exception;
-use Nirbose\PhpMcServ\Artisan;
-use Nirbose\PhpMcServ\Block\Block;
-use Nirbose\PhpMcServ\Block\BlockType;
-use Nirbose\PhpMcServ\World\Location;
+use SnapMine\Artisan;
+use SnapMine\Block\Block;
+use SnapMine\Block\BlockType;
+use SnapMine\World\Location;
 
 class Chunk
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Manager\ChunkManager;
+namespace SnapMine\Manager\ChunkManager;
 
-use Nirbose\PhpMcServ\Artisan;
-use Nirbose\PhpMcServ\World\World;
+use SnapMine\Artisan;
+use SnapMine\World\World;
 use React\EventLoop\Loop;
 use function React\Async\async;
 use function React\Async\await;

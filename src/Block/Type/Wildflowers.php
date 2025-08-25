@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Type;
+namespace SnapMine\Block\Type;
 
 class Wildflowers extends PinkPetals
 {

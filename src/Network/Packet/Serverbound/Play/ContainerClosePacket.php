@@ -1,9 +1,9 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
+namespace SnapMine\Network\Packet\Serverbound\Play;
 
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
+use SnapMine\Network\Packet\Serverbound\ServerboundPacket;
+use SnapMine\Network\Serializer\PacketSerializer;
 
 class ContainerClosePacket extends ServerboundPacket
 {

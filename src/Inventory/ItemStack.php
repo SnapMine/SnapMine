@@ -1,10 +1,10 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Inventory;
+namespace SnapMine\Inventory;
 
-use Nirbose\PhpMcServ\Component\DataComponentType;
-use Nirbose\PhpMcServ\Material;
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
+use SnapMine\Component\DataComponentType;
+use SnapMine\Material;
+use SnapMine\Network\Serializer\PacketSerializer;
 
 class ItemStack
 {

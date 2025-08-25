@@ -1,10 +1,10 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Play;
+namespace SnapMine\Network\Packet\Clientbound\Play;
 
-use Nirbose\PhpMcServ\Entity\Entity;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
+use SnapMine\Entity\Entity;
+use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
+use SnapMine\Network\Serializer\PacketSerializer;
 
 class AddEntityPacket extends ClientboundPacket
 {

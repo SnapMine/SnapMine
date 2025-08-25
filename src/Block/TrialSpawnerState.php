@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block;
+namespace SnapMine\Block;
 
 enum TrialSpawnerState: string
 {

@@ -1,9 +1,9 @@
 <?php
 
-use Nirbose\PhpMcServ\Entity\EntityType;
-use Nirbose\PhpMcServ\Entity\EvokerFangs;
-use Nirbose\PhpMcServ\Server;
-use Nirbose\PhpMcServ\World\Location;
+use SnapMine\Entity\EntityType;
+use SnapMine\Entity\EvokerFangs;
+use SnapMine\Server;
+use SnapMine\World\Location;
 
 describe('EvokerFrangs entity test', function () {
     /** @var EvokerFangs $entity */

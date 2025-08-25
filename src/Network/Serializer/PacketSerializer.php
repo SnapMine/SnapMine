@@ -1,13 +1,13 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Network\Serializer;
+namespace SnapMine\Network\Serializer;
 
 use Aternos\Nbt\IO\Writer\StringWriter;
 use Aternos\Nbt\NbtFormat;
 use Aternos\Nbt\Tag\Tag;
-use Nirbose\PhpMcServ\Utils\BitSet;
-use Nirbose\PhpMcServ\Utils\UUID;
-use Nirbose\PhpMcServ\World\Position;
+use SnapMine\Utils\BitSet;
+use SnapMine\Utils\UUID;
+use SnapMine\World\Position;
 
 class PacketSerializer
 {

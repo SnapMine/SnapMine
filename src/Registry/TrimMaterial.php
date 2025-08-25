@@ -1,10 +1,10 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Registry;
+namespace SnapMine\Registry;
 
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\StringTag;
-use Nirbose\PhpMcServ\Keyed;
+use SnapMine\Keyed;
 
 /**
  * @method static TrimMaterial AMETHYST()

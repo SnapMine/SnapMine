@@ -1,10 +1,10 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Login;
+namespace SnapMine\Network\Packet\Clientbound\Login;
 
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Utils\UUID;
+use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
+use SnapMine\Network\Serializer\PacketSerializer;
+use SnapMine\Utils\UUID;
 
 class LoginSuccessPacket extends ClientboundPacket
 {

@@ -1,11 +1,11 @@
 <?php
 
-use Nirbose\PhpMcServ\Component\TextComponent;
-use Nirbose\PhpMcServ\Entity\Entity;
-use Nirbose\PhpMcServ\Entity\EntityType;
-use Nirbose\PhpMcServ\Entity\Pose;
-use Nirbose\PhpMcServ\Server;
-use Nirbose\PhpMcServ\World\Location;
+use SnapMine\Component\TextComponent;
+use SnapMine\Entity\Entity;
+use SnapMine\Entity\EntityType;
+use SnapMine\Entity\Pose;
+use SnapMine\Server;
+use SnapMine\World\Location;
 
 describe('Test Entity class', function () {
     /** @var Entity */

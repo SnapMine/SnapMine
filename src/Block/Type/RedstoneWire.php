@@ -1,12 +1,12 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Type;
+namespace SnapMine\Block\Type;
 
 use InvalidArgumentException;
-use Nirbose\PhpMcServ\Block\Connection;
-use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Block\Data\Power;
-use Nirbose\PhpMcServ\Block\Direction;
+use SnapMine\Block\Connection;
+use SnapMine\Block\Data\BlockData;
+use SnapMine\Block\Data\Power;
+use SnapMine\Block\Direction;
 
 class RedstoneWire extends BlockData
 {

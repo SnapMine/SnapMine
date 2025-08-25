@@ -1,13 +1,13 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Entity\Variant;
+namespace SnapMine\Entity\Variant;
 
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\StringTag;
 use Aternos\Nbt\Tag\Tag;
-use Nirbose\PhpMcServ\Keyed;
-use Nirbose\PhpMcServ\Registry\EncodableToNbt;
-use Nirbose\PhpMcServ\Registry\RegistryData;
+use SnapMine\Keyed;
+use SnapMine\Registry\EncodableToNbt;
+use SnapMine\Registry\RegistryData;
 use RuntimeException;
 
 /**

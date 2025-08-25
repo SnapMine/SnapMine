@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Entity\Metadata;
+namespace SnapMine\Entity\Metadata;
 
 enum MetadataType: int
 {

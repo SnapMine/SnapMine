@@ -1,10 +1,10 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Type;
+namespace SnapMine\Block\Type;
 
-use Nirbose\PhpMcServ\Block\Data\Age;
-use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Block\Data\Half;
+use SnapMine\Block\Data\Age;
+use SnapMine\Block\Data\BlockData;
+use SnapMine\Block\Data\Half;
 
 class PitcherCrop extends BlockData
 {

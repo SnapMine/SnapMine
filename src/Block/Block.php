@@ -1,14 +1,14 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block;
+namespace SnapMine\Block;
 
-use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Block\Data\Waterlogged;
-use Nirbose\PhpMcServ\Material;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\BlockUpdatePacket;
-use Nirbose\PhpMcServ\Server;
-use Nirbose\PhpMcServ\World\Chunk\Chunk;
-use Nirbose\PhpMcServ\World\Position;
+use SnapMine\Block\Data\BlockData;
+use SnapMine\Block\Data\Waterlogged;
+use SnapMine\Material;
+use SnapMine\Network\Packet\Clientbound\Play\BlockUpdatePacket;
+use SnapMine\Server;
+use SnapMine\World\Chunk\Chunk;
+use SnapMine\World\Position;
 
 class Block
 {

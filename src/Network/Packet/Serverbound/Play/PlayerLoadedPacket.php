@@ -1,15 +1,15 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Play;
+namespace SnapMine\Network\Packet\Serverbound\Play;
 
-use Nirbose\PhpMcServ\Artisan;
-use Nirbose\PhpMcServ\Event\EventManager;
-use Nirbose\PhpMcServ\Event\Player\PlayerJoinEvent;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\AddEntityPacket;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\PlayerInfoUpdatePacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Session\Session;
+use SnapMine\Artisan;
+use SnapMine\Event\EventManager;
+use SnapMine\Event\Player\PlayerJoinEvent;
+use SnapMine\Network\Packet\Clientbound\Play\AddEntityPacket;
+use SnapMine\Network\Packet\Clientbound\Play\PlayerInfoUpdatePacket;
+use SnapMine\Network\Packet\Serverbound\ServerboundPacket;
+use SnapMine\Network\Serializer\PacketSerializer;
+use SnapMine\Session\Session;
 
 class PlayerLoadedPacket extends ServerboundPacket {
     public function getId() : int {

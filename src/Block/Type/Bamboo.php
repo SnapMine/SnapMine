@@ -1,11 +1,11 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Type;
+namespace SnapMine\Block\Type;
 
-use Nirbose\PhpMcServ\Block\Data\Age;
-use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Block\Data\Stage;
-use Nirbose\PhpMcServ\Block\LeavesType;
+use SnapMine\Block\Data\Age;
+use SnapMine\Block\Data\BlockData;
+use SnapMine\Block\Data\Stage;
+use SnapMine\Block\LeavesType;
 
 class Bamboo extends BlockData
 {

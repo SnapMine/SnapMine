@@ -1,8 +1,8 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Event\Player;
+namespace SnapMine\Event\Player;
 
-use Nirbose\PhpMcServ\Event\Event;
+use SnapMine\Event\Event;
 
 class PlayerSlotChangeEvent extends Event
 {

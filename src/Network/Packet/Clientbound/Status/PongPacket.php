@@ -1,9 +1,9 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Status;
+namespace SnapMine\Network\Packet\Clientbound\Status;
 
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
+use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
+use SnapMine\Network\Serializer\PacketSerializer;
 
 class PongPacket extends ClientboundPacket
 {

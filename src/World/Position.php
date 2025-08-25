@@ -1,8 +1,8 @@
 <?php
 
-namespace Nirbose\PhpMcServ\World;
+namespace SnapMine\World;
 
-use Nirbose\PhpMcServ\Block\Direction;
+use SnapMine\Block\Direction;
 
 class Position {
     private float $x;

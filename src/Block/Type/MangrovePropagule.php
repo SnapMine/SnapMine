@@ -1,12 +1,12 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Type;
+namespace SnapMine\Block\Type;
 
-use Nirbose\PhpMcServ\Block\Data\Age;
-use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Block\Data\Hanging;
-use Nirbose\PhpMcServ\Block\Data\Stage;
-use Nirbose\PhpMcServ\Block\Data\Waterlogged;
+use SnapMine\Block\Data\Age;
+use SnapMine\Block\Data\BlockData;
+use SnapMine\Block\Data\Hanging;
+use SnapMine\Block\Data\Stage;
+use SnapMine\Block\Data\Waterlogged;
 
 class MangrovePropagule extends BlockData
 {

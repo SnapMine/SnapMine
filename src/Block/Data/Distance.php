@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Data;
+namespace SnapMine\Block\Data;
 
 trait Distance
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Type;
+namespace SnapMine\Block\Type;
 
-use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Block\Data\MultipleFacing;
-use Nirbose\PhpMcServ\Block\Direction;
+use SnapMine\Block\Data\BlockData;
+use SnapMine\Block\Data\MultipleFacing;
+use SnapMine\Block\Direction;
 
 class MultipleFacingBlockData extends BlockData
 {

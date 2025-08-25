@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Sound;
+namespace SnapMine\Sound;
 
 enum SoundCategory: int
 {

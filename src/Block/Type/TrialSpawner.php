@@ -1,10 +1,10 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Type;
+namespace SnapMine\Block\Type;
 
-use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Block\Data\Ominous;
-use Nirbose\PhpMcServ\Block\TrialSpawnerState;
+use SnapMine\Block\Data\BlockData;
+use SnapMine\Block\Data\Ominous;
+use SnapMine\Block\TrialSpawnerState;
 
 class TrialSpawner extends BlockData
 {

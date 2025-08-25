@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Registry;
+namespace SnapMine\Registry;
 
 use Aternos\Nbt\Tag\Tag;
 

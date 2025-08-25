@@ -1,24 +1,24 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Entity;
+namespace SnapMine\Entity;
 
-use Nirbose\PhpMcServ\Entity\Animal\Armadillo;
-use Nirbose\PhpMcServ\Entity\Animal\Bee;
-use Nirbose\PhpMcServ\Entity\Animal\Chicken;
-use Nirbose\PhpMcServ\Entity\Animal\Cow;
-use Nirbose\PhpMcServ\Entity\Animal\Fox;
-use Nirbose\PhpMcServ\Entity\Animal\Frog;
-use Nirbose\PhpMcServ\Entity\Animal\Goat;
-use Nirbose\PhpMcServ\Entity\Animal\Hoglin;
-use Nirbose\PhpMcServ\Entity\Animal\Mooshroom;
-use Nirbose\PhpMcServ\Entity\Animal\Ocelot;
-use Nirbose\PhpMcServ\Entity\Animal\Panda;
-use Nirbose\PhpMcServ\Entity\Animal\Pig;
-use Nirbose\PhpMcServ\Entity\Animal\Rabbit;
-use Nirbose\PhpMcServ\Entity\Animal\Sheep;
-use Nirbose\PhpMcServ\Entity\Animal\Sniffer;
-use Nirbose\PhpMcServ\Entity\Animal\Strider;
-use Nirbose\PhpMcServ\Entity\Animal\Turtle;
+use SnapMine\Entity\Animal\Armadillo;
+use SnapMine\Entity\Animal\Bee;
+use SnapMine\Entity\Animal\Chicken;
+use SnapMine\Entity\Animal\Cow;
+use SnapMine\Entity\Animal\Fox;
+use SnapMine\Entity\Animal\Frog;
+use SnapMine\Entity\Animal\Goat;
+use SnapMine\Entity\Animal\Hoglin;
+use SnapMine\Entity\Animal\Mooshroom;
+use SnapMine\Entity\Animal\Ocelot;
+use SnapMine\Entity\Animal\Panda;
+use SnapMine\Entity\Animal\Pig;
+use SnapMine\Entity\Animal\Rabbit;
+use SnapMine\Entity\Animal\Sheep;
+use SnapMine\Entity\Animal\Sniffer;
+use SnapMine\Entity\Animal\Strider;
+use SnapMine\Entity\Animal\Turtle;
 
 enum EntityType: int
 {

@@ -1,12 +1,12 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Type;
+namespace SnapMine\Block\Type;
 
-use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Block\Data\Facing;
-use Nirbose\PhpMcServ\Block\Data\Ominous;
-use Nirbose\PhpMcServ\Block\Direction;
-use Nirbose\PhpMcServ\Block\VaultState;
+use SnapMine\Block\Data\BlockData;
+use SnapMine\Block\Data\Facing;
+use SnapMine\Block\Data\Ominous;
+use SnapMine\Block\Direction;
+use SnapMine\Block\VaultState;
 
 class Vault extends BlockData
 {

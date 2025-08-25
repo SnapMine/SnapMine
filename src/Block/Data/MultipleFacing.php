@@ -1,9 +1,9 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Data;
+namespace SnapMine\Block\Data;
 
 use Exception;
-use Nirbose\PhpMcServ\Block\Direction;
+use SnapMine\Block\Direction;
 
 trait MultipleFacing
 {

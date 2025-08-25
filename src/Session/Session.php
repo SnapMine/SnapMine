@@ -1,20 +1,20 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Session;
+namespace SnapMine\Session;
 
 use Exception;
-use Nirbose\PhpMcServ\Entity\GameProfile;
-use Nirbose\PhpMcServ\Entity\Player;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Configuration\TransferPacket;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\TransferPacket as PlayTransferPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
-use Nirbose\PhpMcServ\Network\Protocol;
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Network\ServerState;
-use Nirbose\PhpMcServ\Server;
-use Nirbose\PhpMcServ\Utils\UUID;
-use Nirbose\PhpMcServ\World\Location;
+use SnapMine\Entity\GameProfile;
+use SnapMine\Entity\Player;
+use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
+use SnapMine\Network\Packet\Clientbound\Configuration\TransferPacket;
+use SnapMine\Network\Packet\Clientbound\Play\TransferPacket as PlayTransferPacket;
+use SnapMine\Network\Packet\Serverbound\ServerboundPacket;
+use SnapMine\Network\Protocol;
+use SnapMine\Network\Serializer\PacketSerializer;
+use SnapMine\Network\ServerState;
+use SnapMine\Server;
+use SnapMine\Utils\UUID;
+use SnapMine\World\Location;
 use React\Socket\ConnectionInterface;
 
 class Session

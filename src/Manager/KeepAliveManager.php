@@ -1,9 +1,9 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Manager;
+namespace SnapMine\Manager;
 
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\KeepAlivePacket;
-use Nirbose\PhpMcServ\Server;
+use SnapMine\Network\Packet\Clientbound\Play\KeepAlivePacket;
+use SnapMine\Server;
 
 class KeepAliveManager implements Manager
 {

@@ -1,6 +1,6 @@
 <?php
 
-use Nirbose\PhpMcServ\Material;
+use SnapMine\Material;
 
 describe('Test material', function () {
     it('Test air material', function () {

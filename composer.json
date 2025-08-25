@@ -1,9 +1,9 @@
 {
-  "name": "nirbose/php-mc-serv",
+  "name": "snapmine/snapmine",
   "type": "project",
   "autoload": {
     "psr-4": {
-      "Nirbose\\PhpMcServ\\": "src/",
+      "SnapMine\\": "src/",
       "Tests\\": "tests/"
     },
     "files": [

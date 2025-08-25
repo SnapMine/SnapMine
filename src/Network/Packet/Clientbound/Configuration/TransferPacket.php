@@ -1,9 +1,9 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Network\Packet\Clientbound\Configuration;
+namespace SnapMine\Network\Packet\Clientbound\Configuration;
 
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\ClientboundPacket;
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
+use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
+use SnapMine\Network\Serializer\PacketSerializer;
 
 class TransferPacket extends ClientboundPacket
 {

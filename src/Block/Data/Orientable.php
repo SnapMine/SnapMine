@@ -1,8 +1,8 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Block\Data;
+namespace SnapMine\Block\Data;
 
-use Nirbose\PhpMcServ\Block\Orientation;
+use SnapMine\Block\Orientation;
 
 trait Orientable
 {

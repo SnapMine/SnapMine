@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Inventory;
+namespace SnapMine\Inventory;
 
 enum ItemRarity
 {

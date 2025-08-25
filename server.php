@@ -2,7 +2,7 @@
 
 require_once 'vendor/autoload.php';
 
-use Nirbose\PhpMcServ\Server;
+use SnapMine\Server;
 
 const ROOT_PATH = __DIR__;
 

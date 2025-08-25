@@ -1,11 +1,11 @@
 <?php
 
-namespace Nirbose\PhpMcServ\BossBar;
+namespace SnapMine\BossBar;
 
-use Nirbose\PhpMcServ\Component\TextComponent;
-use Nirbose\PhpMcServ\Entity\Player;
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Play\BossEventPacket;
-use Nirbose\PhpMcServ\Utils\UUID;
+use SnapMine\Component\TextComponent;
+use SnapMine\Entity\Player;
+use SnapMine\Network\Packet\Clientbound\Play\BossEventPacket;
+use SnapMine\Utils\UUID;
 
 class BossBar
 {

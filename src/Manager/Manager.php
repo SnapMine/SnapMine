@@ -1,8 +1,8 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Manager;
+namespace SnapMine\Manager;
 
-use Nirbose\PhpMcServ\Server;
+use SnapMine\Server;
 
 interface Manager
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Particle\Vibration;
+namespace SnapMine\Particle\Vibration;
 
-use Nirbose\PhpMcServ\Block\Block;
+use SnapMine\Block\Block;
 
 class BlockDestination implements VibrationDestination
 {

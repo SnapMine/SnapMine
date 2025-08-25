@@ -1,8 +1,8 @@
 <?php
 
-namespace Nirbose\PhpMcServ\World;
+namespace SnapMine\World;
 
-use Nirbose\PhpMcServ\World\Chunk\Chunk;
+use SnapMine\World\Chunk\Chunk;
 
 class World
 {

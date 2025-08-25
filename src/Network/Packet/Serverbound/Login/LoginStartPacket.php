@@ -1,12 +1,12 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Network\Packet\Serverbound\Login;
+namespace SnapMine\Network\Packet\Serverbound\Login;
 
-use Nirbose\PhpMcServ\Network\Packet\Clientbound\Login\LoginSuccessPacket;
-use Nirbose\PhpMcServ\Network\Packet\Serverbound\ServerboundPacket;
-use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
-use Nirbose\PhpMcServ\Session\Session;
-use Nirbose\PhpMcServ\Utils\UUID;
+use SnapMine\Network\Packet\Clientbound\Login\LoginSuccessPacket;
+use SnapMine\Network\Packet\Serverbound\ServerboundPacket;
+use SnapMine\Network\Serializer\PacketSerializer;
+use SnapMine\Session\Session;
+use SnapMine\Utils\UUID;
 
 class LoginStartPacket extends ServerboundPacket
 {

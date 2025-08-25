@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Utils;
+namespace SnapMine\Utils;
 
 enum DyeColor: string
 {

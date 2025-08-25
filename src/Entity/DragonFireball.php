@@ -1,6 +1,6 @@
 <?php
 
-namespace Nirbose\PhpMcServ\Entity;
+namespace SnapMine\Entity;
 
 class DragonFireball extends Entity
 {

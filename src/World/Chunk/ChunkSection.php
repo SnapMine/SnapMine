@@ -1,34 +1,34 @@
 <?php
 
-namespace Nirbose\PhpMcServ\World\Chunk;
+namespace SnapMine\World\Chunk;
 
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\StringTag;
 use Error;
 use Exception;
 use InvalidArgumentException;
-use Nirbose\PhpMcServ\Block\AttachedFace;
-use Nirbose\PhpMcServ\Block\Attachment;
-use Nirbose\PhpMcServ\Block\AxisType;
-use Nirbose\PhpMcServ\Block\BlockType;
-use Nirbose\PhpMcServ\Block\CreakingHeartState;
-use Nirbose\PhpMcServ\Block\Data\BlockData;
-use Nirbose\PhpMcServ\Block\Direction;
-use Nirbose\PhpMcServ\Block\HalfType;
-use Nirbose\PhpMcServ\Block\Instrument;
-use Nirbose\PhpMcServ\Block\LeavesType;
-use Nirbose\PhpMcServ\Block\Mode;
-use Nirbose\PhpMcServ\Block\Orientation;
-use Nirbose\PhpMcServ\Block\SensorPhase;
-use Nirbose\PhpMcServ\Block\StairsShape;
-use Nirbose\PhpMcServ\Block\Thickness;
-use Nirbose\PhpMcServ\Block\Tilt;
-use Nirbose\PhpMcServ\Block\TrialSpawnerState;
-use Nirbose\PhpMcServ\Block\Type\BrewingStand;
-use Nirbose\PhpMcServ\Block\VaultState;
-use Nirbose\PhpMcServ\Block\WallHeight;
-use Nirbose\PhpMcServ\Material;
-use Nirbose\PhpMcServ\World\PalettedContainer;
+use SnapMine\Block\AttachedFace;
+use SnapMine\Block\Attachment;
+use SnapMine\Block\AxisType;
+use SnapMine\Block\BlockType;
+use SnapMine\Block\CreakingHeartState;
+use SnapMine\Block\Data\BlockData;
+use SnapMine\Block\Direction;
+use SnapMine\Block\HalfType;
+use SnapMine\Block\Instrument;
+use SnapMine\Block\LeavesType;
+use SnapMine\Block\Mode;
+use SnapMine\Block\Orientation;
+use SnapMine\Block\SensorPhase;
+use SnapMine\Block\StairsShape;
+use SnapMine\Block\Thickness;
+use SnapMine\Block\Tilt;
+use SnapMine\Block\TrialSpawnerState;
+use SnapMine\Block\Type\BrewingStand;
+use SnapMine\Block\VaultState;
+use SnapMine\Block\WallHeight;
+use SnapMine\Material;
+use SnapMine\World\PalettedContainer;
 
 class ChunkSection
 {
