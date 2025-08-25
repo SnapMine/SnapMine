@@ -78,9 +78,7 @@ class Server
     public function __destruct()
     {
         foreach ($this->clients as $client) {
-            if ($client instanceof ConnectionInterface) {
-                try { $client->close(); } catch (Throwable) {}
-            }
+            try { $client->close(); } catch (Throwable) {}
         }
 
         if (isset($this->socket)) {

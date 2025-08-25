@@ -2,11 +2,7 @@
 
 namespace Nirbose\PhpMcServ\World;
 
-use Couchbase\IndexNotFoundException;
 use Nirbose\PhpMcServ\World\Chunk\Chunk;
-use function React\Async\async;
-use function React\Async\await;
-use function React\Promise\all;
 
 class World
 {
@@ -31,14 +27,14 @@ class World
         return $this->name;
     }
 
-    public function chunkExists(int $x, int $z): bool
+    public function hasChunk(int $x, int $z): bool
     {
         $regX = $x >> 5;
         $regZ = $z >> 5;
         $key = 'r.' . $regX . '.' . $regZ;
 
         if (isset($this->regions[$key])) {
-            return $this->regions[$key]->chunkExists($x & 0x1F, $z & 0x1F);
+            return $this->regions[$key]->hasChunk($x & 0x1F, $z & 0x1F);
         }
         return false;
     }
@@ -57,6 +53,5 @@ class World
 
         return null;
     }
-
 
 }

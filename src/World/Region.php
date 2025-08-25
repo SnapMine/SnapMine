@@ -2,18 +2,12 @@
 
 namespace Nirbose\PhpMcServ\World;
 
-use Aternos\Nbt\IO\Reader\GZipCompressedStringReader;
-use Aternos\Nbt\IO\Reader\StringReader;
 use Aternos\Nbt\IO\Reader\ZLibCompressedStringReader;
 use Aternos\Nbt\NbtFormat;
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\Tag;
 use Error;
 use Nirbose\PhpMcServ\World\Chunk\Chunk;
-use PHPUnit\Framework\Exception;
-use function React\Async\async;
-use function React\Async\await;
-use function React\Promise\all;
 
 class Region
 {
@@ -59,7 +53,7 @@ class Region
     }
 
 
-    public function chunkExists(int $x, int $z): bool
+    public function hasChunk(int $x, int $z): bool
     {
         if (isset($this->chunks[$x][$z])) {
             return true;
@@ -122,8 +116,5 @@ class Region
 
         return null;
     }
-
-
-
 
 }

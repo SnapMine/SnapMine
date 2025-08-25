@@ -38,7 +38,7 @@ class ChunkRequest
 
     public function chunkExists(): bool
     {
-        return $this->world->chunkExists($this->x, $this->z);
+        return $this->world->hasChunk($this->x, $this->z);
     }
 
 }

@@ -14,10 +14,6 @@ use Nirbose\PhpMcServ\Network\Serializer\PacketSerializer;
 use Nirbose\PhpMcServ\Network\ServerState;
 use Nirbose\PhpMcServ\Session\Session;
 use React\EventLoop\Loop;
-use function React\Async\async;
-use function React\Async\await;
-use function React\Async\delay;
-use function React\Promise\all;
 
 class AcknowledgeFinishConfigurationPacket extends ServerboundPacket
 {
@@ -36,8 +32,6 @@ class AcknowledgeFinishConfigurationPacket extends ServerboundPacket
         $session->setState(ServerState::PLAY);
 
         $player = $session->getPlayer();
-
-
 
         // Load and send the center chunk lazily via ChunkManager
         $world = $player->getServer()->getWorld("world");
@@ -66,29 +60,6 @@ class AcknowledgeFinishConfigurationPacket extends ServerboundPacket
         $cm->addToQueue(new ChunkRequest($world, 0, 0, $callback));
 
         $player->sendPacket(new SynchronizePlayerPositionPacket($player, 0, 0, 0, SynchronizePlayerPositionPacket::RELATIVE_X | SynchronizePlayerPositionPacket::RELATIVE_Y | SynchronizePlayerPositionPacket::RELATIVE_Z));
-
-
-
-
-
-
-
-
-
-        /*
-        for ($i = -8; $i < 8; $i++) {
-            for ($j = -8; $j < 8; $j++) {
-                if ($j == 0 && $i == 0) {
-                    continue;
-                }
-
-                $chunk = $player->getServer()->getWorld("world")->getChunk($i, $j);
-                $player->sendPacket(new ChunkDataAndUpdateLightPacket($chunk));
-            }
-        }
-        */
-
-
 
         var_dump(microtime(true) - $time);
     }
