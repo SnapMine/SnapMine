@@ -15,7 +15,7 @@ class Fox extends Animal
 
     public function isSitting(): bool
     {
-        return ($this->state >> 0x01) & 1;
+        return (bool) ($this->state >> 0x01) & 1;
     }
 
     public function setSitting(bool $sitting): void
@@ -25,7 +25,7 @@ class Fox extends Animal
 
     public function isCrouching(): bool
     {
-        return ($this->state >> 0x04) & 1;
+        return (bool) ($this->state >> 0x04) & 1;
     }
 
     public function setCrouching(bool $crouching): void
@@ -35,7 +35,7 @@ class Fox extends Animal
 
     public function isInterested(): bool
     {
-        return ($this->state >> 0x08) & 1;
+        return (bool) ($this->state >> 0x08) & 1;
     }
 
     public function setInterested(bool $interested): void
@@ -45,7 +45,7 @@ class Fox extends Animal
 
     public function isPouncing(): bool
     {
-        return ($this->state >> 0x10) & 1;
+        return (bool) ($this->state >> 0x10) & 1;
     }
 
     public function setPouncing(bool $pouncing): void
@@ -55,7 +55,7 @@ class Fox extends Animal
 
     public function isSleeping(): bool
     {
-        return ($this->state >> 0x20) & 1;
+        return (bool) ($this->state >> 0x20) & 1;
     }
 
     public function setSleeping(bool $sleeping): void
@@ -65,7 +65,7 @@ class Fox extends Animal
 
     public function isFaceplanted(): bool
     {
-        return ($this->state >> 0x40) & 1;
+        return (bool) ($this->state >> 0x40) & 1;
     }
 
     public function setFaceplanted(bool $faceplanted): void
@@ -75,7 +75,7 @@ class Fox extends Animal
 
     public function isDefending(): bool
     {
-        return ($this->state >> 0x80) & 1;
+        return (bool) ($this->state >> 0x80) & 1;
     }
 
     public function setDefending(bool $defending): void

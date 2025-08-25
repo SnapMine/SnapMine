@@ -106,7 +106,7 @@ class Panda extends Animal
 
     public function isSneezing(): bool
     {
-        return ($this->state >> 0x02) & 1;
+        return (bool) ($this->state >> 0x02) & 1;
     }
 
     public function setSneezing(bool $val): void
@@ -116,7 +116,7 @@ class Panda extends Animal
 
     public function isRolling(): bool
     {
-        return ($this->state >> 0x04) & 1;
+        return (bool) ($this->state >> 0x04) & 1;
     }
 
     public function setRolling(bool $val): void
@@ -126,7 +126,7 @@ class Panda extends Animal
 
     public function isSitting(): bool
     {
-        return ($this->state >> 0x08) & 1;
+        return (bool) ($this->state >> 0x08) & 1;
     }
 
     public function setSitting(bool $val): void
@@ -136,7 +136,7 @@ class Panda extends Animal
 
     public function isOnBack(): bool
     {
-        return ($this->state >> 0x10) & 1;
+        return (bool) ($this->state >> 0x10) & 1;
     }
 
     public function setOnBack(bool $val): void
