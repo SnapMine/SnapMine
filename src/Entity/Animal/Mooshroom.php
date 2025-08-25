@@ -33,6 +33,6 @@ class Mooshroom extends Animal
      */
     public function getType(): EntityType
     {
-        // TODO: Implement getType() method.
+        return EntityType::MOOSHROOM;
     }
 }

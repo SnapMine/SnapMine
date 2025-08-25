@@ -174,9 +174,7 @@ enum EntityType: int
 	case ZOMBIFIED_PIGLIN = 147;
 
     /**
-     * @template T of Entity
-     *
-     * @return class-string<T>
+     * @return class-string
      * @throws \Exception
      */
     public function getClass(): string
