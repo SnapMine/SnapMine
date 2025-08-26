@@ -31,6 +31,8 @@ use SnapMine\Manager\ChunkManager\ChunkManager;
 use SnapMine\Manager\KeepAliveManager;
 use SnapMine\Network\Packet\Clientbound\Play\AddEntityPacket;
 use SnapMine\Network\Packet\Clientbound\Play\LevelParticles;
+use SnapMine\Network\Packet\Clientbound\Play\PlayerInfoRemovePacket;
+use SnapMine\Network\Packet\Clientbound\Play\RemoveEntitiesPacket;
 use SnapMine\Network\Packet\Packet;
 use SnapMine\Particle\Particle;
 use SnapMine\Registry\Registry;
@@ -153,18 +155,21 @@ class Server
         try {
             $id = spl_object_id($socket);
 
+            if ($session->getPlayer() !== null) {
+                if (isset($this->players[$session->getPlayer()->getUuid()->toString()])) {
+                    unset($this->players[$session->getPlayer()->getUuid()->toString()]);
+                }
+
+                $this->broadcastPacket(new PlayerInfoRemovePacket([$session->getPlayer()->getUuid()]));
+                $this->broadcastPacket(new RemoveEntitiesPacket([$session->getPlayer()]));
+            }
+
             // Remove from clients list
             $key = array_search($socket, $this->clients, true);
             if ($key !== false) {
                 unset($this->clients[$key]);
                 // reindex array
                 $this->clients = array_values($this->clients);
-            }
-
-            if ($session->getPlayer() !== null) {
-                if (isset($this->players[$session->getPlayer()->getUuid()->toString()])) {
-                    unset($this->players[$session->getPlayer()->getUuid()->toString()]);
-                }
             }
 
             unset($this->sessions[$id]);
