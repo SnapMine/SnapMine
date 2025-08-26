@@ -16,6 +16,7 @@ use SnapMine\World\DimensionType;
 enum Registry: string
 {
     case CAT_VARIANT = CatVariant::class;
+    case CHAT_TYPE = ChatType::class;
     case CHICKEN_VARIANT = ChickenVariant::class;
     case COW_VARIANT = CowVariant::class;
     case FROG_VARIANT = FrogVariant::class;

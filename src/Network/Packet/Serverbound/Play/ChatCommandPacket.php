@@ -1,0 +1,27 @@
+<?php
+
+namespace SnapMine\Network\Packet\Serverbound\Play;
+
+use SnapMine\Network\Packet\Serverbound\ServerboundPacket;
+use SnapMine\Network\Serializer\PacketSerializer;
+use SnapMine\Session\Session;
+
+class ChatCommandPacket extends ServerboundPacket
+{
+    private string $command;
+
+    public function getId(): int
+    {
+        return 0x05;
+    }
+
+    public function read(PacketSerializer $serializer): void
+    {
+        $this->command = $serializer->getString();
+    }
+
+    public function handle(Session $session): void
+    {
+        var_dump($this->command);
+    }
+}

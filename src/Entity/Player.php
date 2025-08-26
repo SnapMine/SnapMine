@@ -2,8 +2,10 @@
 
 namespace SnapMine\Entity;
 
+use SnapMine\Component\TextComponent;
 use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
 use SnapMine\Network\Packet\Clientbound\Play\SoundPacket;
+use SnapMine\Network\Packet\Clientbound\Play\SystemChatPacket;
 use SnapMine\Network\Packet\Packet;
 use SnapMine\Session\Session;
 use SnapMine\Sound\Sound;
@@ -139,5 +141,14 @@ class Player extends LivingEntity
     public function getChunk(): Chunk
     {
         return $this->server->getWorld("world")->getChunk($this->location->getX() >> 4, $this->location->getZ() >> 4);
+    }
+
+    public function sendMessage(TextComponent|string $message): void
+    {
+        if (is_string($message)) {
+            $message = TextComponent::text($message);
+        }
+
+        $this->sendPacket(new SystemChatPacket($message, false));
     }
 }
