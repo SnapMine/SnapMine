@@ -6,6 +6,7 @@ use SnapMine\Artisan;
 use SnapMine\Event\EventManager;
 use SnapMine\Event\Player\PlayerJoinEvent;
 use SnapMine\Network\Packet\Clientbound\Play\AddEntityPacket;
+use SnapMine\Network\Packet\Clientbound\Play\CommandsPacket;
 use SnapMine\Network\Packet\Clientbound\Play\PlayerInfoUpdatePacket;
 use SnapMine\Network\Packet\Serverbound\ServerboundPacket;
 use SnapMine\Network\Serializer\PacketSerializer;
@@ -63,5 +64,7 @@ class PlayerLoadedPacket extends ServerboundPacket {
                 $newPlayer->sendPacket($packetAddEntity);
             }
         }
+
+        $session->sendPacket(new CommandsPacket($session->getServer()->getCommandManager()->build(), 0));
     }
 }
