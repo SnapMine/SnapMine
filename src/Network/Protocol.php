@@ -9,6 +9,8 @@ use SnapMine\Network\Packet\Serverbound\Configuration\PluginMessagePacket;
 use SnapMine\Network\Packet\Serverbound\Handshaking\HandshakePacket;
 use SnapMine\Network\Packet\Serverbound\Login\LoginAcknowledgedPacket;
 use SnapMine\Network\Packet\Serverbound\Login\LoginStartPacket;
+use SnapMine\Network\Packet\Serverbound\Play\ChatCommandPacket;
+use SnapMine\Network\Packet\Serverbound\Play\ChatMessagePacket;
 use SnapMine\Network\Packet\Serverbound\Play\ClientTickEndPacket;
 use SnapMine\Network\Packet\Serverbound\Play\ConfirmTeleportationPacket;
 use SnapMine\Network\Packet\Serverbound\Play\ContainerClosePacket;
@@ -56,6 +58,8 @@ class Protocol
         ],
         ServerState::PLAY->value => [
             0x00 => ConfirmTeleportationPacket::class,
+            0x05 => ChatCommandPacket::class,
+            0x07 => ChatMessagePacket::class,
             0x0B => ClientTickEndPacket::class,
             0x0C => ClientInformationPacket::class,
             0x11 => ContainerClosePacket::class,

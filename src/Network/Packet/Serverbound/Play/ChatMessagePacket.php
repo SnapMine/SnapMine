@@ -2,13 +2,15 @@
 
 namespace SnapMine\Network\Packet\Serverbound\Play;
 
+use SnapMine\Component\TextComponent;
+use SnapMine\Network\Packet\Clientbound\Play\PlayerChatPacket;
+use SnapMine\Network\Packet\Clientbound\Play\SystemChatPacket;
 use SnapMine\Network\Packet\Serverbound\ServerboundPacket;
 use SnapMine\Network\Serializer\PacketSerializer;
 use SnapMine\Session\Session;
 
 class ChatMessagePacket extends ServerboundPacket
 {
-    /** @phpstan-ignore property.onlyWritten */
     private string $message;
     /** @phpstan-ignore property.onlyWritten */
     private int $timestamp; // milliseconds since epoch
@@ -53,13 +55,11 @@ class ChatMessagePacket extends ServerboundPacket
 
         // Checksum: single byte
         $this->checksum = $serializer->getByte();
-
-        var_dump($this);
     }
 
     public function handle(Session $session): void
     {
-        // Chat handling/broadcast can be implemented later. For now, parsing prevents disconnects.
+        $session->getServer()->broadcastPacket(new SystemChatPacket(TextComponent::text($this->message), false));
     }
 }
 

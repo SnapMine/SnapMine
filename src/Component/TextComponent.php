@@ -5,9 +5,10 @@ namespace SnapMine\Component;
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\StringTag;
 use JsonSerializable;
+use SnapMine\Registry\EncodableToNbt;
 use SnapMine\Utils\DyeColor;
 
-class TextComponent implements JsonSerializable
+class TextComponent implements JsonSerializable, EncodableToNbt
 {
     private array $children = [];
     private ?string $color = null;
@@ -132,7 +133,7 @@ class TextComponent implements JsonSerializable
         return array_filter($data, fn ($item) => $item !== null);
     }
 
-    public function toNBT(): StringTag
+    public function toNBT(): StringTag|CompoundTag
     {
         $tag = new StringTag();
 

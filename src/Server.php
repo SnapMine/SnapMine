@@ -8,6 +8,8 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
 use SnapMine\Block\BlockStateLoader;
+use SnapMine\Command\CommandExecutor;
+use SnapMine\Command\CommandManager;
 use SnapMine\Entity\Animal\Armadillo;
 use SnapMine\Entity\Animal\Bee;
 use SnapMine\Entity\Animal\Chicken;
@@ -66,6 +68,7 @@ class Server
     private BlockStateLoader $blockStateLoader;
     private ChunkManager $chunkManager;
     private ServerConfig $config;
+    private CommandManager $commandManager;
 
     public function __construct(
         private readonly string $host,
@@ -78,6 +81,7 @@ class Server
 
         Registry::load(dirname(__DIR__) . '/resources/registries/');
         $this->chunkManager = new ChunkManager();
+        $this->commandManager = new CommandManager();
 
         foreach (glob(dirname(__DIR__) . '/resources/worlds/*/') as $folder) {
             $this->worlds[basename($folder)] = new World($folder);
@@ -349,5 +353,18 @@ class Server
     public function getConfig(): ServerConfig
     {
         return $this->config;
+    }
+
+    /**
+     * @return CommandManager
+     */
+    public function getCommandManager(): CommandManager
+    {
+        return $this->commandManager;
+    }
+
+    public function registerCommand(string $name, CommandExecutor $executor): void
+    {
+        $this->commandManager->add($name, $executor);
     }
 }
