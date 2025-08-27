@@ -11,7 +11,6 @@ use SnapMine\Session\Session;
 
 class ChatMessagePacket extends ServerboundPacket
 {
-    /** @phpstan-ignore property.onlyWritten */
     private string $message;
     /** @phpstan-ignore property.onlyWritten */
     private int $timestamp; // milliseconds since epoch
