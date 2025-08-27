@@ -33,17 +33,17 @@ class CommandManager
     public function build(): array
     {
         $root = new CommandNode(CommandNode::TYPE_ROOT);
-        $nodes = [$root];
+        $nodes = [];
 
         $commands = array_keys($this->commands);
         for ($i = 0; $i < count($commands); $i++) {
-            $nodes[] = new CommandNode(CommandNode::TYPE_LITERAL, $commands[$i]);
+            $nodes[$i] = new CommandNode(CommandNode::TYPE_LITERAL, $commands[$i]);
 
             $nodes[$i]->setExecutable(true);
 
-            $root->addChild($i);
+            $root->addChild($i + 1);
         }
 
-        return $nodes;
+        return array_merge([$root], $nodes);
     }
 }

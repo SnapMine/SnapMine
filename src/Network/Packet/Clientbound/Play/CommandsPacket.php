@@ -33,30 +33,19 @@ class CommandsPacket extends ClientboundPacket
             }
 
             if ($node->getRedirect() !== null) {
-                $serializer->putBool(true);
                 $serializer->putVarInt($node->getRedirect());
-            } else {
-//                $serializer->putBool(false);
             }
 
             if ($node->getType() === CommandNode::TYPE_LITERAL || $node->getType() === CommandNode::TYPE_ARGUMENT) {
-                $serializer->putBool(true);
                 $serializer->putString($node->getName());
             }
 
             if ($node->getType() === CommandNode::TYPE_ARGUMENT) {
-                if (is_null($node->getParser())) {
-                    $serializer->putBool(false);
-                    $serializer->putBool(false);
-                } else {
-                    $serializer->putBool(true);
-                    $serializer->putString($node->getParser());
-                    // TODO: serialize properties
-                }
+                $serializer->putString($node->getParser());
+                // TODO: serialize properties
             }
 
             if ($node->getSuggestions() !== null) {
-                $serializer->putBool(true);
                 $serializer->putString($node->getSuggestions());
             }
         }

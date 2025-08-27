@@ -362,4 +362,9 @@ class Server
     {
         return $this->commandManager;
     }
+
+    public function registerCommand(string $name, CommandExecutor $executor): void
+    {
+        $this->commandManager->add($name, $executor);
+    }
 }
