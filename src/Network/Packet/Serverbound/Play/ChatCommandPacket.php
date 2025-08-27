@@ -22,6 +22,11 @@ class ChatCommandPacket extends ServerboundPacket
 
     public function handle(Session $session): void
     {
-        var_dump($this->command);
+        $args = explode(' ', $this->command);
+        $manager = $session->getServer()->getCommandManager();
+
+        if ($manager->has($args[0])) {
+            $manager->get($args[0])->execute($session->getPlayer(), $this->command);
+        }
     }
 }
