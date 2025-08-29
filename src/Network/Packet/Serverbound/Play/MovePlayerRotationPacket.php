@@ -9,6 +9,7 @@ use SnapMine\Network\Packet\Packet;
 use SnapMine\Network\Packet\Serverbound\ServerboundPacket;
 use SnapMine\Network\Serializer\PacketSerializer;
 use SnapMine\Session\Session;
+use SnapMine\World\Position;
 
 class MovePlayerRotationPacket extends ServerboundPacket {
     private float $yaw;
@@ -27,16 +28,6 @@ class MovePlayerRotationPacket extends ServerboundPacket {
 
     public function handle(Session $session): void
     {
-        $player = $session->getPlayer();
-        $loc = $player->getLocation();
-
-        $loc->setYaw($this->yaw);
-        $loc->setPitch($this->pitch);
-
-        $packet = new MoveEntityRotPacket($player, false);
-        $headRotatePacket = new RotateHeadPacket($player);
-
-        $session->getServer()->broadcastPacket($headRotatePacket, fn (Player $p) => $p->getUuid() != $player->getUuid());
-        $player->getServer()->broadcastPacket($packet, fn (Player $p) => $p->getUuid() != $player->getUuid());
+        $session->getPlayer()->move($session->getPlayer()->getLocation(), $this->yaw, $this->pitch);
     }
 }
