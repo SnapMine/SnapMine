@@ -71,13 +71,25 @@ class Server
     private CommandManager $commandManager;
 
     public function __construct(
-        private readonly string $host,
-        private readonly int    $port,
+        private ?string $host = null,
+        private ?int    $port = null,
     )
     {
         $this->eventManager = new EventManager();
         $this->blockStateLoader = new BlockStateLoader(__DIR__ . '/../resources/blocks.json');
         $this->config = new ServerConfig(dirname(__DIR__) . "/config.yml");
+
+        if ($this->host === null) {
+            $this->host = $this->config->get('host');
+
+            if ($this->host == 'localhost') {
+                $this->host = '127.0.0.1';
+            }
+        }
+
+        if ($this->port === null) {
+            $this->port = $this->config->get('port');
+        }
 
         Registry::load(dirname(__DIR__) . '/resources/registries/');
         $this->chunkManager = new ChunkManager();
