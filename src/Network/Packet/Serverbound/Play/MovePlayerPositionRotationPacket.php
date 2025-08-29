@@ -8,6 +8,7 @@ use SnapMine\Network\Packet\Clientbound\Play\RotateHeadPacket;
 use SnapMine\Network\Packet\Serverbound\ServerboundPacket;
 use SnapMine\Network\Serializer\PacketSerializer;
 use SnapMine\Session\Session;
+use SnapMine\World\Position;
 
 class MovePlayerPositionRotationPacket extends ServerboundPacket
 {
@@ -37,39 +38,6 @@ class MovePlayerPositionRotationPacket extends ServerboundPacket
 
     public function handle(Session $session): void
     {
-        $player = $session->getPlayer();
-        $loc = $player->getLocation();
-
-        $factor = 4096;
-
-        $deltaX = (int)(($this->x - $loc->getX()) * $factor);
-        $deltaY = (int)(($this->feetY - $loc->getY()) * $factor);
-        $deltaZ = (int)(($this->z - $loc->getZ()) * $factor);
-
-        $maxDelta = 32767; // max short
-        if (abs($deltaX) > $maxDelta || abs($deltaY) > $maxDelta || abs($deltaZ) > $maxDelta) {
-            // Utiliser TeleportEntityPacket à la place
-            return;
-        }
-
-        $loc->setX($this->x);
-        $loc->setY($this->feetY);
-        $loc->setZ($this->z);
-        $loc->setYaw($this->yaw);
-        $loc->setPitch($this->pitch);
-
-        $outPacket = new MoveEntityPosRotPacket(
-            $player->getId(),
-            $deltaX,
-            $deltaY,
-            $deltaZ,
-            $this->yaw,
-            $this->pitch,
-            false
-        );
-        $headRotatePacket = new RotateHeadPacket($player);
-
-        $player->getServer()->broadcastPacket($outPacket, fn (Player $p) => $p->getUuid() != $player->getUuid());
-        $player->getServer()->broadcastPacket($headRotatePacket, fn (Player $p) => $p->getUuid() != $player->getUuid());
+        $session->getPlayer()->move(new Position($this->x, $this->feetY, $this->z), $this->yaw, $this->pitch);
     }
 }

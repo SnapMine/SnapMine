@@ -100,4 +100,12 @@ class UUID
         return $this->uuid;
     }
 
+    public function equals(UUID|string $uuid): bool
+    {
+        if ($uuid instanceof UUID) {
+            $uuid = $uuid->toString();
+        }
+
+        return $this->uuid === $uuid;
+    }
 }
