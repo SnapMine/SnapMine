@@ -4,6 +4,7 @@ namespace SnapMine\Entity;
 
 use SnapMine\Component\TextComponent;
 use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
+use SnapMine\Network\Packet\Clientbound\Play\DisconnectPacket;
 use SnapMine\Network\Packet\Clientbound\Play\SoundPacket;
 use SnapMine\Network\Packet\Clientbound\Play\SystemChatPacket;
 use SnapMine\Network\Packet\Packet;
@@ -150,5 +151,16 @@ class Player extends LivingEntity
         }
 
         $this->sendPacket(new SystemChatPacket($message, false));
+    }
+
+    public function kick(TextComponent|string $reason): void
+    {
+        if (is_string($reason)) {
+            $reason = TextComponent::text($reason);
+        }
+
+        $packet = new DisconnectPacket($reason);
+
+        $this->sendPacket($packet);
     }
 }
