@@ -11,6 +11,7 @@ use SnapMine\Block\AttachedFace;
 use SnapMine\Block\Attachment;
 use SnapMine\Block\AxisType;
 use SnapMine\Block\BlockType;
+use SnapMine\Block\Connection;
 use SnapMine\Block\CreakingHeartState;
 use SnapMine\Block\Data\BlockData;
 use SnapMine\Block\Direction;
@@ -25,6 +26,7 @@ use SnapMine\Block\Thickness;
 use SnapMine\Block\Tilt;
 use SnapMine\Block\TrialSpawnerState;
 use SnapMine\Block\Type\BrewingStand;
+use SnapMine\Block\Type\RedstoneWire;
 use SnapMine\Block\VaultState;
 use SnapMine\Block\WallHeight;
 use SnapMine\Material;
@@ -80,16 +82,22 @@ class ChunkSection
             try {
                 $dir = Direction::from($propName);
 
-                if (filter_var($value, FILTER_VALIDATE_BOOLEAN)) {
+                if ($b instanceof RedstoneWire) {
+                    $b->setConnection($dir, Connection::from($value));
+                    continue;
+                }
+                else if (! is_null(filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE))) {
                     /** @phpstan-ignore method.notFound */
                     $b->setFace($dir);
-                } else {
+                }
+                else {
                     /** @phpstan-ignore method.notFound */
                     $b->setHeight($dir, WallHeight::from($value));
                 }
 
                 continue;
-            } catch (Error) {}
+            } catch (Error) {
+            }
 
             if (str_contains($propName, '_state')) {
                 $method = 'setState';
