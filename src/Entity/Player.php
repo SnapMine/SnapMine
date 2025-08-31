@@ -194,7 +194,7 @@ class Player extends LivingEntity
                 false
             );
 
-            $this->getServer()->broadcastPacket($outPacket, fn(Player $p) => $p->getUuid()->equals($this->getUuid()));
+            $this->getServer()->broadcastPacket($outPacket, fn(Player $p) => $p->getUuid() != $this->getUuid());
         } else {
             $loc->setYaw($yaw);
             $loc->setPitch($pitch);
@@ -202,8 +202,8 @@ class Player extends LivingEntity
             $packet = new MoveEntityRotPacket($this, false);
             $headRotatePacket = new RotateHeadPacket($this);
 
-            $this->getServer()->broadcastPacket($headRotatePacket, fn(Player $p) => $p->getUuid()->equals($this->getUuid()));
-            $this->getServer()->broadcastPacket($packet, fn(Player $p) => $p->getUuid()->equals($this->getUuid()));
+            $this->getServer()->broadcastPacket($headRotatePacket, fn(Player $p) => $p->getUuid() != $this->getUuid());
+            $this->getServer()->broadcastPacket($packet, fn(Player $p) => $p->getUuid() != $this->getUuid());
         }
     }
 }
