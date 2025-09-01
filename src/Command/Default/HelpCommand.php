@@ -2,12 +2,17 @@
 
 namespace SnapMine\Command\Default;
 
-use SnapMine\Command\CommandExecutor;
+use SnapMine\Command\Attributes\Argument;
+use SnapMine\Command\Attributes\Command;
+use SnapMine\Command\Attributes\SubCommand;
 use SnapMine\Entity\Player;
 
-class HelpCommand implements CommandExecutor
+#[Command('help')]
+class HelpCommand
 {
-    public function execute(Player $player, string $command): void
+
+    #[SubCommand]
+    public function execute(Player $player, #[Argument] string $command): void
     {
         $player->sendMessage("Hello World!");
     }

@@ -375,8 +375,8 @@ class Server
         return $this->commandManager;
     }
 
-    public function registerCommand(string $name, CommandExecutor $executor): void
+    public function registerCommand(string $name, object $class): void
     {
-        $this->commandManager->add($name, $executor);
+        $this->commandManager->add($name, $class);
     }
 }

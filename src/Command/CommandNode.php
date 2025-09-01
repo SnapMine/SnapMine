@@ -8,8 +8,6 @@ class CommandNode
     const TYPE_LITERAL = 1;
     const TYPE_ARGUMENT = 2;
 
-    private int $type;
-    private string $name = "";
     private array $children = [];
     private ?int $redirect = null;
     private ?string $parser = null;
@@ -18,10 +16,11 @@ class CommandNode
     private bool $isExecutable = false;  // 0x04
     private bool $isRestricted = false;  // 0x20
 
-    public function __construct(int $type, string $name = "")
+    public function __construct(
+        private readonly int $type,
+        private readonly string $name = ""
+    )
     {
-        $this->type = $type;
-        $this->name = $name;
     }
 
     public function addChild(int $index): void

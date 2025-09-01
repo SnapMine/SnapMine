@@ -4,10 +4,10 @@ namespace SnapMine\Command;
 
 class CommandManager
 {
-    /** @var array<string, CommandExecutor> */
+    /** @var array<string, object> */
     private array $commands = [];
 
-    public function add(string $name, CommandExecutor $executor): void
+    public function add(string $name, object $executor): void
     {
         $this->commands[$name] = $executor;
     }
@@ -17,7 +17,7 @@ class CommandManager
         return isset($this->commands[$name]);
     }
 
-    public function get(string $name): CommandExecutor
+    public function get(string $name): object
     {
         return $this->commands[$name];
     }
