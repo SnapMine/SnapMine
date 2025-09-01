@@ -2,8 +2,12 @@
 
 namespace SnapMine\Entity;
 
+use SnapMine\Effect\MobEffect;
+use SnapMine\Effect\MobEffectType;
 use SnapMine\Entity\Metadata\MetadataType;
 use SnapMine\Exception\UnimplementException;
+use SnapMine\Network\Packet\Clientbound\Play\RemoveMobEffectPacket;
+use SnapMine\Network\Packet\Clientbound\Play\UpdateMobEffectPacket;
 use SnapMine\World\Position;
 
 abstract class LivingEntity extends Entity
@@ -13,6 +17,8 @@ abstract class LivingEntity extends Entity
     protected int $arrowsInBody = 0;
     protected int $beeStringerInBody = 0;
     protected ?Position $bedLocation = null;
+    /** @var MobEffect[] */
+    protected array $mobEffects = [];
 
     public const HAND_ACTIVE     = 0x01;
     public const HAND_OFF        = 0x02;
@@ -158,4 +164,34 @@ abstract class LivingEntity extends Entity
         return !is_null($this->bedLocation);
     }
 
+    /**
+     * @return array
+     */
+    public function getMobEffects(): array
+    {
+        return $this->mobEffects;
+    }
+
+    public function addMobEffect(MobEffect $effect): void
+    {
+        $this->mobEffects[$effect->getType()->value] = $effect;
+
+        $this->getServer()->broadcastPacket(new UpdateMobEffectPacket($this->getId(), $effect));
+    }
+
+    public function removeMobEffect(MobEffect|MobEffectType $effect): void
+    {
+        $type = $effect instanceof MobEffect ? $effect->getType() : $effect;
+
+        unset($this->mobEffects[$type->value]);
+
+        $this->getServer()->broadcastPacket(new RemoveMobEffectPacket($this->getId(), $type));
+    }
+
+    public function removeMobEffects(): void
+    {
+        foreach ($this->mobEffects as $effect) {
+            $this->removeMobEffect($effect);
+        }
+    }
 }
