@@ -4,6 +4,7 @@ use SnapMine\Entity\AreaEffectCloud;
 use SnapMine\Entity\EntityType;
 use SnapMine\Server;
 use SnapMine\World\Location;
+use SnapMine\World\World;
 
 describe('AreaEffectCloud entity', function () {
     /** @var AreaEffectCloud $entity */
@@ -11,10 +12,11 @@ describe('AreaEffectCloud entity', function () {
 
     beforeEach(function () use (&$entity) {
         $server = Mockery::mock(Server::class);
+        $world = Mockery::mock(World::class);
 
         $server->shouldReceive('incrementAndGetId')->andReturn(1);
 
-        $entity = new AreaEffectCloud($server, new Location(0, 0, 0));
+        $entity = new AreaEffectCloud($server, new Location($world, 0, 0, 0));
     });
 
     it('Test entity type', function () use (&$entity) {

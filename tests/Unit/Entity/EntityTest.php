@@ -6,19 +6,23 @@ use SnapMine\Entity\EntityType;
 use SnapMine\Entity\Pose;
 use SnapMine\Server;
 use SnapMine\World\Location;
+use SnapMine\World\World;
 
 describe('Test Entity class', function () {
-    /** @var Entity */
+    /** @var Entity $entity */
     $entity = null;
 
     beforeEach(function () use (&$entity) {
         $server = Mockery::mock(Server::class);
+
         $server->shouldReceive('incrementAndGetId')->andReturn(1);
 
         $entity = new class($server) extends Entity {
             public function __construct(Server $server)
             {
-                parent::__construct($server, new Location(0, 0, 0));
+                $world = Mockery::mock(World::class);
+
+                parent::__construct($server, new Location($world, 0, 0, 0));
             }
 
             public function getType(): EntityType

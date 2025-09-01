@@ -28,6 +28,16 @@ class MovePlayerRotationPacket extends ServerboundPacket {
 
     public function handle(Session $session): void
     {
-        $session->getPlayer()->move($session->getPlayer()->getLocation(), $this->yaw, $this->pitch);
+        $player = $session->getPlayer();
+        $loc = $player->getLocation();
+
+        $loc->setYaw($this->yaw);
+        $loc->setPitch($this->pitch);
+
+        $packet = new MoveEntityRotPacket($player, false);
+        $headRotatePacket = new RotateHeadPacket($player);
+
+        $session->getServer()->broadcastPacket($headRotatePacket, fn (Player $p) => $p->getUuid() != $player->getUuid());
+        $player->getServer()->broadcastPacket($packet, fn (Player $p) => $p->getUuid() != $player->getUuid());
     }
 }

@@ -14,5 +14,6 @@ $server = new Server();
 
 $server->getCommandManager()->add('help', new HelpCommand());
 $server->getCommandManager()->add('kick', new KickCommand());
+$server->getCommandManager()->add('spawn', new \SnapMine\Command\Default\SpawnCommand());
 
 $server->start();
