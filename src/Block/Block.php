@@ -85,7 +85,7 @@ class Block
     {
         $loc = $this->location;
 
-        $loc->add($direction);
+        $loc->addDirection($direction);
 
         return $this->getChunk()->getBlock($loc);
     }

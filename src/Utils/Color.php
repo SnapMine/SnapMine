@@ -48,7 +48,7 @@ readonly class Color implements ProtocolEncodable
         return dechex($this->color);
     }
 
-    public function toPacket(PacketSerializer $serializer): void
+    public function encode(PacketSerializer $serializer): void
     {
         $serializer->putInt($this->color);
     }

@@ -104,4 +104,21 @@ class ItemStack
 
         return $item;
     }
+
+    public function encode(PacketSerializer $serializer): void
+    {
+        $serializer->putVarInt($this->amount);
+
+        if ($this->amount > 0) {
+            $serializer
+                ->putVarInt($this->material->getItemId())
+                ->putVarInt(0)
+                ->putVarInt(0);
+        }
+    }
+
+    public static function empty(): ItemStack
+    {
+        return new ItemStack(Material::AIR, 0);
+    }
 }

@@ -8,6 +8,8 @@ use SnapMine\Server;
 
 const ROOT_PATH = __DIR__;
 
+var_dump(repeat_this("coucou", 5, false));
+
 ini_set('memory_limit', '2048M');
 
 $server = new Server();

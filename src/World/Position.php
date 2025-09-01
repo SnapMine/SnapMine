@@ -39,12 +39,27 @@ class Position {
         $this->z = $z;
     }
 
-    public function add(Direction $direction): void
+    public function addDirection(Direction $direction): self
     {
         [$x, $y, $z] = $direction->getVec3();
 
-        $this->x += $x;
-        $this->y += $y;
-        $this->z += $z;
+        $newPos = clone $this;
+
+        $newPos->x += $x;
+        $newPos->y += $y;
+        $newPos->z += $z;
+
+        return $newPos;
+    }
+
+    public function add(Position $position): self
+    {
+        $newPos = clone $this;
+
+        $newPos->setY($this->getY() + $position->getY());
+        $newPos->setX($this->getX() + $position->getX());
+        $newPos->setZ($this->getZ() + $position->getZ());
+
+        return $newPos;
     }
 }

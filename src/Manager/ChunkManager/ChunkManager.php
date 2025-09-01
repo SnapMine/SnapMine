@@ -17,7 +17,7 @@ use function React\Async\delay;
 class ChunkManager
 {
     private array $queues = [];
-    private const QUEUE_COUNT = 2;
+    private const QUEUE_COUNT = 3;
     public function __construct()
     {
         for ($i = 0; $i < self::QUEUE_COUNT; $i++) {

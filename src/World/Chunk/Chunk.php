@@ -193,7 +193,7 @@ class Chunk
 
     public function getBlock(Position $pos): Block
     {
-        $sectionIndex = $pos->getY() >> 4;
+        $sectionIndex = (int)$pos->getY() >> 4;
         $worldPosition = WorldPosition::fromPosition($this->world, $pos);
 
         if (!isset($this->sections[$sectionIndex])) {
@@ -201,7 +201,7 @@ class Chunk
         }
 
         $blockData = $this->sections[$sectionIndex]
-            ->getBlockData($pos->getX() & 0xF, $pos->getY() & 0xF, $pos->getZ() & 0xF);
+            ->getBlockData((int)$pos->getX() & 0xF, (int)$pos->getY() & 0xF, (int)$pos->getZ() & 0xF);
 
         return new Block(Artisan::getServer(), $worldPosition, $blockData);
     }

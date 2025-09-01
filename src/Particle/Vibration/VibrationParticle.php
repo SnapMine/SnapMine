@@ -30,7 +30,7 @@ class VibrationParticle implements ProtocolEncodable
         return $this->destination;
     }
 
-    public function toPacket(PacketSerializer $serializer): void
+    public function encode(PacketSerializer $serializer): void
     {
         if ($this->destination instanceof BlockDestination) {
             $serializer

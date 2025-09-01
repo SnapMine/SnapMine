@@ -119,7 +119,7 @@ class MobEffect implements ProtocolEncodable
         $entity->addMobEffect($this);
     }
 
-    public function toPacket(PacketSerializer $serializer): void
+    public function encode(PacketSerializer $serializer): void
     {
         $serializer
             ->putVarInt($this->type->value)

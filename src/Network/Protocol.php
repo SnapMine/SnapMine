@@ -11,6 +11,7 @@ use SnapMine\Network\Packet\Serverbound\Login\LoginAcknowledgedPacket;
 use SnapMine\Network\Packet\Serverbound\Login\LoginStartPacket;
 use SnapMine\Network\Packet\Serverbound\Play\ChatCommandPacket;
 use SnapMine\Network\Packet\Serverbound\Play\ChatMessagePacket;
+use SnapMine\Network\Packet\Serverbound\Play\ClickContainerPacket;
 use SnapMine\Network\Packet\Serverbound\Play\ClientTickEndPacket;
 use SnapMine\Network\Packet\Serverbound\Play\ConfirmTeleportationPacket;
 use SnapMine\Network\Packet\Serverbound\Play\ContainerClosePacket;
@@ -63,6 +64,7 @@ class Protocol
             0x07 => ChatMessagePacket::class,
             0x0B => ClientTickEndPacket::class,
             0x0C => ClientInformationPacket::class,
+            0x10 => ClickContainerPacket::class,
             0x11 => ContainerClosePacket::class,
             0x18 => InteractPacket::class,
             0x1D => MovePlayerPositionRotationPacket::class,

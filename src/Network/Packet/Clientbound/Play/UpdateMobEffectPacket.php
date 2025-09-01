@@ -18,7 +18,7 @@ class UpdateMobEffectPacket extends ClientboundPacket
     public function write(PacketSerializer $serializer): void
     {
         $serializer->putVarInt($this->entityId);
-        $this->mobEffect->toPacket($serializer);
+        $this->mobEffect->encode($serializer);
     }
 
     public function getId(): int

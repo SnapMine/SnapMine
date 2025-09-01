@@ -31,7 +31,7 @@ class DustParticle implements ProtocolEncodable
         return $this->size;
     }
 
-    public function toPacket(PacketSerializer $serializer): void
+    public function encode(PacketSerializer $serializer): void
     {
         $serializer->putInt($this->color->getColor())
             ->putFloat($this->size);
