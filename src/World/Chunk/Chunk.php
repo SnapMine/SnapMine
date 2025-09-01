@@ -9,6 +9,7 @@ use SnapMine\Artisan;
 use SnapMine\Block\Block;
 use SnapMine\Block\BlockType;
 use SnapMine\World\Location;
+use SnapMine\World\World;
 
 class Chunk
 {
@@ -21,6 +22,7 @@ class Chunk
     private bool $loaded = false;
 
     public function __construct(
+        private readonly World $world,
         private readonly int $x,
         private readonly int $z
     ) {
@@ -193,7 +195,7 @@ class Chunk
     public function getBlock(int $x, int $y, int $z): Block
     {
         $sectionIndex = $y >> 4;
-        $location = new Location($x, $y, $z);
+        $location = new Location($this->world, $x, $y, $z);
 
         if (!isset($this->sections[$sectionIndex])) {
             return new Block(Artisan::getServer(), $location, BlockType::AIR->createBlockData());

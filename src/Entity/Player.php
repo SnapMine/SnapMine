@@ -166,44 +166,41 @@ class Player extends LivingEntity
         $this->sendPacket($packet);
     }
 
-    public function move(Position $position, float $yaw = 0.0, float $pitch = 0.0): void
-    {
-        $loc = $this->getLocation();
-
-        $factor = 4096;
-
-        $deltaX = (int)(($position->getX() - $loc->getX()) * $factor);
-        $deltaY = (int)(($position->getY() - $loc->getY()) * $factor);
-        $deltaZ = (int)(($position->getZ() - $loc->getZ()) * $factor);
-
-        $maxDelta = 32767; // max short
-        if (abs($deltaX) > $maxDelta || abs($deltaY) > $maxDelta || abs($deltaZ) > $maxDelta) {
-            return;
-        }
-
-        $loc->setX($position->getX());
-        $loc->setY($position->getY());
-        $loc->setZ($position->getZ());
-
-        if ($yaw === 0.0 && $pitch === 0.0) {
-            $outPacket = new MoveEntityPosPacket(
-                $this->getId(),
-                $deltaX,
-                $deltaY,
-                $deltaZ,
-                false
-            );
-
-            $this->getServer()->broadcastPacket($outPacket, fn(Player $p) => $p->getUuid() != $this->getUuid());
-        } else {
-            $loc->setYaw($yaw);
-            $loc->setPitch($pitch);
-
-            $packet = new MoveEntityRotPacket($this, false);
-            $headRotatePacket = new RotateHeadPacket($this);
-
-            $this->getServer()->broadcastPacket($headRotatePacket, fn(Player $p) => $p->getUuid() != $this->getUuid());
-            $this->getServer()->broadcastPacket($packet, fn(Player $p) => $p->getUuid() != $this->getUuid());
-        }
-    }
+//    public function move(Position $position, float $yaw = 0.0, float $pitch = 0.0): void
+//    {
+//        $loc = $this->getLocation();
+//
+//        $factor = 4096;
+//
+//        $deltaX = (int)(($position->getX() - $loc->getX()) * $factor);
+//        $deltaY = (int)(($position->getY() - $loc->getY()) * $factor);
+//        $deltaZ = (int)(($position->getZ() - $loc->getZ()) * $factor);
+//
+//        $maxDelta = 32767; // max short
+//        if (abs($deltaX) > $maxDelta || abs($deltaY) > $maxDelta || abs($deltaZ) > $maxDelta) {
+//            return;
+//        }
+//
+//        $loc->setX($position->getX());
+//        $loc->setY($position->getY());
+//        $loc->setZ($position->getZ());
+//
+//        if ($yaw === 0.0 && $pitch === 0.0) {
+//            $outPacket = new MoveEntityPosPacket(
+//                $this->getId(),
+//                $deltaX,
+//                $deltaY,
+//                $deltaZ,
+//                false
+//            );
+//
+//            $this->getServer()->broadcastPacket($outPacket, fn(Player $p) => $p->getUuid() != $this->getUuid());
+//        } else {
+//            $loc->setYaw($yaw);
+//            $loc->setPitch($pitch);
+//
+//            $packet = new MoveEntityRotPacket($this, false);
+//            $this->getServer()->broadcastPacket($packet, fn(Player $p) => $p->getUuid() != $this->getUuid());
+//        }
+//    }
 }

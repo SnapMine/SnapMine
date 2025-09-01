@@ -18,7 +18,7 @@ class Region
     /** @var array<int, array<int, Chunk>> */
     private array $chunks = [];
 
-    public function __construct(string $file)
+    public function __construct(private readonly World $world, string $file)
     {
         $this->file = $file;
         $this->openHandle();
@@ -108,7 +108,7 @@ class Region
                 $chunkX = $nbt->getInt('xPos')->getValue();
                 $chunkZ = $nbt->getInt('zPos')->getValue();
 
-                $this->chunks[$x][$z] = (new Chunk($chunkX, $chunkZ))->loadFromNbt($nbt);
+                $this->chunks[$x][$z] = (new Chunk($this->world, $chunkX, $chunkZ))->loadFromNbt($nbt);
 
                 return $this->chunks[$x][$z];
             }
