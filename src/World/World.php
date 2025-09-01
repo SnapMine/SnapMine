@@ -68,7 +68,7 @@ class World
     {
         return $this
             ->getChunk((int)$position->getX() >> 4, (int)$position->getZ() >> 4)
-            ->getBlock($position->getX(), $position->getY(), $position->getZ());
+            ->getBlock($position);
     }
 
     public function setBlock(Position $position, Block $newBlock): void

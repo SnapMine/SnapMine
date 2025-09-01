@@ -14,12 +14,14 @@ use SnapMine\World\WorldPosition;
 
 class Block
 {
+    private readonly WorldPosition $location;
     public function __construct(
         private readonly Server   $server,
-        private readonly WorldPosition $location,
+        WorldPosition $location,
         private BlockData         $blockData,
     )
     {
+        $this->location = clone $location;
     }
 
     /**
@@ -41,9 +43,9 @@ class Block
     }
 
     /**
-     * @return Location
+     * @return WorldPosition
      */
-    public function getLocation(): Location
+    public function getLocation(): WorldPosition
     {
         return $this->location;
     }
@@ -81,11 +83,11 @@ class Block
 
     public function getRelative(Direction $direction): Block
     {
-        $loc = clone $this->location;
+        $loc = $this->location;
 
         $loc->add($direction);
 
-        return $this->getChunk()->getBlock((int)$loc->getX(), (int)$loc->getY(), (int)$loc->getZ());
+        return $this->getChunk()->getBlock($loc);
     }
     
     public function isWaterloggable(): bool
