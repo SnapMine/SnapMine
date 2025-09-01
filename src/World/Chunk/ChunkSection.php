@@ -10,6 +10,7 @@ use InvalidArgumentException;
 use SnapMine\Block\AttachedFace;
 use SnapMine\Block\Attachment;
 use SnapMine\Block\AxisType;
+use SnapMine\Block\Block;
 use SnapMine\Block\BlockType;
 use SnapMine\Block\Connection;
 use SnapMine\Block\CreakingHeartState;
@@ -37,7 +38,7 @@ class ChunkSection
     private int $blockCount = 4096;
     /** @var PalettedContainer<BlockData> */
     private PalettedContainer $palettedContainer;
-    private int $y = 0;
+    private int $y;
 
     /**
      * @throws Exception
@@ -85,12 +86,10 @@ class ChunkSection
                 if ($b instanceof RedstoneWire) {
                     $b->setConnection($dir, Connection::from($value));
                     continue;
-                }
-                else if (! is_null(filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE))) {
+                } else if (!is_null(filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE))) {
                     /** @phpstan-ignore method.notFound */
                     $b->setFace($dir);
-                }
-                else {
+                } else {
                     /** @phpstan-ignore method.notFound */
                     $b->setHeight($dir, WallHeight::from($value));
                 }
@@ -118,8 +117,8 @@ class ChunkSection
         return match ($name) {
             // booleans
             'lit', 'open', 'attached', 'powered', 'waterlogged', 'hanging', 'ominous', 'drag', 'triggered', 'snowy', 'in_wall', 'persistent', 'occupied', 'has_bottle_0', 'has_bottle_1', 'has_bottle_2', 'signal_fire', 'berries', 'conditional',
-                'slot_0_occupied', 'slot_1_occupied', 'slot_2_occupied', 'slot_3_occupied', 'slot_4_occupied', 'slot_5_occupied', 'crafting', 'natural', 'inverted', 'cracked', 'eye', 'enabled', 'has_record', 'has_book', 'tip',
-                'bottom', 'extended', 'short', 'locked', 'bloom', 'can_summon', 'shrieking', 'unstable', 'disarmed'
+            'slot_0_occupied', 'slot_1_occupied', 'slot_2_occupied', 'slot_3_occupied', 'slot_4_occupied', 'slot_5_occupied', 'crafting', 'natural', 'inverted', 'cracked', 'eye', 'enabled', 'has_record', 'has_book', 'tip',
+            'bottom', 'extended', 'short', 'locked', 'bloom', 'can_summon', 'shrieking', 'unstable', 'disarmed'
             => $value === 'true',
 
             // int
@@ -201,6 +200,13 @@ class ChunkSection
         return $blockData;
     }
 
+    /**
+     * @return int
+     */
+    public function getY(): int
+    {
+        return $this->y;
+    }
 
     /**
      * Get total block in this chunk
@@ -221,6 +227,11 @@ class ChunkSection
         }
 
         $this->blockCount = $blockCount;
+    }
+
+    public function setBlock(int $localX, int $localY, int $localZ, Block $block): void
+    {
+        $this->palettedContainer[($localY * 256) + ($localZ * 16) + $localX] = $block->getBlockData();
     }
 
     public function getBlockData(int $localX, int $localY, int $localZ): BlockData

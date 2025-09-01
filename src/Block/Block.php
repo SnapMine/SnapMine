@@ -8,13 +8,15 @@ use SnapMine\Material;
 use SnapMine\Network\Packet\Clientbound\Play\BlockUpdatePacket;
 use SnapMine\Server;
 use SnapMine\World\Chunk\Chunk;
+use SnapMine\World\Location;
 use SnapMine\World\Position;
+use SnapMine\World\WorldPosition;
 
 class Block
 {
     public function __construct(
         private readonly Server   $server,
-        private readonly Position $location,
+        private readonly WorldPosition $location,
         private BlockData         $blockData,
     )
     {
@@ -39,9 +41,9 @@ class Block
     }
 
     /**
-     * @return Position
+     * @return Location
      */
-    public function getLocation(): Position
+    public function getLocation(): Location
     {
         return $this->location;
     }

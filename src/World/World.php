@@ -4,6 +4,7 @@ namespace SnapMine\World;
 
 use Error;
 use SnapMine\Artisan;
+use SnapMine\Block\Block;
 use SnapMine\Entity\Entity;
 use SnapMine\Entity\EntityType;
 use SnapMine\Entity\Player;
@@ -61,6 +62,20 @@ class World
         }
 
         return null;
+    }
+
+    public function getBlock(Position $position): Block
+    {
+        return $this
+            ->getChunk((int)$position->getX() >> 4, (int)$position->getZ() >> 4)
+            ->getBlock($position->getX(), $position->getY(), $position->getZ());
+    }
+
+    public function setBlock(Position $position, Block $newBlock): void
+    {
+        $this
+            ->getChunk((int)$position->getX() >> 4, (int)$position->getZ() >> 4)
+            ->setBlock($position, $newBlock);
     }
 
     public function spawnEntity(EntityType $entityType, Location $location): Entity

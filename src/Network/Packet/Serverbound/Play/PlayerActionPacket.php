@@ -10,7 +10,9 @@ use SnapMine\Network\Packet\Clientbound\Play\BlockUpdatePacket;
 use SnapMine\Network\Packet\Serverbound\ServerboundPacket;
 use SnapMine\Network\Serializer\PacketSerializer;
 use SnapMine\Session\Session;
+use SnapMine\World\Location;
 use SnapMine\World\Position;
+use SnapMine\World\WorldPosition;
 
 class PlayerActionPacket extends ServerboundPacket {
     private int $status;
@@ -57,7 +59,10 @@ class PlayerActionPacket extends ServerboundPacket {
 
     private function destroyBlock(Session $session): void
     {
-        $block = new Block($session->getServer(), $this->position, BlockType::AIR->createBlockData());
+        $loc = WorldPosition::fromPosition($session->getPlayer()->getWorld(), $this->position);
+        $block = new Block($session->getServer(), $loc, BlockType::AIR->createBlockData());
+
+        $loc->getWorld()->setBlock($loc, $block);
 
         $session->getServer()->broadcastPacket(new BlockUpdatePacket($this->position, $block));
     }

@@ -17,6 +17,7 @@ use SnapMine\Utils\UUID;
 use SnapMine\World\Chunk\Chunk;
 use SnapMine\World\Location;
 use SnapMine\World\Position;
+use SnapMine\World\World;
 
 class Player extends LivingEntity
 {
@@ -164,6 +165,11 @@ class Player extends LivingEntity
         $packet = new DisconnectPacket($reason);
 
         $this->sendPacket($packet);
+    }
+
+    public function getWorld(): World
+    {
+        return $this->location->getWorld();
     }
 
 //    public function move(Position $position, float $yaw = 0.0, float $pitch = 0.0): void

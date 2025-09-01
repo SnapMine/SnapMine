@@ -8,8 +8,9 @@ use Exception;
 use SnapMine\Artisan;
 use SnapMine\Block\Block;
 use SnapMine\Block\BlockType;
-use SnapMine\World\Location;
+use SnapMine\World\Position;
 use SnapMine\World\World;
+use SnapMine\World\WorldPosition;
 
 class Chunk
 {
@@ -171,14 +172,12 @@ class Chunk
         return $this->heightmaps;
     }
 
-    public function dump(): array
+    public function __debugInfo(): array
     {
         return [
             $this->x,
             $this->z,
             $this->sections,
-            $this->blockLight,
-            $this->skyLight,
             $this->blockEntities,
             $this->heightmaps,
         ];
@@ -192,17 +191,25 @@ class Chunk
         return $this->loaded;
     }
 
-    public function getBlock(int $x, int $y, int $z): Block
+    public function getBlock(Position $pos): Block
     {
-        $sectionIndex = $y >> 4;
-        $location = new Location($this->world, $x, $y, $z);
+        $sectionIndex = $pos->getY() >> 4;
+        $worldPosition = WorldPosition::fromPosition($this->world, $pos);
 
         if (!isset($this->sections[$sectionIndex])) {
-            return new Block(Artisan::getServer(), $location, BlockType::AIR->createBlockData());
+            return new Block(Artisan::getServer(), $worldPosition, BlockType::AIR->createBlockData());
         }
 
-        $blockData = $this->sections[$sectionIndex]->getBlockData($x & 0xF, $y & 0xF, $z & 0xF);
+        $blockData = $this->sections[$sectionIndex]
+            ->getBlockData($pos->getX() & 0xF, $pos->getY() & 0xF, $pos->getZ() & 0xF);
 
-        return new Block(Artisan::getServer(), $location, $blockData);
+        return new Block(Artisan::getServer(), $worldPosition, $blockData);
+    }
+
+    public function setBlock(Position $pos, Block $block): void {
+        $sectionIndex = $pos->getY() >> 4;
+
+        $this->sections[$sectionIndex]
+            ->setBlock($pos->getX() & 0xF, $pos->getY() & 0xF, $pos->getZ() & 0xF, $block);
     }
 }
