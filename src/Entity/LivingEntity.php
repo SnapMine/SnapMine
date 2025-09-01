@@ -2,6 +2,7 @@
 
 namespace SnapMine\Entity;
 
+use React\EventLoop\Loop;
 use SnapMine\Effect\MobEffect;
 use SnapMine\Effect\MobEffectType;
 use SnapMine\Entity\Metadata\MetadataType;
@@ -17,6 +18,7 @@ abstract class LivingEntity extends Entity
     protected int $arrowsInBody = 0;
     protected int $beeStringerInBody = 0;
     protected ?Position $bedLocation = null;
+    protected bool $potionEffectAmbient = false;
     /** @var MobEffect[] */
     protected array $mobEffects = [];
 
@@ -95,14 +97,22 @@ abstract class LivingEntity extends Entity
         $this->setMetadata(9, MetadataType::FLOAT, $this->health);
     }
 
-    public function getPotionEffects(): array
+    /**
+     * @return bool
+     */
+    public function isPotionEffectAmbient(): bool
     {
-        throw new UnimplementException();
+        return $this->potionEffectAmbient;
     }
 
-    public function addPotionEffect(): void
+    /**
+     * @param bool $potionEffectAmbient
+     */
+    public function setPotionEffectAmbient(bool $potionEffectAmbient): void
     {
-        throw new UnimplementException();
+        $this->potionEffectAmbient = $potionEffectAmbient;
+
+        $this->setMetadata(11, MetadataType::BOOLEAN, $this->potionEffectAmbient);
     }
 
     /**
@@ -177,6 +187,16 @@ abstract class LivingEntity extends Entity
         $this->mobEffects[$effect->getType()->value] = $effect;
 
         $this->getServer()->broadcastPacket(new UpdateMobEffectPacket($this->getId(), $effect));
+
+        if ($effect->hasAmbient()) {
+            $this->setPotionEffectAmbient(true);
+
+            $this->update();
+        }
+
+        Loop::addTimer($effect->getDuration() / 20, function () use ($effect) {
+            $this->removeMobEffect($effect);
+        });
     }
 
     public function removeMobEffect(MobEffect|MobEffectType $effect): void
@@ -186,6 +206,12 @@ abstract class LivingEntity extends Entity
         unset($this->mobEffects[$type->value]);
 
         $this->getServer()->broadcastPacket(new RemoveMobEffectPacket($this->getId(), $type));
+
+        if (count($this->mobEffects) === 0 && $this->potionEffectAmbient) {
+            $this->setPotionEffectAmbient(false);
+
+            $this->update();
+        }
     }
 
     public function removeMobEffects(): void

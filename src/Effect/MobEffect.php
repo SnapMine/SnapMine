@@ -13,7 +13,7 @@ class MobEffect implements ProtocolEncodable
         private MobEffectType $type,
         private int $duration,
         private int $amplifier,
-        private bool $ambient = false,
+        private bool $ambient = true,
         private bool $particles = true,
         private bool $icon = true,
     )
