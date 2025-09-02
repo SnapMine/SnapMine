@@ -3,6 +3,7 @@
 namespace SnapMine\Network\Packet\Clientbound\Play;
 
 use SnapMine\Command\CommandNode;
+use SnapMine\Command\RootNode;
 use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
 use SnapMine\Network\Serializer\PacketSerializer;
 

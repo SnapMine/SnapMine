@@ -3,6 +3,8 @@
 namespace SnapMine\Command;
 
 use ReflectionClass;
+use ReflectionMethod;
+use SnapMine\Command\Attributes\Argument;
 use SnapMine\Command\Attributes\Command;
 use SnapMine\Command\Attributes\SubCommand;
 
@@ -31,31 +33,45 @@ class CommandManager
         return $this->commands;
     }
 
-    /**
-     * @return CommandNode[]
-     */
-    public function build(): array
+    function build(): array
     {
-        $root = new CommandNode(CommandNode::TYPE_ROOT, 'root');
-        $index = 1;
+        $root = new CommandNode(CommandNode::TYPE_ROOT, '');
+        $cmds = [];
 
-        foreach ($this->commands as $executor) {
-            $reflectionClass = new ReflectionClass($executor);
+        foreach ($this->commands as $fqcn) {
+            $rc = new ReflectionClass($fqcn);
 
-            $commands = $reflectionClass->getAttributes(Command::class);
-
-            if (count($commands) === 0) {
-                throw new \Error("Class " . $reflectionClass->getName() . " is missing Command attribute");
+            // Cherche #[Command('name')]
+            $cmdAttr = $rc->getAttributes(Command::class)[0] ?? null;
+            if (!$cmdAttr || !$cmdAttr->getArguments()[0]) {
+                continue;
             }
 
-            $name = $commands[0]->getArguments()['name'];
-            $subCommands = $reflectionClass->getAttributes(SubCommand::class);
+            $cmdName = $cmdAttr->getArguments()[0];
+            $baseCommand = new CommandNode(CommandNode::TYPE_LITERAL, $cmdName);
+            $cmds[] = $baseCommand;
+            $root->addChild(count($cmds));
 
-            foreach ($subCommands as $subCommand) {
-                $subCommand->newInstance()
+            foreach ($rc->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+                $methodAttrs = $method->getAttributes(SubCommand::class);
+
+
+                if (count($methodAttrs) > 0) {
+                    if (count($methodAttrs[0]->getArguments()) > 0) {
+                        $subCmdName = $methodAttrs[0]->getArguments()[0];
+                    } else {
+                        continue;
+                    }
+
+                    $cmds[] = new CommandNode(CommandNode::TYPE_LITERAL, $subCmdName);
+                    $baseCommand->addChild(count($cmds));
+                }
+
             }
+
+
         }
 
-        return [];
+        return [$root, ...$cmds];
     }
 }

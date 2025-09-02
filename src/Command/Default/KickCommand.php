@@ -2,13 +2,19 @@
 
 namespace SnapMine\Command\Default;
 
+use SnapMine\Command\Command;
 use SnapMine\Command\CommandExecutor;
 use SnapMine\Entity\Player;
 
-class KickCommand implements CommandExecutor
+class KickCommand
 {
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
-    public function execute(Player $player, string $command): void
+    protected array $permissions = ['snapmine.command.kick'];
+    public function run(Player $player, string $command): void
     {
         $player->kick('Kick !');
     }

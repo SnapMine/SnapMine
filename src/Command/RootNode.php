@@ -23,9 +23,14 @@ class RootNode
         return $this->children;
     }
 
+    public function getChild(string $name): LiteralNode
+    {
+        return $this->children[$name];
+    }
+
     public function addChild(LiteralNode $child): self
     {
-        $this->children[] = $child;
+        $this->children[$child->getName()] = $child;
 
         return $this;
     }

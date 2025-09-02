@@ -13,6 +13,6 @@ ini_set('memory_limit', '2048M');
 $server = new Server();
 
 $server->getCommandManager()->add('help', new HelpCommand());
-$server->getCommandManager()->add('kick', new KickCommand());
+//$server->getCommandManager()->add('kick', new KickCommand());
 
 $server->start();
