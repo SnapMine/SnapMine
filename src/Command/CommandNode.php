@@ -18,7 +18,7 @@ class CommandNode
 
     public function __construct(
         private readonly int $type,
-        private readonly string $name = ""
+        private readonly string $name
     )
     {
     }

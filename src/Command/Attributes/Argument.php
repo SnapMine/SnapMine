@@ -8,7 +8,7 @@ use Attribute;
 class Argument
 {
     public function __construct(
-        public ?string $value = null,
+        public ?string $type = null,
     )
     {
     }

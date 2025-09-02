@@ -4,7 +4,7 @@ namespace SnapMine\Command;
 
 class CommandManager
 {
-    /** @var array<string, object> */
+    /** @var array<object> */
     private array $commands = [];
 
     public function add(string $name, object $executor): void
@@ -32,18 +32,13 @@ class CommandManager
      */
     public function build(): array
     {
-        $root = new CommandNode(CommandNode::TYPE_ROOT);
-        $nodes = [];
+        $root = new CommandNode(CommandNode::TYPE_ROOT, 'root');
+        $index = 1;
 
-        $commands = array_keys($this->commands);
-        for ($i = 0; $i < count($commands); $i++) {
-            $nodes[$i] = new CommandNode(CommandNode::TYPE_LITERAL, $commands[$i]);
+        foreach ($this->commands as $name => $executor) {
 
-            $nodes[$i]->setExecutable(true);
-
-            $root->addChild($i + 1);
         }
 
-        return array_merge([$root], $nodes);
+        return [];
     }
 }
