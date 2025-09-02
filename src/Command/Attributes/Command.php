@@ -4,7 +4,7 @@ namespace SnapMine\Command\Attributes;
 
 use Attribute;
 
-#[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_FUNCTION)]
+#[Attribute(Attribute::TARGET_CLASS)]
 class Command
 {
     public function __construct(

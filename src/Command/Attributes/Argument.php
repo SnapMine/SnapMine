@@ -7,9 +7,12 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PARAMETER)]
 class Argument
 {
-    public function __construct(
-        public ?string $type = null,
-    )
+    private array $arguments = [];
+
+    public function __construct(mixed ...$arguments)
     {
+        foreach ($arguments as $argument) {
+            $this->arguments[] = $argument;
+        }
     }
 }

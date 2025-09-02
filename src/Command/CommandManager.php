@@ -2,6 +2,10 @@
 
 namespace SnapMine\Command;
 
+use ReflectionClass;
+use SnapMine\Command\Attributes\Command;
+use SnapMine\Command\Attributes\SubCommand;
+
 class CommandManager
 {
     /** @var array<object> */
@@ -35,8 +39,21 @@ class CommandManager
         $root = new CommandNode(CommandNode::TYPE_ROOT, 'root');
         $index = 1;
 
-        foreach ($this->commands as $name => $executor) {
+        foreach ($this->commands as $executor) {
+            $reflectionClass = new ReflectionClass($executor);
 
+            $commands = $reflectionClass->getAttributes(Command::class);
+
+            if (count($commands) === 0) {
+                throw new \Error("Class " . $reflectionClass->getName() . " is missing Command attribute");
+            }
+
+            $name = $commands[0]->getArguments()['name'];
+            $subCommands = $reflectionClass->getAttributes(SubCommand::class);
+
+            foreach ($subCommands as $subCommand) {
+                $subCommand->newInstance()
+            }
         }
 
         return [];
