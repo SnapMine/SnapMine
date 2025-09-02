@@ -86,12 +86,16 @@ class ChunkSection
                 if ($b instanceof RedstoneWire) {
                     $b->setConnection($dir, Connection::from($value));
                     continue;
-                } else if (!is_null(filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE))) {
-                    /** @phpstan-ignore method.notFound */
-                    $b->setFace($dir);
-                } else {
+                }
+
+                $var = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+
+                if (is_null($var)) {
                     /** @phpstan-ignore method.notFound */
                     $b->setHeight($dir, WallHeight::from($value));
+                } else if ($var) {
+                    /** @phpstan-ignore method.notFound */
+                    $b->setFace($dir);
                 }
 
                 continue;
