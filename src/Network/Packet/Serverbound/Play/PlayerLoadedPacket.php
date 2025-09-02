@@ -64,7 +64,6 @@ class PlayerLoadedPacket extends ServerboundPacket {
 
         $session->sendPacket(new CommandsPacket($session->getServer()->getCommandManager()->build(), 0));
 
-        var_dump(count($newPlayer->getLocation()->getWorld()->getEntities()));
         foreach ($newPlayer->getLocation()->getWorld()->getEntities() as $entity) {
             $newPlayer->sendPacket(new AddEntityPacket($entity, 0, 0, 0, 0));
             $newPlayer->sendPacket(new SetEntityDataPacket($entity));

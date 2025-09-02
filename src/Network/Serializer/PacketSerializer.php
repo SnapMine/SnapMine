@@ -323,7 +323,7 @@ class PacketSerializer
     /**
      * Encode un prefixed array.
      * 
-     * @param ProtocolDecodable[] $array
+     * @param ProtocolEncodable[] $array
      * @return PacketSerializer $this
      */
     public function putPrefixedArray(array $array): PacketSerializer
