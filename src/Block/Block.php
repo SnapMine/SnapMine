@@ -4,8 +4,10 @@ namespace SnapMine\Block;
 
 use SnapMine\Block\Data\BlockData;
 use SnapMine\Block\Data\Waterlogged;
+use SnapMine\Entity\Player;
 use SnapMine\Material;
 use SnapMine\Network\Packet\Clientbound\Play\BlockUpdatePacket;
+use SnapMine\Network\Packet\Clientbound\Play\LevelEventPacket;
 use SnapMine\Server;
 use SnapMine\World\Chunk\Chunk;
 use SnapMine\World\Location;
@@ -39,7 +41,7 @@ class Block
     {
         $this->blockData = BlockType::find($material)->createBlockData();
 
-        $this->server->broadcastPacket(new BlockUpdatePacket($this->location, $this));
+        $this->getChunk()->setBlock($this->location, $this);
     }
 
     /**
@@ -93,5 +95,15 @@ class Block
     public function isWaterloggable(): bool
     {
         return has_trait(Waterlogged::class, $this->blockData);
+    }
+
+    public function break(Player $by): void
+    {
+        $this->server->broadcastPacket(
+            new LevelEventPacket(2001, $this->location, $this->blockData->computedId()),
+            fn (Player $player) => $player->getUuid() != $by->getUuid()
+        );
+
+        $this->setMaterial(Material::AIR);
     }
 }
