@@ -7,6 +7,7 @@ use Aternos\Nbt\Tag\StringTag;
 use Error;
 use Exception;
 use InvalidArgumentException;
+use SnapMine\Artisan;
 use SnapMine\Block\AttachedFace;
 use SnapMine\Block\Attachment;
 use SnapMine\Block\AxisType;
@@ -31,6 +32,7 @@ use SnapMine\Block\Type\RedstoneWire;
 use SnapMine\Block\VaultState;
 use SnapMine\Block\WallHeight;
 use SnapMine\Material;
+use SnapMine\Network\Packet\Clientbound\Play\BlockUpdatePacket;
 use SnapMine\World\PalettedContainer;
 
 class ChunkSection
@@ -236,6 +238,8 @@ class ChunkSection
     public function setBlock(int $localX, int $localY, int $localZ, Block $block): void
     {
         $this->palettedContainer[($localY * 256) + ($localZ * 16) + $localX] = $block->getBlockData();
+
+        Artisan::getServer()->broadcastPacket(new BlockUpdatePacket($block->getLocation(), $block));
     }
 
     public function getBlockData(int $localX, int $localY, int $localZ): BlockData

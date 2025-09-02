@@ -40,30 +40,22 @@ class PlayerActionPacket extends ServerboundPacket {
 
     public function handle(Session $session): void
     {
+        $player = $session->getPlayer();
+
         $session->sendPacket(new BlockChangedAckPacket($this->sequence));
 
         switch ($this->status) {
             case 0:
-                $session->getServer()->broadcastPacket(new BlockDestructionPacket($session->getPlayer(), $this->position, 2)); // TODO: Compute stage
+                $session->getServer()->broadcastPacket(new BlockDestructionPacket($player, $this->position, 2)); // TODO: Compute stage
                 break;
             case 1:
-                $session->getServer()->broadcastPacket(new BlockDestructionPacket($session->getPlayer(), $this->position, -1));
+                $session->getServer()->broadcastPacket(new BlockDestructionPacket($player, $this->position, -1));
                 break;
             case 2:
-                $this->destroyBlock($session); // TODO: Verify player completed the destruction
+                $player->getWorld()->getBlock($this->position)->break($player); // TODO: Verify player completed the destruction
                 break;
             default:
                 break;
         }
-    }
-
-    private function destroyBlock(Session $session): void
-    {
-        $loc = WorldPosition::fromPosition($session->getPlayer()->getWorld(), $this->position);
-        $block = new Block($session->getServer(), $loc, BlockType::AIR->createBlockData());
-
-        $loc->getWorld()->setBlock($loc, $block);
-
-        $session->getServer()->broadcastPacket(new BlockUpdatePacket($this->position, $block));
     }
 }
