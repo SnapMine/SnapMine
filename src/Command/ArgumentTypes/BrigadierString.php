@@ -3,9 +3,9 @@
 namespace SnapMine\Command\ArgumentTypes;
 
 /**
- * @extends ArgumentType<string>
+ * @extends CommandArgumentType<string>
  */
-class BrigadierString extends ArgumentType
+class BrigadierString extends CommandArgumentType
 {
     public const SINGLE_WORD = 0, QUOTABLE_PHRASE = 1, GREEDY_PHRASE = 2;
 

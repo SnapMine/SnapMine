@@ -5,7 +5,7 @@ namespace SnapMine\Command\ArgumentTypes;
 /**
  * @template T
  */
-abstract class ArgumentType
+abstract class CommandArgumentType
 {
     abstract static function getNumericId(): int;
 
