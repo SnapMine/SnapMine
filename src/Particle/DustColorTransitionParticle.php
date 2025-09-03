@@ -40,7 +40,7 @@ class DustColorTransitionParticle implements ProtocolEncodable
         return $this->scale;
     }
 
-    public function toPacket(PacketSerializer $serializer): void
+    public function encode(PacketSerializer $serializer): void
     {
         $serializer
             ->putInt($this->from->getColor())

@@ -4,20 +4,26 @@ namespace SnapMine\Block;
 
 use SnapMine\Block\Data\BlockData;
 use SnapMine\Block\Data\Waterlogged;
+use SnapMine\Entity\Player;
 use SnapMine\Material;
 use SnapMine\Network\Packet\Clientbound\Play\BlockUpdatePacket;
+use SnapMine\Network\Packet\Clientbound\Play\LevelEventPacket;
 use SnapMine\Server;
 use SnapMine\World\Chunk\Chunk;
+use SnapMine\World\Location;
 use SnapMine\World\Position;
+use SnapMine\World\WorldPosition;
 
 class Block
 {
+    private readonly WorldPosition $location;
     public function __construct(
         private readonly Server   $server,
-        private readonly Position $location,
+        WorldPosition $location,
         private BlockData         $blockData,
     )
     {
+        $this->location = clone $location;
     }
 
     /**
@@ -35,13 +41,13 @@ class Block
     {
         $this->blockData = BlockType::find($material)->createBlockData();
 
-        $this->server->broadcastPacket(new BlockUpdatePacket($this->location, $this));
+        $this->getChunk()->setBlock($this->location, $this);
     }
 
     /**
-     * @return Position
+     * @return WorldPosition
      */
-    public function getLocation(): Position
+    public function getLocation(): WorldPosition
     {
         return $this->location;
     }
@@ -79,15 +85,25 @@ class Block
 
     public function getRelative(Direction $direction): Block
     {
-        $loc = clone $this->location;
+        $loc = $this->location;
 
-        $loc->add($direction);
+        $loc->addDirection($direction);
 
-        return $this->getChunk()->getBlock((int)$loc->getX(), (int)$loc->getY(), (int)$loc->getZ());
+        return $this->getChunk()->getBlock($loc);
     }
     
     public function isWaterloggable(): bool
     {
         return has_trait(Waterlogged::class, $this->blockData);
+    }
+
+    public function break(Player $by): void
+    {
+        $this->server->broadcastPacket(
+            new LevelEventPacket(2001, $this->location, $this->blockData->computedId()),
+            fn (Player $player) => $player->getUuid() != $by->getUuid()
+        );
+
+        $this->setMaterial(Material::AIR);
     }
 }

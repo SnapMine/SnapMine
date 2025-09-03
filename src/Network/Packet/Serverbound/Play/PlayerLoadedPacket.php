@@ -8,6 +8,7 @@ use SnapMine\Event\Player\PlayerJoinEvent;
 use SnapMine\Network\Packet\Clientbound\Play\AddEntityPacket;
 use SnapMine\Network\Packet\Clientbound\Play\CommandsPacket;
 use SnapMine\Network\Packet\Clientbound\Play\PlayerInfoUpdatePacket;
+use SnapMine\Network\Packet\Clientbound\Play\SetEntityDataPacket;
 use SnapMine\Network\Packet\Serverbound\ServerboundPacket;
 use SnapMine\Network\Serializer\PacketSerializer;
 use SnapMine\Session\Session;
@@ -33,19 +34,15 @@ class PlayerLoadedPacket extends ServerboundPacket {
             return;
         }
 
-        $session->getServer()->addPlayer($newPlayer);
-
         foreach (Artisan::getPlayers() as $player) {
-            if ($newPlayer->getUuid()->toString() === $player->getUuid()->toString()) {
-                continue;
-            }
-
             $infos[$player->getUuid()->toString()] = [
                 [
                     'name' => $player->getName(),
                 ]
             ];
         }
+
+        $session->getServer()->addPlayer($newPlayer);
 
         if (!empty($infos)) {
             $newPlayer->sendPacket(new PlayerInfoUpdatePacket(
@@ -66,5 +63,10 @@ class PlayerLoadedPacket extends ServerboundPacket {
         }
 
         $session->sendPacket(new CommandsPacket($session->getServer()->getCommandManager()->build(), 0));
+
+        foreach ($newPlayer->getLocation()->getWorld()->getEntities() as $entity) {
+            $newPlayer->sendPacket(new AddEntityPacket($entity, 0, 0, 0, 0));
+            $newPlayer->sendPacket(new SetEntityDataPacket($entity));
+        }
     }
 }

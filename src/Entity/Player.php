@@ -3,7 +3,10 @@
 namespace SnapMine\Entity;
 
 use SnapMine\Component\TextComponent;
+use SnapMine\Inventory\ItemStack;
+use SnapMine\Inventory\PlayerInventory;
 use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
+use SnapMine\Network\Packet\Clientbound\Play\ContainerSetContentPacket;
 use SnapMine\Network\Packet\Clientbound\Play\DisconnectPacket;
 use SnapMine\Network\Packet\Clientbound\Play\MoveEntityPosPacket;
 use SnapMine\Network\Packet\Clientbound\Play\MoveEntityRotPacket;
@@ -17,12 +20,14 @@ use SnapMine\Utils\UUID;
 use SnapMine\World\Chunk\Chunk;
 use SnapMine\World\Location;
 use SnapMine\World\Position;
+use SnapMine\World\World;
 
 class Player extends LivingEntity
 {
     public int $lastKeepAliveId = 0;
     private GameMode $gameMode = GameMode::SURVIVAL;
     private ?GameMode $previousGameMode = null;
+    private PlayerInventory $inventory;
 
     public function __construct(
         private readonly Session     $session,
@@ -31,6 +36,8 @@ class Player extends LivingEntity
     )
     {
         parent::__construct($this->session->getServer(), $location);
+
+        $this->inventory = new PlayerInventory();
     }
 
     /**
@@ -166,44 +173,61 @@ class Player extends LivingEntity
         $this->sendPacket($packet);
     }
 
-    public function move(Position $position, float $yaw = 0.0, float $pitch = 0.0): void
+    public function getWorld(): World
     {
-        $loc = $this->getLocation();
-
-        $factor = 4096;
-
-        $deltaX = (int)(($position->getX() - $loc->getX()) * $factor);
-        $deltaY = (int)(($position->getY() - $loc->getY()) * $factor);
-        $deltaZ = (int)(($position->getZ() - $loc->getZ()) * $factor);
-
-        $maxDelta = 32767; // max short
-        if (abs($deltaX) > $maxDelta || abs($deltaY) > $maxDelta || abs($deltaZ) > $maxDelta) {
-            return;
-        }
-
-        $loc->setX($position->getX());
-        $loc->setY($position->getY());
-        $loc->setZ($position->getZ());
-
-        if ($yaw === 0.0 && $pitch === 0.0) {
-            $outPacket = new MoveEntityPosPacket(
-                $this->getId(),
-                $deltaX,
-                $deltaY,
-                $deltaZ,
-                false
-            );
-
-            $this->getServer()->broadcastPacket($outPacket, fn(Player $p) => $p->getUuid() != $this->getUuid());
-        } else {
-            $loc->setYaw($yaw);
-            $loc->setPitch($pitch);
-
-            $packet = new MoveEntityRotPacket($this, false);
-            $headRotatePacket = new RotateHeadPacket($this);
-
-            $this->getServer()->broadcastPacket($headRotatePacket, fn(Player $p) => $p->getUuid() != $this->getUuid());
-            $this->getServer()->broadcastPacket($packet, fn(Player $p) => $p->getUuid() != $this->getUuid());
-        }
+        return $this->location->getWorld();
     }
+
+    /**
+     * @return PlayerInventory
+     */
+    public function getInventory(): PlayerInventory
+    {
+        return $this->inventory;
+    }
+
+    public function give(ItemStack $item): void
+    {
+        $this->inventory->addItem($item);
+
+        $this->sendPacket(new ContainerSetContentPacket($this->inventory));
+    }
+
+//    public function move(Position $position, float $yaw = 0.0, float $pitch = 0.0): void
+//    {
+//        $loc = $this->getLocation();
+//
+//        $factor = 4096;
+//
+//        $deltaX = (int)(($position->getX() - $loc->getX()) * $factor);
+//        $deltaY = (int)(($position->getY() - $loc->getY()) * $factor);
+//        $deltaZ = (int)(($position->getZ() - $loc->getZ()) * $factor);
+//
+//        $maxDelta = 32767; // max short
+//        if (abs($deltaX) > $maxDelta || abs($deltaY) > $maxDelta || abs($deltaZ) > $maxDelta) {
+//            return;
+//        }
+//
+//        $loc->setX($position->getX());
+//        $loc->setY($position->getY());
+//        $loc->setZ($position->getZ());
+//
+//        if ($yaw === 0.0 && $pitch === 0.0) {
+//            $outPacket = new MoveEntityPosPacket(
+//                $this->getId(),
+//                $deltaX,
+//                $deltaY,
+//                $deltaZ,
+//                false
+//            );
+//
+//            $this->getServer()->broadcastPacket($outPacket, fn(Player $p) => $p->getUuid() != $this->getUuid());
+//        } else {
+//            $loc->setYaw($yaw);
+//            $loc->setPitch($pitch);
+//
+//            $packet = new MoveEntityRotPacket($this, false);
+//            $this->getServer()->broadcastPacket($packet, fn(Player $p) => $p->getUuid() != $this->getUuid());
+//        }
+//    }
 }

@@ -1587,4 +1587,14 @@ enum Material: int
     {
         return self::cases()[$id];
     }
+
+    public static function getFromItemId(int $itemId): ?Material
+    {
+        foreach (self::cases() as $material) {
+            if ($material->getItemId() === $itemId) {
+                return $material;
+            }
+        }
+        return null;
+    }
 }

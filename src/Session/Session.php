@@ -52,7 +52,7 @@ class Session
         $this->socket->write($serializer->getLengthPrefixedData());
     }
 
-    public function close(): void
+    public function close(?string $reason = null): void
     {
         $this->server->closeSession($this, $this->socket);
     }
@@ -139,7 +139,7 @@ class Session
         return new Player(
             $this,
             new GameProfile($this->username, UUID::fromString($this->uuid)),
-            new Location(0, 0, 0)
+            new Location($this->server->getWorld('world'), 0, 0, 0) // TODO: replace world by default world
         );
     }
 

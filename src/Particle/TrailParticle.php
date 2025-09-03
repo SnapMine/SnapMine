@@ -58,7 +58,7 @@ class TrailParticle implements ProtocolEncodable
         return $this->duration;
     }
 
-    public function toPacket(PacketSerializer $serializer): void
+    public function encode(PacketSerializer $serializer): void
     {
         $serializer
             ->putDouble($this->x)

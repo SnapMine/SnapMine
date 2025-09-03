@@ -328,16 +328,16 @@ class Server
     /**
      * Spawn new entity
      * @param EntityType $entityType
+     * @param Location|null $location
      * @return Entity
      */
-    public function spawnEntity(EntityType $entityType, Location $location = new Location(0, 0, 0)): Entity
+    public function spawnEntity(EntityType $entityType, ?Location $location = null): Entity
     {
-        $class = $entityType->getClass();
-        $entity = new $class($this, $location);
+        if (is_null($location)) {
+            $location = new Location($this->worlds['world'], 0, 0, 0);
+        }
 
-        $this->broadcastPacket(new AddEntityPacket($entity, 0, 0, 0, 0));
-
-        return $entity;
+        return $location->getWorld()->spawnEntity($entityType, $location);
     }
 
     /**

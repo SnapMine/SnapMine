@@ -3,11 +3,7 @@
 namespace SnapMine\World;
 
 use ArrayAccess;
-use Aternos\Nbt\Tag\CompoundTag;
 use InvalidArgumentException;
-use Iterator;
-use SnapMine\Block\Data\BlockData;
-use SnapMine\Material;
 use OutOfBoundsException;
 use RuntimeException;
 
@@ -24,17 +20,43 @@ class PalettedContainer implements ArrayAccess
      * @param array<int> $data
      */
     public function __construct(
-        protected readonly array $palette,
-        protected array          $data,
+        protected array $palette,
+        protected array $data,
     )
     {
-        if(count($this->palette) == 1) {
+        if (count($this->palette) == 1) {
             $this->bitsPerEntry = 0;
         } else {
             $this->bitsPerEntry = max(4, (int)ceil(log(count($this->palette), 2)));
         }
     }
 
+    private function addToPalette(int $newBlock): void
+    {
+        $newBitsPerEntry = max(4, (int)ceil(log(count($this->palette)+1, 2)));
+        $this->data = $this->convertDataToBpe($newBitsPerEntry);
+        $this->palette[] = $newBlock;
+
+    }
+
+    private function convertDataToBpe($newBpe): array
+    {
+        $newData = [];
+
+        $valsPerLong = intdiv(64, $newBpe);
+        $arraySize = 4096 / $valsPerLong;
+
+        for ($i = 0; $i < $arraySize; $i++) {
+            $long = 0;
+            for ($j = 0; $j < $valsPerLong; $j++) {
+                $long >>= $newBpe;
+                $long |= ($this->data[$i * $j]) << (64 - $newBpe);
+            }
+            $newData[] = $long;
+        }
+
+        return $newData;
+    }
 
     public function getData(): array
     {
@@ -68,7 +90,7 @@ class PalettedContainer implements ArrayAccess
 
         $bpe = $this->bitsPerEntry;
 
-        if($this->bitsPerEntry == 0) {
+        if ($this->bitsPerEntry == 0) {
             return $this->palette[0];
         }
 
@@ -102,8 +124,11 @@ class PalettedContainer implements ArrayAccess
         if (!is_int($offset)) {
             throw new InvalidArgumentException("Offset must be an integer.");
         }
-        if (!is_int($value)) {
-            throw new InvalidArgumentException("Value must be an integer (palette index).");
+        $paletteIndex = array_search($value, $this->palette);
+
+        if($paletteIndex === false) {
+            $this->addToPalette($value);
+            $paletteIndex = count($this->palette) - 1;
         }
 
         $bpe = $this->bitsPerEntry;
@@ -116,23 +141,22 @@ class PalettedContainer implements ArrayAccess
             throw new RuntimeException("bitsPerEntry must be <= 64");
         }
 
+
         $longIndex = intdiv($offset, $valsPerLong);
         $inLongIdx = $offset % $valsPerLong;
         $bitInLong = $inLongIdx * $bpe;
 
         $maskEntry = (1 << $bpe) - 1;
-        $value    &= $maskEntry;                     // clamp à la largeur
-        $FULL64    = 0xFFFFFFFFFFFFFFFF;
+        $paletteIndex &= $maskEntry;
 
-        // S'assurer que le slot existe
         if (!isset($this->data[$longIndex])) {
             $this->data[$longIndex] = 0;
         }
 
-        $clear = $FULL64 ^ (($maskEntry << $bitInLong) & $FULL64);
-        $cur   = $this->data[$longIndex] & $FULL64;
+        $clear = PHP_INT_MAX ^ (($maskEntry << $bitInLong) & PHP_INT_MAX);
+        $cur = $this->data[$longIndex] & PHP_INT_MAX;
 
-        $cur   = ($cur & $clear) | ((($value & $maskEntry) << $bitInLong) & $FULL64);
+        $cur = ($cur & $clear) | ((($paletteIndex & $maskEntry) << $bitInLong) & PHP_INT_MAX);
         $this->data[$longIndex] = $cur;
     }
 
@@ -144,8 +168,4 @@ class PalettedContainer implements ArrayAccess
     {
         unset($this->data[$offset]);
     }
-
-    // J'ai supprimé Iterator pour l'instant parce que les valeurs étaient celle de
-    // la data mais brute. On itérera avec un compteur pour l'instant.
-    // A voir si on l'implémente plus tard.
 }

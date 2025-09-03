@@ -323,14 +323,14 @@ class PacketSerializer
     /**
      * Encode un prefixed array.
      * 
-     * @param array $array
+     * @param ProtocolEncodable[] $array
      * @return PacketSerializer $this
      */
     public function putPrefixedArray(array $array): PacketSerializer
     {
         $this->putVarInt(count($array));
         foreach ($array as $item) {
-            $this->putString($item);
+            $item->encode($this);
         }
         return $this;
     }
@@ -338,15 +338,15 @@ class PacketSerializer
     /**
      * Lit un prefixed array.
      *
-     * @return array
+     * @return ProtocolDecodable[]
      * @throws \Exception
      */
-    public function getPrefixedArray(): array
+    public function getPrefixedArray(ProtocolDecodable $decodable): array
     {
         $length = $this->getVarInt();
         $array = [];
         for ($i = 0; $i < $length; $i++) {
-            $array[] = $this->buffer[$this->offset++];
+            $array[] = $decodable::decode($this);
         }
 
         return $array;
@@ -585,7 +585,7 @@ class PacketSerializer
 
     public function putObject(ProtocolEncodable $encodable): PacketSerializer
     {
-        $encodable->toPacket($this);
+        $encodable->encode($this);
 
         return $this;
     }

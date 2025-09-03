@@ -4,5 +4,5 @@ namespace SnapMine\Network\Serializer;
 
 interface ProtocolEncodable
 {
-    public function toPacket(PacketSerializer $serializer): void;
+    public function encode(PacketSerializer $serializer): void;
 }

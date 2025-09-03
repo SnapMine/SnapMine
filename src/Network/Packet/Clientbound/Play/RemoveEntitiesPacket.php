@@ -9,7 +9,7 @@ use SnapMine\Network\Serializer\PacketSerializer;
 class RemoveEntitiesPacket extends ClientboundPacket
 {
     /**
-     * @param Entity[] $entities
+     * @param array<int|Entity> $entities
      */
     public function __construct(
         private readonly array $entities,
@@ -22,7 +22,7 @@ class RemoveEntitiesPacket extends ClientboundPacket
         $serializer->putVarInt(count($this->entities));
 
         foreach ($this->entities as $entity) {
-            $serializer->putVarInt($entity->getId());
+            $serializer->putVarInt($entity instanceof Entity ? $entity->getId() : $entity);
         }
     }
 
