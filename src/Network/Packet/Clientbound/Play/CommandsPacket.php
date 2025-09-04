@@ -19,10 +19,6 @@ class CommandsPacket extends ClientboundPacket
     {
         $nodes = $this->commandManager->getNodes();
 
-        foreach ($nodes as $node) {
-            var_dump($node->getIndex());
-        }
-
         $serializer->putVarInt(count($nodes) + 1);
 
         foreach ($nodes as $node) {

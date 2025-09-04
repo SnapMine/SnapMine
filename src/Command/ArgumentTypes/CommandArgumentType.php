@@ -23,4 +23,6 @@ abstract class CommandArgumentType
     abstract function setValue(mixed $value): void;
 
     abstract function encodeProperties(PacketSerializer $serializer): void;
+
+    abstract function parse(array $args): ?array;
 }

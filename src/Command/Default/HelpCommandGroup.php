@@ -27,7 +27,10 @@ Command::new('help')
     })
     ->group(function (CommandNode $group) {
         $group
-            ->literal('hello', fn (Player $player) => $player->sendMessage("Hello World!"));
+            ->literal('hello', fn (Player $player) => $player->sendMessage("Hello World!"))
+            ->argument("name", new BrigadierString(BrigadierString::SINGLE_WORD), function (Player $player, BrigadierString $name) {
+                $player->sendMessage("Hello " . $name . "!");
+            });
     })
     ->build();
 

@@ -48,6 +48,21 @@ class CommandNode implements ProtocolEncodable
         return $this->index;
     }
 
+    public function isExecutable(): bool
+    {
+        return $this->hasFlag(self::FLAG_IS_EXECUTABLE);
+    }
+
+    public function getExecutor(): ?Closure
+    {
+        return $this->executor;
+    }
+
+    public function getChildren(): array
+    {
+        return $this->children;
+    }
+
     public function literal(string $name, ?callable $executor = null): LiteralNode
     {
 

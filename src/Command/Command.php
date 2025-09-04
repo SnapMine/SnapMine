@@ -27,7 +27,6 @@ class Command implements ProtocolEncodable
 
         return $me->root;
     }
-
     /**
      * @return LiteralNode
      */

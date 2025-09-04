@@ -44,4 +44,40 @@ class BrigadierString extends CommandArgumentType
     {
         $serializer->putVarInt($this->type);
     }
+
+    function parse(array $args): ?array
+    {
+        if (count($args) === 0) {
+            return null;
+        }
+
+        $clone = clone $this;
+
+        switch ($this->type) {
+            case self::SINGLE_WORD:
+                $clone->value = $args[0];
+                return [array_slice($args, 1), $clone];
+            case self::QUOTABLE_PHRASE:
+                $re = '/^("((?:[^"\\\\]|\\\\.)*)"|\'((?:[^\'\\\\]|\\\\.)*)\') /s';
+
+                $implode = implode(' ', $args) ;
+
+                preg_match($re, $implode . " ", $matches);
+
+                if (count($matches) === 0) {
+                    return null;
+                }
+                $newArgs = explode(" ", substr($implode, strlen($matches[0])));
+                $clone->value = stripcslashes($matches[2]);
+
+                var_dump($newArgs);
+
+                return [$newArgs, $clone];
+            case self::GREEDY_PHRASE:
+                $clone->value = implode(' ', $args);
+                return [[], $clone];
+            default:
+                return null;
+        }
+    }
 }

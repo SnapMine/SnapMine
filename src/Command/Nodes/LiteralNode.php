@@ -21,6 +21,11 @@ class LiteralNode extends CommandNode
         $this->setFlag(CommandNode::FLAG_TYPE_LITERAL, true);
     }
 
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
     protected function encodeProperties(PacketSerializer $serializer): void
     {
         $serializer->putString($this->name);

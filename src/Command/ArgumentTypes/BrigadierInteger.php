@@ -59,4 +59,19 @@ class BrigadierInteger extends CommandArgumentType
             $serializer->putInt($this->max);
         }
     }
+
+    function parse(array $args): ?array
+    {
+        if(is_numeric($args[0])) {
+            $int = (int)$args[0];
+            if (($this->min !== null && $int < $this->min) || ($this->max !== null && $int > $this->max)) {
+                return null;
+            }
+            $copy = clone $this;
+            $copy->setValue($int);
+            return [array_slice($args, 1), $copy];
+        } else {
+            return null;
+        }
+    }
 }

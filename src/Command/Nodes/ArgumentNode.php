@@ -23,6 +23,19 @@ class ArgumentNode extends CommandNode
 
     }
 
+    public function getType(): CommandArgumentType
+    {
+        return $this->type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
     protected function encodeProperties(PacketSerializer $serializer): void
     {
         $serializer->putString($this->name);
