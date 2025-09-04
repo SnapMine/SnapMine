@@ -2,57 +2,39 @@
 
 namespace SnapMine\Network\Packet\Clientbound\Play;
 
-use SnapMine\Command\CommandNode;
-use SnapMine\Command\RootNode;
+
+use SnapMine\Command\CommandManager;
 use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
 use SnapMine\Network\Serializer\PacketSerializer;
 
 class CommandsPacket extends ClientboundPacket
 {
-    /**
-     * @param CommandNode[] $nodes
-     * @param int $rootIndex
-     */
     public function __construct(
-        private readonly array $nodes,
-        private readonly int $rootIndex,
+        private readonly CommandManager $commandManager,
     )
     {
     }
 
     public function write(PacketSerializer $serializer): void
     {
-        $serializer->putVarInt(count($this->nodes));
+        $nodes = $this->commandManager->getNodes();
 
-        foreach ($this->nodes as $node) {
-            $flags = $node->computeFlags();
-            $serializer->putByte($flags);
-
-            $serializer->putVarInt(count($node->getChildren()));
-            foreach ($node->getChildren() as $child) {
-                $serializer->putVarInt($child);
-            }
-
-            if ($node->getRedirect() !== null) {
-                $serializer->putVarInt($node->getRedirect());
-            }
-
-            if ($node->getType() === CommandNode::TYPE_LITERAL || $node->getType() === CommandNode::TYPE_ARGUMENT) {
-                $serializer->putString($node->getName());
-            }
-
-            if ($node->getType() === CommandNode::TYPE_ARGUMENT) {
-                $serializer->putString($node->getParser());
-                // TODO: serialize properties
-            }
-
-            if ($node->getSuggestions() !== null) {
-                $serializer->putString($node->getSuggestions());
-            }
+        foreach ($nodes as $node) {
+            var_dump($node->getIndex());
         }
 
-        // root index
-        $serializer->putVarInt($this->rootIndex);
+        $serializer->putVarInt(count($nodes) + 1);
+
+        foreach ($nodes as $node) {
+            $node->encode($serializer);
+        }
+
+        $serializer->putByte(0)->putVarInt(count($this->commandManager->getCommands()));
+        foreach ($this->commandManager->getCommands() as $command) {
+            $serializer->putVarInt($command->getRoot()->getIndex());
+        }
+
+        $serializer->putVarInt(count($nodes));
     }
 
     public function getId(): int

@@ -2,8 +2,6 @@
 
 namespace SnapMine\Command\Default;
 
-use SnapMine\Command\Command;
-use SnapMine\Command\CommandExecutor;
 use SnapMine\Entity\Player;
 
 class KickCommand

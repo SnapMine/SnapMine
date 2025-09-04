@@ -2,29 +2,31 @@
 
 namespace SnapMine\Command\Nodes;
 
+use Closure;
 use SnapMine\Command\ArgumentTypes\CommandArgumentType;
-use SnapMine\Command\Nodes\CommandNode;
+use SnapMine\Network\Serializer\PacketSerializer;
 
 class ArgumentNode extends CommandNode
 {
 
-    private string $name;
-    private CommandArgumentType $type;
 
-    public function __construct(string $name, CommandArgumentType $type) {
-        $this->name = $name;
-        $this->type = $type;
-        $this->setFlag(self::FLAG_TYPE_ARGUMENT, true);
-    }
-
-    public function getName(): string
+    public function __construct(
+        ?CommandNode                  $parent,
+        int                           &$index,
+        protected string              $name,
+        protected CommandArgumentType $type,
+        ?Closure                      $executor = null
+    )
     {
-        return $this->name;
+        parent::__construct($parent, $executor, $index);
+        $this->setFlag(CommandNode::FLAG_TYPE_ARGUMENT, true);
+
     }
 
-    public function getType(): string
+    protected function encodeProperties(PacketSerializer $serializer): void
     {
-        return $this->type;
+        $serializer->putString($this->name);
+        $serializer->putVarInt($this->type::getNumericId());
+        $this->type->encodeProperties($serializer);
     }
-
 }

@@ -2,6 +2,8 @@
 
 namespace SnapMine\Command\ArgumentTypes;
 
+use SnapMine\Network\Serializer\PacketSerializer;
+
 /**
  * @extends CommandArgumentType<string>
  */
@@ -12,8 +14,9 @@ class BrigadierString extends CommandArgumentType
     private string $value = '';
 
 
-
-    public function __construct(private int $type = self::SINGLE_WORD)
+    public function __construct(
+        private readonly int $type = self::SINGLE_WORD
+    )
     {
     }
 
@@ -35,5 +38,10 @@ class BrigadierString extends CommandArgumentType
     public static function getNumericId(): int
     {
         return 5;
+    }
+
+    public function encodeProperties(PacketSerializer $serializer): void
+    {
+        $serializer->putVarInt($this->type);
     }
 }

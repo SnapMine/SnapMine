@@ -2,7 +2,7 @@
 
 require_once 'vendor/autoload.php';
 
-use SnapMine\Command\Default\HelpCommand;
+use SnapMine\Command\Default\HelpCommandGroup;
 use SnapMine\Command\Default\KickCommand;
 use SnapMine\Server;
 
@@ -12,9 +12,9 @@ ini_set('memory_limit', '2048M');
 
 $server = new Server();
 
-$server->getCommandManager()->add('help', new HelpCommand());
+require 'src/Command/Default/HelpCommandGroup.php';
 //$server->getCommandManager()->add('kick', new KickCommand());
-$server->getCommandManager()->add('spawn', new \SnapMine\Command\Default\SpawnCommand());
-$server->getCommandManager()->add('give', new \SnapMine\Command\Default\GiveCommand());
+//$server->getCommandManager()->add('spawn', new \SnapMine\CommandNode\Default\SpawnCommand());
+//$server->getCommandManager()->add('give', new \SnapMine\CommandNode\Default\GiveCommand());
 
 $server->start();

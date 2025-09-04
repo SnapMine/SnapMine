@@ -75,6 +75,8 @@ class Server
         private ?int    $port = null,
     )
     {
+        Artisan::setServer($this);
+
         $this->eventManager = new EventManager();
         $this->blockStateLoader = new BlockStateLoader(__DIR__ . '/../resources/blocks.json');
         $this->config = new ServerConfig(dirname(__DIR__) . "/config.yml");
@@ -118,8 +120,6 @@ class Server
 
     public function start(): void
     {
-        Artisan::setServer($this);
-
         $loop = Loop::get();
 
         $this->socket = new SocketServer("{$this->host}:{$this->port}", [], $loop);
@@ -373,10 +373,5 @@ class Server
     public function getCommandManager(): CommandManager
     {
         return $this->commandManager;
-    }
-
-    public function registerCommand(string $name, object $class): void
-    {
-        $this->commandManager->add($name, $class);
     }
 }

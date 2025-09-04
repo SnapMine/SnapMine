@@ -2,26 +2,28 @@
 
 namespace SnapMine\Command\Nodes;
 
-use SnapMine\Command\Nodes\CommandNode;
+use Closure;
+use SnapMine\Command\Command;
 use SnapMine\Network\Serializer\PacketSerializer;
-use SnapMine\Network\Serializer\ProtocolEncodable;
 
 class LiteralNode extends CommandNode
 {
-    private string $name;
 
-    public function __construct(string $name) {
-        $this->name = $name;
-        $this->setFlag(self::FLAG_TYPE_LITERAL, true);
-    }
-
-    public function getName(): string
+    public function __construct(
+        CommandNode|Command $parent,
+        int                 &$index,
+        protected string    $name,
+        ?Closure            $executor = null,
+    )
     {
-        return $this->name;
+        parent::__construct($parent, $executor, $index);
+
+        $this->setFlag(CommandNode::FLAG_TYPE_LITERAL, true);
     }
 
-    public function toPacket(PacketSerializer $serializer): void
+    protected function encodeProperties(PacketSerializer $serializer): void
     {
-        // TODO: Implement toPacket() method.
+        $serializer->putString($this->name);
     }
+
 }
