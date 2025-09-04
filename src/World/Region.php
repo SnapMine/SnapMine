@@ -31,7 +31,7 @@ class Region
 
     private function openHandle(): void
     {
-        if ($this->handle === null) {
+        if (! is_resource($this->handle)) {
             $this->handle = fopen($this->file, 'rb');
             if (!$this->handle) {
                 throw new Error("Cannot open: {$this->file}");

@@ -177,9 +177,7 @@ class Chunk
         return [
             $this->x,
             $this->z,
-            $this->sections,
             $this->blockEntities,
-            $this->heightmaps,
         ];
     }
 

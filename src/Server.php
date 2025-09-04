@@ -7,23 +7,14 @@ use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
+use React\EventLoop\Loop;
+use Revolt\EventLoop;
 use SnapMine\Block\BlockStateLoader;
 use SnapMine\Command\CommandExecutor;
 use SnapMine\Command\CommandManager;
-use SnapMine\Entity\Animal\Armadillo;
-use SnapMine\Entity\Animal\Bee;
-use SnapMine\Entity\Animal\Chicken;
-use SnapMine\Entity\Animal\Cow;
-use SnapMine\Entity\Animal\Fox;
-use SnapMine\Entity\Animal\Sheep;
-use SnapMine\Entity\AreaEffectCloud;
-use SnapMine\Entity\DragonFireball;
-use SnapMine\Entity\EndCrystal;
 use SnapMine\Entity\Entity;
 use SnapMine\Entity\EntityType;
-use SnapMine\Entity\EvokerFangs;
 use SnapMine\Entity\Player;
-use SnapMine\Entity\WindCharge;
 use SnapMine\Event\Event;
 use SnapMine\Event\EventBinding;
 use SnapMine\Event\EventManager;
@@ -31,7 +22,6 @@ use SnapMine\Event\Listener;
 use SnapMine\Listener\PlayerJoinListener;
 use SnapMine\Manager\ChunkManager\ChunkManager;
 use SnapMine\Manager\KeepAliveManager;
-use SnapMine\Network\Packet\Clientbound\Play\AddEntityPacket;
 use SnapMine\Network\Packet\Clientbound\Play\LevelParticles;
 use SnapMine\Network\Packet\Clientbound\Play\PlayerInfoRemovePacket;
 use SnapMine\Network\Packet\Clientbound\Play\RemoveEntitiesPacket;
@@ -41,14 +31,12 @@ use SnapMine\Registry\Registry;
 use SnapMine\Session\Session;
 use SnapMine\World\Location;
 use SnapMine\World\World;
-use React\EventLoop\Loop;
 use React\Socket\ConnectionInterface;
 use React\Socket\SocketServer;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionNamedType;
 use Throwable;
-use function React\Async\async;
 
 class Server
 {
@@ -75,6 +63,8 @@ class Server
         private ?int    $port = null,
     )
     {
+        Artisan::setServer($this);
+
         $this->eventManager = new EventManager();
         $this->blockStateLoader = new BlockStateLoader(__DIR__ . '/../resources/blocks.json');
         $this->config = new ServerConfig(dirname(__DIR__) . "/config.yml");
@@ -118,18 +108,14 @@ class Server
 
     public function start(): void
     {
-        Artisan::setServer($this);
-
-        $loop = Loop::get();
-
-        $this->socket = new SocketServer("{$this->host}:{$this->port}", [], $loop);
+        $this->socket = new SocketServer("{$this->host}:{$this->port}", [], Loop::get());
         self::getLogger()->info("Serveur démarré sur {$this->host}:{$this->port}");
 
         $this->registerListener(new PlayerJoinListener());
 
         $keepAliveManager = new KeepAliveManager();
         // Tick keep-alives periodically
-        $loop->addPeriodicTimer(1.0, function () use ($keepAliveManager) {
+        EventLoop::repeat(1, function () use ($keepAliveManager) {
             $keepAliveManager->tick($this);
         });
 
@@ -148,7 +134,7 @@ class Server
                 /** @var Session $session */
                 $session = $this->sessions[$id];
                 $session->serializer->put($data);
-                async(function () use ($session) {$session->handle();})();
+                $session->handle();
             });
 
             $connection->on('close', function () use ($id, $connection) {
@@ -162,8 +148,7 @@ class Server
             });
         });
 
-        // Run the loop until stopped
-        $loop->run();
+        EventLoop::run();
     }
 
     public function closeSession(Session $session, ConnectionInterface $socket): void

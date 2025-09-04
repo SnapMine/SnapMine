@@ -88,7 +88,6 @@
       <path value="$PROJECT_DIR$/vendor/react/event-loop" />
       <path value="$PROJECT_DIR$/vendor/react/promise" />
       <path value="$PROJECT_DIR$/vendor/react/socket" />
-      <path value="$PROJECT_DIR$/vendor/react/async" />
       <path value="$PROJECT_DIR$/vendor/symfony/yaml" />
       <path value="$PROJECT_DIR$/vendor/kelunik/certificate" />
       <path value="$PROJECT_DIR$/vendor/daverandom/libdns" />
@@ -108,6 +107,8 @@
       <path value="$PROJECT_DIR$/vendor/amphp/pipeline" />
       <path value="$PROJECT_DIR$/vendor/psr/http-factory" />
       <path value="$PROJECT_DIR$/vendor/amphp/process" />
+      <path value="$PROJECT_DIR$/vendor/react/async" />
+      <path value="$PROJECT_DIR$/vendor/revolt/event-loop-adapter-react" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2">
