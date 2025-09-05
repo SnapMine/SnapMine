@@ -42,16 +42,6 @@ class CommandManager
         $this->commands[] = $command;
     }
 
-
-    // Parcours l'arbre -> vérifie l'argument
-    // -> Si c'est parsable -> continue le parcours (si les args ne sont pas finis) ->
-    // -> Si c'est pas parsable -> on remonte et on recommence le parcours
-    // -> Si les args sont terminés et qu'on est sur un nœud exécutable -> on exécute
-    // -> Si les args sont terminés et qu'on est pas sur un nœud exécutable -> erreur
-
-    // [LiteralNode("give"), ArgumentNode("player", EntityPlayer), ArgumentNode("item", Item), ArgumentNode("count", Integer)]
-    // [LiteralNode("give"), ArgumentNode("player", EntityPlayer), ArgumentNode("item", Item), ArgumentNode("count", Integer)]
-
     public function execute(Player $player, array $args): void
     {
         foreach ($this->commands as $command) {
@@ -77,7 +67,7 @@ class CommandManager
             if ($node->isExecutable()) {
                 return [$node->getExecutor(), $executorArgs];
             }
-            Artisan::getLogger()->debug("Plus d'arguments wesh");
+
             return null;
         }
 

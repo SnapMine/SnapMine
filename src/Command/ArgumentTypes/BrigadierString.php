@@ -70,8 +70,6 @@ class BrigadierString extends CommandArgumentType
                 $newArgs = explode(" ", substr($implode, strlen($matches[0])));
                 $clone->value = stripcslashes($matches[2]);
 
-                var_dump($newArgs);
-
                 return [$newArgs, $clone];
             case self::GREEDY_PHRASE:
                 $clone->value = implode(' ', $args);
