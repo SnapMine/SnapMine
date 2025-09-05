@@ -10,10 +10,10 @@ ini_set('memory_limit', '2048M');
 
 $server = new Server();
 
-require 'src/Command/Default/HelpCommandGroup.php';
+require 'src/Command/Default/HelpCommand.php';
 require 'src/Command/Default/SendCommand.php';
-//$server->getCommandManager()->add('kick', new KickCommand());
-//$server->getCommandManager()->add('spawn', new \SnapMine\CommandNode\Default\SpawnCommand());
-//$server->getCommandManager()->add('give', new \SnapMine\CommandNode\Default\GiveCommand());
+require 'src/Command/Default/KickCommand.php';
+require 'src/Command/Default/SpawnCommand.php';
+require 'src/Command/Default/GiveCommand.php';
 
 $server->start();
