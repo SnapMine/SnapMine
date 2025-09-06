@@ -14,6 +14,7 @@ use RuntimeException;
 class PalettedContainer implements ArrayAccess
 {
     protected int $bitsPerEntry;
+    protected array $paletteUsage;
 
     /**
      * @param T[] $palette
@@ -26,20 +27,30 @@ class PalettedContainer implements ArrayAccess
     {
         if (count($this->palette) == 1) {
             $this->bitsPerEntry = 0;
+            $this->paletteUsage = [4096];
         } else {
             $this->bitsPerEntry = max(4, (int)ceil(log(count($this->palette), 2)));
+            $this->paletteUsage = array_fill(0, count($this->palette), 0);
+
+            for ($i = 0; $i < 4096; $i++) {
+                $this->paletteUsage[$this->getIndexInPalette($i)]++;
+            }
         }
     }
 
     private function addToPalette(int $newBlock): void
     {
-        $newBitsPerEntry = max(4, (int)ceil(log(count($this->palette)+1, 2)));
-        $this->data = $this->convertDataToBpe($newBitsPerEntry);
+        $newBitsPerEntry = max(4, (int)ceil(log(count($this->palette) + 1, 2)));
+        if($newBitsPerEntry !== $this->bitsPerEntry) {
+            $this->repack($newBitsPerEntry);
+        }
+
         $this->palette[] = $newBlock;
+        $this->paletteUsage[] = 0;
 
     }
 
-    private function convertDataToBpe($newBpe): array
+    private function repack($newBpe): void
     {
         $newData = [];
 
@@ -55,7 +66,8 @@ class PalettedContainer implements ArrayAccess
             $newData[] = $long;
         }
 
-        return $newData;
+        $this->data = $newData;
+        $this->bitsPerEntry = $newBpe;
     }
 
     public function getData(): array
@@ -71,6 +83,16 @@ class PalettedContainer implements ArrayAccess
         return $this->palette;
     }
 
+    public function getNumberOf(mixed $paletteValue) {
+        $paletteIndex = array_search($paletteValue, $this->palette);
+
+        if($paletteIndex === false) {
+            return 0;
+        }
+
+        return $this->paletteUsage[$paletteIndex];
+    }
+
     /**
      * @inheritDoc
      */
@@ -79,25 +101,18 @@ class PalettedContainer implements ArrayAccess
         return isset($this->data[$offset]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function offsetGet(mixed $offset): mixed
+    public function getIndexInPalette(int $value): int
     {
-        if (!is_int($offset)) {
-            throw new InvalidArgumentException("Offset must be an integer.");
-        }
-
         $bpe = $this->bitsPerEntry;
 
         if ($this->bitsPerEntry == 0) {
-            return $this->palette[0];
+            return 0;
         }
 
         $valsPerLong = intdiv(64, $bpe);
 
-        $longIndex = intdiv($offset, $valsPerLong);
-        $inLongIdx = $offset % $valsPerLong;
+        $longIndex = intdiv($value, $valsPerLong);
+        $inLongIdx = $value % $valsPerLong;
         $bitInLong = $inLongIdx * $bpe;
 
         if (!isset($this->data[$longIndex])) {
@@ -107,13 +122,19 @@ class PalettedContainer implements ArrayAccess
         $mask = (1 << $bpe) - 1;
         $lo = $this->data[$longIndex];
 
-        $indexInPalette = ($lo >> $bitInLong) & $mask;
+        return ($lo >> $bitInLong) & $mask;
+    }
 
-        if (!isset($this->palette[$indexInPalette])) {
-            throw new OutOfBoundsException("Palette index {$indexInPalette} is out of bounds for the current palette.");
+    /**
+     * @inheritDoc
+     */
+    public function offsetGet(mixed $offset): mixed
+    {
+        if (!is_int($offset) || $offset < 0 || $offset >= 4096) {
+            throw new InvalidArgumentException("Offset must be an integer in [0..4095].");
         }
 
-        return $this->palette[$indexInPalette];
+        return $this->palette[$this->getIndexInPalette($offset)];
     }
 
     /**
@@ -121,15 +142,19 @@ class PalettedContainer implements ArrayAccess
      */
     public function offsetSet(mixed $offset, mixed $value): void
     {
-        if (!is_int($offset)) {
-            throw new InvalidArgumentException("Offset must be an integer.");
+        if (!is_int($offset) || $offset < 0 || $offset >= 4096) {
+            throw new InvalidArgumentException("Offset must be an integer in [0..4095].");
         }
+
         $paletteIndex = array_search($value, $this->palette);
 
-        if($paletteIndex === false) {
+        if ($paletteIndex === false) {
             $this->addToPalette($value);
             $paletteIndex = count($this->palette) - 1;
         }
+
+        $this->paletteUsage[$paletteIndex]++;
+        $this->paletteUsage[$this->getIndexInPalette($offset)]--;
 
         $bpe = $this->bitsPerEntry;
         if ($bpe <= 0) {
@@ -155,7 +180,6 @@ class PalettedContainer implements ArrayAccess
 
         $clear = PHP_INT_MAX ^ (($maskEntry << $bitInLong) & PHP_INT_MAX);
         $cur = $this->data[$longIndex] & PHP_INT_MAX;
-
         $cur = ($cur & $clear) | ((($paletteIndex & $maskEntry) << $bitInLong) & PHP_INT_MAX);
         $this->data[$longIndex] = $cur;
     }

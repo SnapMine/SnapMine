@@ -2,6 +2,9 @@
 
 namespace SnapMine\Network\Packet\Serverbound\Play;
 
+use SnapMine\Block\Direction;
+use SnapMine\Material;
+use SnapMine\Network\Packet\Clientbound\Play\BlockChangedAckPacket;
 use SnapMine\Network\Packet\Clientbound\Play\BlockUpdatePacket;
 use SnapMine\Network\Packet\Serverbound\ServerboundPacket;
 use SnapMine\Network\Serializer\PacketSerializer;
@@ -41,11 +44,19 @@ class UseItemOnPacket extends ServerboundPacket
     public function handle(Session $session): void
     {
         $server = $session->getServer();
+        $direction = Direction::cases()[$this->face];
+
         $block = $server
             ->getWorld("world")
             ->getChunk(((int)$this->position->getX()) >> 4, ((int)$this->position->getZ()) >> 4)
             ->getBlock($this->position);
 
+        $loc = $block->getLocation()->addDirection($direction);
+        $b = $server->getWorld('world')->getBlock($loc);
+
+        $b->setMaterial(Material::BEDROCK);
+
+        $server->broadcastPacket(new BlockChangedAckPacket($this->sequence));
         $server->broadcastPacket(new BlockUpdatePacket($this->position, $block));
     }
 }

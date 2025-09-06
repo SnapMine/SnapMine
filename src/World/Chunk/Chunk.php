@@ -212,4 +212,11 @@ class Chunk
         $this->sections[$sectionIndex]
             ->setBlock($pos->getX() & 0xF, $pos->getY() & 0xF, $pos->getZ() & 0xF, $block);
     }
+
+    public function getSection(float $getY): ?ChunkSection
+    {
+        $sectionIndex = (int)$getY >> 4;
+
+        return $this->sections[$sectionIndex] ?? null;
+    }
 }

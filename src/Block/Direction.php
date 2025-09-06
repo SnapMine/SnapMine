@@ -2,16 +2,14 @@
 
 namespace SnapMine\Block;
 
-use SnapMine\World\Position;
-
 enum Direction: string
 {
     case DOWN = 'down';
-    case EAST = 'east';
+    case UP = 'up';
     case NORTH = 'north';
     case SOUTH = 'south';
     case WEST = 'west';
-    case UP = 'up';
+    case EAST = 'east';
 
     public function getVec3(): array
     {

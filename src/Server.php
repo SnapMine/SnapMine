@@ -205,7 +205,7 @@ class Server
     }
 
     /**
-     * @return array
+     * @return World[]
      */
     public function getWorlds(): array
     {

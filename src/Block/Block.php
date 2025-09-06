@@ -97,11 +97,17 @@ class Block
         return has_trait(Waterlogged::class, $this->blockData);
     }
 
-    public function break(Player $by): void
+    public function break(?Player $by): void
     {
+        if (is_null($by)) {
+            $filter = null;
+        } else {
+            $filter = fn (Player $player) => $player->getUuid() != $by->getUuid();
+        }
+
         $this->server->broadcastPacket(
             new LevelEventPacket(2001, $this->location, $this->blockData->computedId()),
-            fn (Player $player) => $player->getUuid() != $by->getUuid()
+            $filter
         );
 
         $this->setMaterial(Material::AIR);
