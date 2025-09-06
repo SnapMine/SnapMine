@@ -1,0 +1,30 @@
+<?php
+
+namespace SnapMine\Network\Packet\Clientbound\Play;
+
+use SnapMine\Component\TextComponent;
+use SnapMine\Network\Serializer\PacketSerializer;
+use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
+
+class OpenScreenPacket extends ClientboundPacket
+{
+    public function __construct(
+        private readonly Int $windowId,
+        private readonly Int $windowType,
+        private readonly TextComponent $windowTitle
+)
+{
+}
+
+public function getId(): int
+{
+    return 0x34;
+}
+
+public function write(PacketSerializer $serializer): void
+{
+    $serializer->putVarInt($this->windowId)
+        ->putVarInt($this->windowType)
+        ->putNBT($this->windowTitle->toNBT());
+}
+}
