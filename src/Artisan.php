@@ -4,6 +4,7 @@ namespace SnapMine;
 
 use Monolog\Logger;
 use SnapMine\Block\BlockStateLoader;
+use SnapMine\Command\CommandManager;
 use SnapMine\World\Region;
 
 class Artisan
@@ -36,5 +37,10 @@ class Artisan
     public static function getBlockStateLoader(): BlockStateLoader
     {
         return self::$server->getBlockStateLoader();
+    }
+
+    public static function getCommandManager(): CommandManager
+    {
+        return self::$server->getCommandManager();
     }
 }

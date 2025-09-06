@@ -2,24 +2,34 @@
 
 namespace SnapMine\Command;
 
+use InvalidArgumentException;
+use SnapMine\Artisan;
+use SnapMine\Command\Nodes\ArgumentNode;
+use SnapMine\Command\Nodes\CommandNode;
+use SnapMine\Command\Nodes\LiteralNode;
+use SnapMine\Entity\Player;
+use SnapMine\Network\Serializer\ProtocolEncodable;
+
 class CommandManager
 {
-    /** @var array<string, CommandExecutor> */
+    /** @var CommandNode[] */
+    private array $nodes = [];
+    /** @var Command[] */
     private array $commands = [];
 
-    public function add(string $name, CommandExecutor $executor): void
+
+    public function __construct()
     {
-        $this->commands[$name] = $executor;
     }
 
-    public function has(string $name): bool
+    public function getNodes(): array
     {
-        return isset($this->commands[$name]);
+        return $this->nodes;
     }
 
-    public function get(string $name): CommandExecutor
+    public function addNodes(array $nodes): void
     {
-        return $this->commands[$name];
+        $this->nodes = array_merge($this->nodes, $nodes);
     }
 
     public function getCommands(): array
@@ -27,23 +37,62 @@ class CommandManager
         return $this->commands;
     }
 
-    /**
-     * @return CommandNode[]
-     */
-    public function build(): array
+    public function add(Command $command): void
     {
-        $root = new CommandNode(CommandNode::TYPE_ROOT);
-        $nodes = [];
+        $this->commands[] = $command;
+    }
 
-        $commands = array_keys($this->commands);
-        for ($i = 0; $i < count($commands); $i++) {
-            $nodes[$i] = new CommandNode(CommandNode::TYPE_LITERAL, $commands[$i]);
+    public function execute(Player $player, array $args): void
+    {
+        foreach ($this->commands as $command) {
+            $root = $command->getRoot();
+            if ($root->getName() === $args[0]) {
+                $ret = $this->findExecutableNode($root, array_slice($args, 1));
 
-            $nodes[$i]->setExecutable(true);
+                if ($ret !== null) {
+                    [$executor, $executorArgs] = $ret;
+                    $executor($player, ...$executorArgs);
+                } else {
+                    $player->sendMessage("Invalid command usage for command: " . $root->getName());
+                }
 
-            $root->addChild($i + 1);
+                break;
+            }
+        }
+    }
+
+    private function findExecutableNode(CommandNode $node, array $args, array $executorArgs = []): ?array
+    {
+        if (count($args) === 0) {
+            if ($node->isExecutable()) {
+                return [$node->getExecutor(), $executorArgs];
+            }
+
+            return null;
         }
 
-        return array_merge([$root], $nodes);
+        foreach ($node->getChildren() as $child) {
+            if ($child instanceof LiteralNode) {
+                if ($child->getName() === $args[0]) {
+                    $ret = $this->findExecutableNode($child, array_slice($args, 1), $executorArgs);
+
+                    if ($ret !== null) {
+                        return $ret;
+                    }
+                }
+            } else if ($child instanceof ArgumentNode) {
+                $ret = $child->getType()->parse($args);
+                if ($ret !== null) {
+                    [$newArgs, $newExecutorArg] = $ret;
+                    $ret = $this->findExecutableNode($child, $newArgs, array_merge($executorArgs, [$newExecutorArg]));
+
+                    if ($ret !== null) {
+                        return $ret;
+                    }
+                }
+            }
+        }
+        return null;
     }
+
 }
