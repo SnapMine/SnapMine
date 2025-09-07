@@ -38,7 +38,7 @@ class PalettedContainer implements ArrayAccess
         }
     }
 
-    private function addToPalette(int $newBlock): void
+    private function addToPalette(mixed $newBlock): void
     {
         $newBitsPerEntry = max(4, (int)ceil(log(count($this->palette) + 1, 2)));
         if($newBitsPerEntry !== $this->bitsPerEntry) {
@@ -191,5 +191,10 @@ class PalettedContainer implements ArrayAccess
     public function offsetUnset(mixed $offset): void
     {
         unset($this->data[$offset]);
+    }
+
+    public function getBitsPerEntry()
+    {
+        return $this->bitsPerEntry;
     }
 }

@@ -2,7 +2,10 @@
 
 namespace SnapMine\Network\Packet\Serverbound\Play;
 
+use SnapMine\Block\Data\Interactable;
 use SnapMine\Block\Direction;
+use SnapMine\Inventory\ItemStack;
+use SnapMine\Inventory\PlayerInventory;
 use SnapMine\Material;
 use SnapMine\Network\Packet\Clientbound\Play\BlockChangedAckPacket;
 use SnapMine\Network\Packet\Clientbound\Play\BlockUpdatePacket;
@@ -51,10 +54,33 @@ class UseItemOnPacket extends ServerboundPacket
             ->getChunk(((int)$this->position->getX()) >> 4, ((int)$this->position->getZ()) >> 4)
             ->getBlock($this->position);
 
+        $blockData = $block->getBlockData();
+
+        if ($blockData instanceof Interactable) {
+            if (!$session->getPlayer()->isSneaking()) {
+                $interactionHappened = $blockData->interact($session->getPlayer(), $block);
+                if ($interactionHappened) return;
+            }
+        }
+
+
         $loc = $block->getLocation()->addDirection($direction);
         $b = $server->getWorld('world')->getBlock($loc);
 
-        $b->setMaterial(Material::BEDROCK);
+        if ($b->isSolid()) return;
+
+        $index = $session->getPlayer()->getInventory()->getHeldHotbarSlot() + 36;
+
+        if ($this->hand === 1) $index = PlayerInventory::OFF_HAND_SLOT;
+
+        $item = $session->getPlayer()->getInventory()->getItem($index);
+
+
+        if (!$item->getMaterial()->isBlock() || $item->getMaterial()->isAir() || $item->getAmount() < 1) return;
+        $item->setAmount($item->getAmount() - 1);
+        $session->getPlayer()->getInventory()->setItem($index, $item);
+
+        $b->setMaterial($item->getMaterial());
 
         $server->broadcastPacket(new BlockChangedAckPacket($this->sequence));
         $server->broadcastPacket(new BlockUpdatePacket($this->position, $block));

@@ -52,6 +52,7 @@ $baseCmd->literal("chunk", function (Player $player) {
 
             $palette = $section->getPalettedContainer()->getPalette();
             $player->sendMessage("Palette usage for chunk section at Y: " . $section->getY() . " in chunk (" . $chunk->getX() . ", " . $chunk->getZ() . "):");
+            $player->sendMessage(" - BPE: " . $section->getPalettedContainer()->getBitsPerEntry());
 
             /** @var \SnapMine\Block\Data\BlockData $blockData */
             foreach($palette as $blockData) {

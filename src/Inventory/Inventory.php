@@ -115,28 +115,20 @@ class Inventory implements ProtocolEncodable
     public function addItem(ItemStack $itemStack): void
     {
         $itemStack = clone $itemStack;
-        $first = $this->first($itemStack->getMaterial());
+        $index = $this->first($itemStack->getMaterial());
 
-        if ($first !== -1) {
-            $currentItem = $this->getItem($first);
-            $newAmount = $currentItem->getAmount() + $itemStack->getAmount();
-
-            $currentItem->setAmount(min(64, $newAmount));
-            $this->setItem($first, $currentItem);
-
-            if ($newAmount > 64) {
-                $itemStack->setAmount($itemStack->getAmount() - 64);
-                $this->addItem($itemStack);
-            }
-        } else {
-            $first = $this->firstEmpty();
-
-            if ($first !== -1) {
-                $this->setItem($first, $itemStack);
-            }
+        if($index === -1) {
+            $index = $this->firstEmpty();
         }
 
+        $currentItem = $this->getItem($index);
+        $newAmount = $currentItem->getAmount() + $itemStack->getAmount();
+        $this->setItem($index, new ItemStack($itemStack->getMaterial(), min(64, $newAmount)));
 
+        if ($newAmount > 64) {
+            $itemStack->setAmount($newAmount - 64);
+            $this->addItem($itemStack);
+        }
     }
 
     public function firstEmpty(): int

@@ -97,6 +97,11 @@ class Block
         return has_trait(Waterlogged::class, $this->blockData);
     }
 
+    public function isSolid(): bool
+    {
+        return $this->getMaterial()->isSolid();
+    }
+
     public function break(?Player $by): void
     {
         if (is_null($by)) {
