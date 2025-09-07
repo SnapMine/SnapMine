@@ -149,11 +149,11 @@ class TextComponent implements JsonSerializable, EncodableToNbt
         if (! is_null($this->font))
             $tag->set('font', (new StringTag())->setValue($this->font));
 
-        $tag->set('bold', (new ByteTag())->setValue($this->bold));
-        $tag->set('underlined', (new ByteTag())->setValue($this->underline));
-        $tag->set('italic', (new ByteTag())->setValue($this->italic));
-        $tag->set('strikethrough', (new ByteTag())->setValue($this->strike));
-        $tag->set('obfuscated', (new ByteTag())->setValue($this->obfuscated));
+        $tag->set('bold', (new ByteTag())->setValue((int) $this->bold));
+        $tag->set('underlined', (new ByteTag())->setValue((int) $this->underline));
+        $tag->set('italic', (new ByteTag())->setValue((int) $this->italic));
+        $tag->set('strikethrough', (new ByteTag())->setValue((int) $this->strike));
+        $tag->set('obfuscated', (new ByteTag())->setValue((int) $this->obfuscated));
 
         $tag->set('shadow_color', (new IntTag())->setValue($this->shadowColor));
 
