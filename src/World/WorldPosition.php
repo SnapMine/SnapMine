@@ -6,7 +6,7 @@ class WorldPosition extends Position
 {
     private World $world;
 
-    public function __construct(World $world, float $x, float $y, float $z)
+    public function __construct(World $world, int $x, int $y, int $z)
     {
         parent::__construct($x, $y, $z);
 
@@ -28,7 +28,7 @@ class WorldPosition extends Position
     {
         $this->world = $world;
     }
-    
+
     public static function fromPosition(World $world, Position $position): self
     {
         return new self($world, $position->getX(), $position->getY(), $position->getZ());
