@@ -2,7 +2,10 @@
 
 namespace SnapMine\Component;
 
+use Aternos\Nbt\Tag\ByteTag;
 use Aternos\Nbt\Tag\CompoundTag;
+use Aternos\Nbt\Tag\IntTag;
+use Aternos\Nbt\Tag\ListTag;
 use Aternos\Nbt\Tag\StringTag;
 use JsonSerializable;
 use SnapMine\Registry\EncodableToNbt;
@@ -10,6 +13,7 @@ use SnapMine\Utils\DyeColor;
 
 class TextComponent implements JsonSerializable, EncodableToNbt
 {
+    /** @var TextComponent[] */
     private array $children = [];
     private ?string $color = null;
     private ?string $font = null;
@@ -133,11 +137,35 @@ class TextComponent implements JsonSerializable, EncodableToNbt
         return array_filter($data, fn ($item) => $item !== null);
     }
 
-    public function toNBT(): StringTag|CompoundTag
+    public function toNBT(): CompoundTag
     {
-        $tag = new StringTag();
+        $tag = new CompoundTag();
 
-        $tag->setValue($this->options["text"]);
+        $tag->set('text', (new StringTag())->setValue($this->options['text']));
+
+        if (! is_null($this->color))
+            $tag->set('color', (new StringTag())->setValue($this->color));
+
+        if (! is_null($this->font))
+            $tag->set('font', (new StringTag())->setValue($this->font));
+
+        $tag->set('bold', (new ByteTag())->setValue($this->bold));
+        $tag->set('underlined', (new ByteTag())->setValue($this->underline));
+        $tag->set('italic', (new ByteTag())->setValue($this->italic));
+        $tag->set('strikethrough', (new ByteTag())->setValue($this->strike));
+        $tag->set('obfuscated', (new ByteTag())->setValue($this->obfuscated));
+
+        $tag->set('shadow_color', (new IntTag())->setValue($this->shadowColor));
+
+        if (count($this->children) > 0) {
+            $childrenTag = new ListTag();
+
+            foreach ($this->children as $child) {
+                $childrenTag[] = $child->toNBT();
+            }
+
+            $tag->set('extra', $childrenTag);
+        }
 
         return $tag;
     }

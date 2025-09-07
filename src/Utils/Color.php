@@ -2,6 +2,7 @@
 
 namespace SnapMine\Utils;
 
+use Error;
 use Exception;
 use SnapMine\Network\Serializer\PacketSerializer;
 use SnapMine\Network\Serializer\ProtocolEncodable;
@@ -20,7 +21,7 @@ readonly class Color implements ProtocolEncodable
     }
 
     /**
-     * @throws Exception
+     * @throws Error
      */
     public static function fromHex(string $hex): Color
     {
@@ -32,7 +33,7 @@ readonly class Color implements ProtocolEncodable
             return new self((int)hexdec($hex));
         }
 
-        throw new Exception('Invalid hex color');
+        throw new Error('Invalid hex color');
     }
 
     /**
