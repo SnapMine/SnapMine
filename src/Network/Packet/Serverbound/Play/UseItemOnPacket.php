@@ -2,6 +2,7 @@
 
 namespace SnapMine\Network\Packet\Serverbound\Play;
 
+use SnapMine\Inventory\InventoryType;
 use SnapMine\Network\Packet\Clientbound\Play\BlockUpdatePacket;
 use SnapMine\Network\Packet\Serverbound\ServerboundPacket;
 use SnapMine\Network\Serializer\PacketSerializer;
@@ -54,49 +55,34 @@ class UseItemOnPacket extends ServerboundPacket
         $blockData = $block->getMaterial()->getKey();
         $player = $session->getPlayer();
         
-        $chestBoats =[
-            Material::OAK_CHEST_BOAT->getKey(),
-            Material::BIRCH_CHEST_BOAT->getKey(),
-            Material::DARK_OAK_CHEST_BOAT->getKey(),
-            Material::ACACIA_CHEST_BOAT->getKey(),
-            Material::BAMBOO_CHEST_RAFT->getKey(),
-            Material::JUNGLE_CHEST_BOAT->getKey(),
-            Material::SPRUCE_CHEST_BOAT->getKey(),
-            Material::MANGROVE_CHEST_BOAT->getKey(),
-            Material::PALE_OAK_CHEST_BOAT->getKey(),
-        ];
 
         $blockList = [
-            Material ::CHEST_MINECART->getKey() => [2, 'Minecart with Chest'],
-            Material ::CHEST->getKey() => [2,'Chest'],
-            Material ::TRAPPED_CHEST->getKey() => [2,'Trapped Chest'],
-            Material ::ENDER_CHEST->getKey() => [2,'Ender Chest'],
-            Material ::BARREL->getKey() => [2,'Barrel'],
-            Material ::DISPENSER->getKey() => [6, 'Dispenser'],
-            Material ::DROPPER->getKey() => [6,'Dropper'],
-            Material ::CRAFTER->getKey() => [7, 'Crafter'],
-            Material ::ANVIL->getKey() => [8, 'Anvil'],
-            Material ::BEACON->getKey() => [9, 'Beacon'],
-            Material ::BLAST_FURNACE->getKey() => [10, 'Blast Furnace'],
-            Material ::BREWING_STAND->getKey() => [11, 'Brewing Stand'],
-            Material ::CRAFTING_TABLE->getKey() => [12, 'Crafting Table'],
-            Material ::ENCHANTING_TABLE->getKey() => [13, 'Enchanting Table'],
-            Material ::FURNACE->getKey() => [14, 'Furnace'],
-            Material ::GRINDSTONE->getKey() => [15, 'Grindstone'],
-            Material ::HOPPER->getKey() => [16, 'Hopper'],
-            Material ::HOPPER_MINECART->getKey() => [16, 'Minecart with Hopper'],
-            Material ::LECTERN->getKey() => [17, 'Lectern'],
-            Material ::LOOM->getKey() => [18, 'Loom'],
-            Material ::SHULKER_BOX->getKey() => [20, 'Shulker Box'],
-            Material ::SMITHING_TABLE->getKey() => [21, 'Smithing Table'],
-            Material ::SMOKER->getKey() => [22, 'Smoker'],
-            Material ::CARTOGRAPHY_TABLE->getKey() => [23, 'Cartography Table'],
-            Material ::STONECUTTER->getKey() => [24, 'Stonecutter'],
+            Material ::CHEST_MINECART->getKey() => [InventoryType::GENERIC_9X3, 'Minecart with Chest'],
+            Material ::CHEST->getKey() => [InventoryType::GENERIC_9X3,'Chest'],
+            Material ::TRAPPED_CHEST->getKey() => [InventoryType::GENERIC_9X3,'Trapped Chest'],
+            Material ::ENDER_CHEST->getKey() => [InventoryType::GENERIC_9X3,'Ender Chest'],
+            Material ::BARREL->getKey() => [InventoryType::GENERIC_9X3,'Barrel'],
+            Material ::DISPENSER->getKey() => [InventoryType::GENERIC_3X3, 'Dispenser'],
+            Material ::DROPPER->getKey() => [InventoryType::GENERIC_3X3,'Dropper'],
+            Material ::CRAFTER->getKey() => [InventoryType::CRAFTER_3X3, 'Crafter'],
+            Material ::ANVIL->getKey() => [InventoryType::ANVIL, 'Anvil'],
+            Material ::BEACON->getKey() => [InventoryType::BEACON, 'Beacon'],
+            Material ::BLAST_FURNACE->getKey() => [InventoryType::BLAST_FURNACE, 'Blast Furnace'],
+            Material ::BREWING_STAND->getKey() => [InventoryType::BREWING_STAND, 'Brewing Stand'],
+            Material ::CRAFTING_TABLE->getKey() => [InventoryType::CRAFTING, 'Crafting Table'],
+            Material ::ENCHANTING_TABLE->getKey() => [InventoryType::ENCHANTING, 'Enchanting Table'],
+            Material ::FURNACE->getKey() => [InventoryType::FURNACE, 'Furnace'],
+            Material ::GRINDSTONE->getKey() => [InventoryType::GRINDSTONE, 'Grindstone'],
+            Material ::HOPPER->getKey() => [InventoryType::HOPPER, 'Hopper'],
+            Material ::HOPPER_MINECART->getKey() => [InventoryType::HOPPER, 'Minecart with Hopper'],
+            Material ::LECTERN->getKey() => [InventoryType::LECTERN, 'Lectern'],
+            Material ::LOOM->getKey() => [InventoryType::LOOM, 'Loom'],
+            Material ::SHULKER_BOX->getKey() => [InventoryType::SHULKER_BOX, 'Shulker Box'],
+            Material ::SMITHING_TABLE->getKey() => [InventoryType::SMITHING, 'Smithing Table'],
+            Material ::SMOKER->getKey() => [InventoryType::SMOKER, 'Smoker'],
+            Material ::CARTOGRAPHY_TABLE->getKey() => [InventoryType::CARTOGRAPHY_TABLE, 'Cartography Table'],
+            Material ::STONECUTTER->getKey() => [InventoryType::STONECUTTER, 'Stonecutter'],
         ];
-
-        foreach ($chestBoats as $boatMaterial) {
-            $blockList[$boatMaterial] = [2, 'Boat with Chest'];
-        }
 
         if (isset($blockList[$blockData])) {
             [$windowType, $windowTitle] = $blockList[$blockData];
