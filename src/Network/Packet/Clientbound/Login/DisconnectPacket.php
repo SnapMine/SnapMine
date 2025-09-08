@@ -16,7 +16,7 @@ class DisconnectPacket extends ClientboundPacket
 
     public function write(PacketSerializer $serializer): void
     {
-        $serializer->putString(json_encode($this->reason));
+        $serializer->putNBT($this->reason->toNBT());
     }
 
     public function getId(): int
