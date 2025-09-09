@@ -2,14 +2,17 @@
 
 namespace SnapMine\Block\Type;
 
+use SnapMine\Block\Block;
 use SnapMine\Block\Data\BlockData;
 use SnapMine\Block\Data\Facing;
 use SnapMine\Block\Data\Half;
+use SnapMine\Block\Data\Interactable;
 use SnapMine\Block\Data\Openable;
 use SnapMine\Block\Data\Powerable;
 use SnapMine\Block\Direction;
+use SnapMine\Entity\Player;
 
-class Door extends BlockData
+class Door extends BlockData implements Interactable
 {
     use Facing, Half, Openable, Powerable;
     private string $hinge = 'left';
@@ -44,5 +47,13 @@ class Door extends BlockData
     public function getHinge(): string
     {
         return $this->hinge;
+    }
+
+    public function interact(Player $player, Block $block): bool
+    {
+        $this->setOpen(! $this->open);
+        $this->update($block);
+
+        return true;
     }
 }
