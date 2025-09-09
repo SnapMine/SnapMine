@@ -39,7 +39,7 @@ use function React\Async\async;
 
 class Server
 {
-    const VERSION = '0.0.1-dev';
+    const VERSION = 'v0.0.1-dev';
 
     private SocketServer $socket;
     /** @var ConnectionInterface[] */
