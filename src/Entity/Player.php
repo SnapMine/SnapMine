@@ -3,6 +3,7 @@
 namespace SnapMine\Entity;
 
 use SnapMine\Component\TextComponent;
+use SnapMine\Inventory\Inventory;
 use SnapMine\Inventory\ItemStack;
 use SnapMine\Inventory\PlayerInventory;
 use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
@@ -10,6 +11,7 @@ use SnapMine\Network\Packet\Clientbound\Play\ContainerSetContentPacket;
 use SnapMine\Network\Packet\Clientbound\Play\DisconnectPacket;
 use SnapMine\Network\Packet\Clientbound\Play\MoveEntityPosPacket;
 use SnapMine\Network\Packet\Clientbound\Play\MoveEntityRotPacket;
+use SnapMine\Network\Packet\Clientbound\Play\OpenScreenPacket;
 use SnapMine\Network\Packet\Clientbound\Play\RotateHeadPacket;
 use SnapMine\Network\Packet\Clientbound\Play\SoundPacket;
 use SnapMine\Network\Packet\Clientbound\Play\SystemChatPacket;
@@ -191,6 +193,19 @@ class Player extends LivingEntity
         $this->inventory->addItem($item);
 
         $this->sendPacket(new ContainerSetContentPacket($this->inventory));
+    }
+
+    public function openInventory(Inventory $inventory): void
+    {
+        static $i = 1;
+
+        if ($i > 100) {
+            $i = 1;
+        }
+
+        $this->sendPacket(new OpenScreenPacket($i, $inventory->getType(), $inventory->getTitle()));
+
+        $i++;
     }
 
 //    public function move(Position $position, float $yaw = 0.0, float $pitch = 0.0): void

@@ -15,7 +15,7 @@ class PlayerInventory extends Inventory
 
     public function __construct()
     {
-        parent::__construct(InventoryType::PLAYER);
+        parent::__construct(InventoryType::PLAYER, "");
     }
 
     public function getWindowId(): int

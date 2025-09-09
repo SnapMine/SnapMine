@@ -3,6 +3,7 @@
 namespace SnapMine\Inventory;
 
 use InvalidArgumentException;
+use SnapMine\Component\TextComponent;
 use SnapMine\Entity\Player;
 use SnapMine\Material;
 use SnapMine\Network\Serializer\PacketSerializer;
@@ -16,6 +17,28 @@ class Inventory implements ProtocolEncodable
     private array $contents = [];
     private ?ItemStack $carriedItem = null;
 
+    public function __construct(
+        private readonly InventoryType $type,
+        private TextComponent|string $title,
+    )
+    {
+        for ($i = 0; $i < $this->type->getSize(); $i++) {
+            $this->contents[$i] = null;
+        }
+
+        if (is_string($this->title)) {
+            $this->title = TextComponent::text($this->title);
+        }
+    }
+
+    /**
+     * @return TextComponent
+     */
+    public function getTitle(): TextComponent
+    {
+        return $this->title;
+    }
+
     public function getCarriedItem(): ?ItemStack
     {
         return $this->carriedItem;
@@ -24,15 +47,6 @@ class Inventory implements ProtocolEncodable
     public function setCarriedItem(?ItemStack $carriedItem): void
     {
         $this->carriedItem = $carriedItem;
-    }
-
-    public function __construct(
-        private readonly InventoryType $type,
-    )
-    {
-        for ($i = 0; $i < $this->type->getSize(); $i++) {
-            $this->contents[$i] = null;
-        }
     }
 
     /**
