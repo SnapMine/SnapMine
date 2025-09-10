@@ -19,6 +19,7 @@ use SnapMine\Event\Listener;
 use SnapMine\Listener\PlayerJoinListener;
 use SnapMine\Manager\ChunkManager\ChunkManager;
 use SnapMine\Manager\KeepAliveManager;
+use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
 use SnapMine\Network\Packet\Clientbound\Play\LevelParticles;
 use SnapMine\Network\Packet\Clientbound\Play\PlayerInfoRemovePacket;
 use SnapMine\Network\Packet\Clientbound\Play\RemoveEntitiesPacket;
@@ -46,7 +47,7 @@ use function React\Async\async;
  * 
  * The server uses ReactPHP for asynchronous networking and supports
  * multiple worlds, custom events, and plugin-like listeners.
- * 
+ *
  * @since   0.0.1
  * 
  * @example
@@ -473,12 +474,12 @@ class Server
 
     /**
      * Broadcast a packet to all connected players.
-     * 
-     * @param Packet        $packet The packet to broadcast
-     * @param callable|null $filter Optional filter function to determine which players receive the packet
+     *
+     * @param ClientboundPacket $packet The packet to broadcast
+     * @param callable|null     $filter Optional filter function to determine which players receive the packet
      * @return void
      */
-    public function broadcastPacket(Packet $packet, ?callable $filter = null): void
+    public function broadcastPacket(ClientboundPacket $packet, ?callable $filter = null): void
     {
         foreach ($this->players as $player) {
             if (is_null($filter) || $filter($player)) {

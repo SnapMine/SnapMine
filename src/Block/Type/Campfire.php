@@ -14,7 +14,6 @@ class Campfire extends BlockData
 
     use Facing, Lightable, Waterlogged;
 
-
     public function computedId(array $data = []): int
     {
         return parent::computedId(['signal_fire' => $this->signalFire]);
@@ -28,5 +27,21 @@ class Campfire extends BlockData
             Direction::NORTH,
             Direction::SOUTH,
         ];
+    }
+
+    /**
+     * @param bool $signalFire
+     */
+    public function setSignalFire(bool $signalFire): void
+    {
+        $this->signalFire = $signalFire;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSignalFire(): bool
+    {
+        return $this->signalFire;
     }
 }
