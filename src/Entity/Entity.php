@@ -21,9 +21,7 @@ use SnapMine\World\Location;
  * Entities are objects that exist in the world and can be interacted with,
  * including players, mobs, items, projectiles, and other dynamic objects.
  * 
- * @package SnapMine\Entity
- * @author  Nirbose
- * @since   1.0.0
+ * @since   0.0.1
  * 
  * @example
  * ```php

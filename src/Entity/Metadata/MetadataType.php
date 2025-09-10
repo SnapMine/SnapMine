@@ -13,9 +13,7 @@ namespace SnapMine\Entity\Metadata;
  * Each metadata type corresponds to a specific way the data is serialized
  * and transmitted over the network protocol.
  * 
- * @package SnapMine\Entity\Metadata
- * @author  Nirbose
- * @since   1.0.0
+ * @since   0.0.1
  */
 enum MetadataType: int
 {

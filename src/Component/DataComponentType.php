@@ -31,9 +31,7 @@ use SnapMine\Utils\DyeColor;
  * and includes mapping to their corresponding handler classes for
  * proper serialization and data management.
  * 
- * @package SnapMine\Component
- * @author  Nirbose
- * @since   1.0.0
+ * @since   0.0.1
  */
 enum DataComponentType
 {

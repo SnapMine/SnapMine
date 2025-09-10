@@ -9,9 +9,7 @@ namespace SnapMine\Utils;
  * stored efficiently in a single integer using bitwise operations.
  * Classes using this trait can set, unset, and check individual flags.
  * 
- * @package SnapMine\Utils
- * @author  Nirbose
- * @since   1.0.0
+ * @since   0.0.1
  * 
  * @example
  * ```php

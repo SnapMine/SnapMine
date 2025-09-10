@@ -8,9 +8,7 @@ namespace SnapMine;
  * This interface is used throughout the SnapMine system to identify
  * various objects such as materials, entities, blocks, and other keyed resources.
  * 
- * @package SnapMine
- * @author  Nirbose
- * @since   1.0.0
+ * @since   0.0.1
  */
 interface Keyed
 {

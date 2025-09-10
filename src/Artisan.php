@@ -15,9 +15,7 @@ use SnapMine\World\Region;
  * requiring dependency injection. This is useful for accessing server
  * functionality from anywhere in the codebase.
  * 
- * @package SnapMine
- * @author  Nirbose
- * @since   1.0.0
+ * @since   0.0.1
  * 
  * @example
  * ```php

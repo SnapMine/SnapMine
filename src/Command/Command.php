@@ -18,9 +18,7 @@ use SnapMine\Network\Serializer\ProtocolEncodable;
  * Commands implement the Minecraft command protocol for client-side
  * tab completion and syntax highlighting.
  * 
- * @package SnapMine\Command
- * @author  Nirbose
- * @since   1.0.0
+ * @since   0.0.1
  * 
  * @example
  * ```php

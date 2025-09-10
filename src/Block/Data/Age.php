@@ -10,9 +10,7 @@ namespace SnapMine\Block\Data;
  * The age value typically ranges from 0 to the maximum age defined by
  * the implementing class.
  * 
- * @package SnapMine\Block\Data
- * @author  Nirbose
- * @since   1.0.0
+ * @since   0.0.1
  * 
  * @example
  * ```php

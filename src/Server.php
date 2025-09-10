@@ -47,9 +47,7 @@ use function React\Async\async;
  * The server uses ReactPHP for asynchronous networking and supports
  * multiple worlds, custom events, and plugin-like listeners.
  * 
- * @package SnapMine
- * @author  Nirbose
- * @since   1.0.0
+ * @since   0.0.1
  * 
  * @example
  * ```php

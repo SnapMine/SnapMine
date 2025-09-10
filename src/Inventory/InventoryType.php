@@ -10,9 +10,7 @@ namespace SnapMine\Inventory;
  * Each inventory type has an associated size that determines the number
  * of slots available in that inventory.
  * 
- * @package SnapMine\Inventory
- * @author  Nirbose
- * @since   1.0.0
+ * @since   0.0.1
  */
 enum InventoryType: int
 {

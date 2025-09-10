@@ -33,9 +33,7 @@ use SnapMine\World\World;
  * while adding player-specific features like messaging, item management,
  * and administrative actions.
  * 
- * @package SnapMine\Entity
- * @author  Nirbose
- * @since   1.0.0
+ * @since   0.0.1
  * 
  * @example
  * ```php

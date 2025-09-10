@@ -10,9 +10,7 @@ namespace SnapMine\Block\Data;
  * The distance property is used in game mechanics like leaf decay,
  * where leaves too far from logs will decay over time.
  * 
- * @package SnapMine\Block\Data
- * @author  Nirbose
- * @since   1.0.0
+ * @since   0.0.1
  * 
  * @example
  * ```php

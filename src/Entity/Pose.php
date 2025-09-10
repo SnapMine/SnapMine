@@ -9,9 +9,7 @@ namespace SnapMine\Entity;
  * can be in, affecting how they are rendered and their collision properties.
  * Each pose corresponds to a specific animation or position the entity can take.
  * 
- * @package SnapMine\Entity
- * @author  Nirbose
- * @since   1.0.0
+ * @since   0.0.1
  */
 enum Pose: int
 {

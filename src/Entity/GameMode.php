@@ -9,9 +9,7 @@ namespace SnapMine\Entity;
  * their abilities, and what resources they have access to.
  * Each mode provides a different gameplay experience.
  * 
- * @package SnapMine\Entity
- * @author  Nirbose
- * @since   1.0.0
+ * @since   0.0.1
  */
 enum GameMode: int
 {
