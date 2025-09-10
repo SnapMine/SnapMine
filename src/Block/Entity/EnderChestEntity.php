@@ -3,8 +3,9 @@
 namespace SnapMine\Block\Entity;
 
 use SnapMine\Block\BlockType;
+use SnapMine\Block\Type\Chest;
 
-class EnderChestEntity extends BlockEntity
+class EnderChestEntity extends Chest
 {
     public function getType(): BlockType
     {

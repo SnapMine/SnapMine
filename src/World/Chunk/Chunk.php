@@ -8,6 +8,7 @@ use Exception;
 use SnapMine\Artisan;
 use SnapMine\Block\Block;
 use SnapMine\Block\BlockType;
+use SnapMine\Block\Entity\ChestEntity;
 use SnapMine\World\Position;
 use SnapMine\World\World;
 use SnapMine\World\WorldPosition;
@@ -105,13 +106,14 @@ class Chunk
 
         foreach ($blockEntitiesTag as $blockEntity) {
             if ($blockEntity instanceof CompoundTag) {
-                $this->blockEntities[] = [
-                    'type' => $blockEntity->getString('id')->getValue(),
-                    'x' => $blockEntity->getInt('x')->getValue(),
-                    'y' => $blockEntity->getInt('y')->getValue(),
-                    'z' => $blockEntity->getInt('z')->getValue(),
-                    // ... other block entity data
-                ];
+                $x = $blockEntity->getInt('x')->getValue();
+                $y = $blockEntity->getInt('y')->getValue();
+                $z = $blockEntity->getInt('z')->getValue();
+                $id = $blockEntity->getString('id')->getValue();
+
+                if ($id == 'minecraft:chest') {
+                    $this->blockEntities[($y << 8) | ($z << 4) | $x] = new ChestEntity(new WorldPosition($this->world, $x, $y, $z));
+                }
             }
         }
     }
