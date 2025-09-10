@@ -8,22 +8,10 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
 use SnapMine\Block\BlockStateLoader;
-use SnapMine\Command\CommandExecutor;
 use SnapMine\Command\CommandManager;
-use SnapMine\Entity\Animal\Armadillo;
-use SnapMine\Entity\Animal\Bee;
-use SnapMine\Entity\Animal\Chicken;
-use SnapMine\Entity\Animal\Cow;
-use SnapMine\Entity\Animal\Fox;
-use SnapMine\Entity\Animal\Sheep;
-use SnapMine\Entity\AreaEffectCloud;
-use SnapMine\Entity\DragonFireball;
-use SnapMine\Entity\EndCrystal;
 use SnapMine\Entity\Entity;
 use SnapMine\Entity\EntityType;
-use SnapMine\Entity\EvokerFangs;
 use SnapMine\Entity\Player;
-use SnapMine\Entity\WindCharge;
 use SnapMine\Event\Event;
 use SnapMine\Event\EventBinding;
 use SnapMine\Event\EventManager;
@@ -31,7 +19,6 @@ use SnapMine\Event\Listener;
 use SnapMine\Listener\PlayerJoinListener;
 use SnapMine\Manager\ChunkManager\ChunkManager;
 use SnapMine\Manager\KeepAliveManager;
-use SnapMine\Network\Packet\Clientbound\Play\AddEntityPacket;
 use SnapMine\Network\Packet\Clientbound\Play\LevelParticles;
 use SnapMine\Network\Packet\Clientbound\Play\PlayerInfoRemovePacket;
 use SnapMine\Network\Packet\Clientbound\Play\RemoveEntitiesPacket;
@@ -52,6 +39,8 @@ use function React\Async\async;
 
 class Server
 {
+    const VERSION = 'v0.0.1-dev';
+
     private SocketServer $socket;
     /** @var ConnectionInterface[] */
     private array $clients = [];

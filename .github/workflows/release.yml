@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (ex: 1.2.3)'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set version output
+        id: version
+        run: echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+
+      - name: Update VERSION constant
+        run: |
+          sed -i "s/const VERSION = '.*';/const VERSION = 'v${{ steps.version.outputs.version }}';/" src/Server.php
+
+      - name: Commit version change
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update version to v${{ steps.version.outputs.version }}"
+          branch: main
+          file_pattern: "src/Server.php"
+
+      - name: Create Git tag
+        run: |
+          git tag v${{ steps.version.outputs.version }}
+          git push origin v${{ steps.version.outputs.version }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: Release v${{ steps.version.outputs.version }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
