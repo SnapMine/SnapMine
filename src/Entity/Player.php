@@ -22,13 +22,72 @@ use SnapMine\World\Location;
 use SnapMine\World\Position;
 use SnapMine\World\World;
 
+/**
+ * Represents a player entity connected to the server.
+ * 
+ * Players are special entities that represent human players connected
+ * to the server. They have additional capabilities like inventories,
+ * game modes, chat functionality, and network session management.
+ * 
+ * Players extend LivingEntity and inherit all entity functionality
+ * while adding player-specific features like messaging, item management,
+ * and administrative actions.
+ * 
+ * @package SnapMine\Entity
+ * @author  Nirbose
+ * @since   1.0.0
+ * 
+ * @example
+ * ```php
+ * // Send a message to the player
+ * $player->sendMessage("Welcome to the server!");
+ * 
+ * // Change game mode
+ * $player->setGameMode(GameMode::CREATIVE);
+ * 
+ * // Give an item
+ * $player->give(new ItemStack(Material::DIAMOND, 64));
+ * ```
+ */
 class Player extends LivingEntity
 {
+    /**
+     * Last keep-alive packet ID sent to this player.
+     * Used for connection monitoring and latency calculation.
+     * 
+     * @var int
+     */
     public int $lastKeepAliveId = 0;
+    
+    /**
+     * Current game mode of the player.
+     * 
+     * @var GameMode
+     */
     private GameMode $gameMode = GameMode::SURVIVAL;
+    
+    /**
+     * Previous game mode before the current one.
+     * Used for restoring game mode when needed.
+     * 
+     * @var GameMode|null
+     */
     private ?GameMode $previousGameMode = null;
+    
+    /**
+     * Player's inventory containing items and equipment.
+     * 
+     * @var PlayerInventory
+     */
     private PlayerInventory $inventory;
 
+    /**
+     * Create a new player instance.
+     * 
+     * @param Session     $session  The network session for this player
+     * @param GameProfile $profile  The player's profile information
+     * @param Location    $location The initial spawn location
+     */
     public function __construct(
         private readonly Session     $session,
         private readonly GameProfile $profile,
@@ -42,8 +101,8 @@ class Player extends LivingEntity
 
     /**
      * Get the player's UUID.
-     *
-     * @return UUID
+     * 
+     * @return UUID The player's unique identifier
      */
     public function getUuid(): UUID
     {
@@ -51,9 +110,9 @@ class Player extends LivingEntity
     }
 
     /**
-     * Get the player's name.
-     *
-     * @return string
+     * Get the player's username.
+     * 
+     * @return string The player's display name
      */
     public function getName(): string
     {
@@ -62,10 +121,19 @@ class Player extends LivingEntity
 
     /**
      * Get the player's look vector based on their yaw and pitch.
-     *
-     * The look vector is a 3D vector that indicates the direction the player is looking at.
-     *
-     * @return Position
+     * 
+     * The look vector is a 3D unit vector that indicates the direction
+     * the player is looking. This is useful for raytracing, projectile
+     * trajectories, and determining what the player is looking at.
+     * 
+     * @return Position A 3D vector representing the look direction
+     * 
+     * @example
+     * ```php
+     * $lookVector = $player->getLookVector();
+     * // Use for raytracing to find what block player is looking at
+     * $targetBlock = $world->rayTrace($player->getLocation(), $lookVector, 5.0);
+     * ```
      */
     public function getLookVector(): Position
     {
@@ -80,9 +148,9 @@ class Player extends LivingEntity
     }
 
     /**
-     * Send packet
-     *
-     * @param ClientboundPacket $packet
+     * Send a packet to this player.
+     * 
+     * @param ClientboundPacket $packet The packet to send
      * @return void
      */
     public function sendPacket(ClientboundPacket $packet): void
@@ -91,7 +159,9 @@ class Player extends LivingEntity
     }
 
     /**
-     * @return GameMode
+     * Get the player's current game mode.
+     * 
+     * @return GameMode The current game mode
      */
     public function getGameMode(): GameMode
     {
@@ -99,7 +169,10 @@ class Player extends LivingEntity
     }
 
     /**
-     * @param GameMode $gameMode
+     * Set the player's game mode.
+     * 
+     * @param GameMode $gameMode The new game mode to set
+     * @return void
      */
     public function setGameMode(GameMode $gameMode): void
     {
@@ -108,13 +181,26 @@ class Player extends LivingEntity
     }
 
     /**
-     * @return GameMode|null
+     * Get the player's previous game mode.
+     * 
+     * @return GameMode|null The previous game mode, or null if none
      */
     public function getPreviousGameMode(): ?GameMode
     {
         return $this->previousGameMode;
     }
 
+    /**
+     * Play a sound for this player.
+     * 
+     * @param Entity|Location $location The location where the sound originates
+     * @param Sound          $sound    The sound to play
+     * @param SoundCategory  $category The sound category for volume control
+     * @param float          $volume   The volume level (0.0 to 1.0)
+     * @param float          $pitch    The pitch modifier (0.5 to 2.0)
+     * @param int            $seed     Random seed for sound variation
+     * @return void
+     */
     public function playSound(Entity|Location $location, Sound $sound, SoundCategory $category, float $volume = 1.0, float $pitch = 2.0, int $seed = 1): void
     {
         if ($location instanceof Entity) {
@@ -135,24 +221,46 @@ class Player extends LivingEntity
         $this->sendPacket($packet);
     }
 
+    /**
+     * Get the entity type for players.
+     * 
+     * @return EntityType Always returns EntityType::PLAYER
+     */
     public function getType(): EntityType
     {
         return EntityType::PLAYER;
     }
 
     /**
-     * @throws \Exception
+     * Transfer the player to another server.
+     * 
+     * @param string $host The target server hostname or IP
+     * @param int    $port The target server port
+     * @return void
+     * 
+     * @throws \Exception If transfer fails
      */
     public function transfer(string $host, int $port): void
     {
         $this->session->transfer($host, $port);
     }
 
+    /**
+     * Get the chunk the player is currently in.
+     * 
+     * @return Chunk The current chunk
+     */
     public function getChunk(): Chunk
     {
         return $this->server->getWorld("world")->getChunk($this->location->getX() >> 4, $this->location->getZ() >> 4);
     }
 
+    /**
+     * Send a chat message to this player.
+     * 
+     * @param TextComponent|string $message The message to send
+     * @return void
+     */
     public function sendMessage(TextComponent|string $message): void
     {
         if (is_string($message)) {
@@ -162,6 +270,12 @@ class Player extends LivingEntity
         $this->sendPacket(new SystemChatPacket($message, false));
     }
 
+    /**
+     * Disconnect the player with a reason.
+     * 
+     * @param TextComponent|string $reason The reason for disconnection
+     * @return void
+     */
     public function kick(TextComponent|string $reason): void
     {
         if (is_string($reason)) {
@@ -173,19 +287,35 @@ class Player extends LivingEntity
         $this->sendPacket($packet);
     }
 
+    /**
+     * Get the world the player is currently in.
+     * 
+     * @return World The current world
+     */
     public function getWorld(): World
     {
         return $this->location->getWorld();
     }
 
     /**
-     * @return PlayerInventory
+     * Get the player's inventory.
+     * 
+     * @return PlayerInventory The player's inventory instance
      */
     public function getInventory(): PlayerInventory
     {
         return $this->inventory;
     }
 
+    /**
+     * Give an item stack to the player.
+     * 
+     * Attempts to add the item to the player's inventory and
+     * updates the client with the new inventory contents.
+     * 
+     * @param ItemStack $item The item stack to give
+     * @return void
+     */
     public function give(ItemStack $item): void
     {
         $this->inventory->addItem($item);
