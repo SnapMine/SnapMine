@@ -31,7 +31,7 @@
   "require-dev": {
     "pestphp/pest": "^3.8",
     "mockery/mockery": "^1.6",
-    "phpstan/phpstan": "^2.1"
+    "phpstan/phpstan": "*"
   },
   "config": {
     "allow-plugins": {
