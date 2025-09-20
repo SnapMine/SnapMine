@@ -8,7 +8,6 @@ use SnapMine\Session\Session;
 
 class SetCarriedItemPacket extends ServerboundPacket
 {
-    /** @phpstan-ignore property.onlyWritten */
     private int $slot;
 
     public function getId(): int
