@@ -10,7 +10,7 @@ class CartographyInventory extends Inventory
 
     public function __construct()
     {
-        parent::__construct(InventoryType::CARTOGRAPHY_TABLE);
+        parent::__construct(InventoryType::CARTOGRAPHY_TABLE, "Cartography Table");
     }
 
     public function getWindowId(): int

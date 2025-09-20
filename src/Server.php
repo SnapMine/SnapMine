@@ -23,7 +23,6 @@ use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
 use SnapMine\Network\Packet\Clientbound\Play\LevelParticles;
 use SnapMine\Network\Packet\Clientbound\Play\PlayerInfoRemovePacket;
 use SnapMine\Network\Packet\Clientbound\Play\RemoveEntitiesPacket;
-use SnapMine\Network\Packet\Packet;
 use SnapMine\Particle\Particle;
 use SnapMine\Registry\Registry;
 use SnapMine\Session\Session;

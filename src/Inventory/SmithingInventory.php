@@ -11,7 +11,7 @@ class SmithingInventory extends Inventory
 
     public function __construct()
     {
-        parent::__construct(InventoryType::SMITHING);
+        parent::__construct(InventoryType::SMITHING, "Smithing Table");
     }
 
     public function getWindowId(): int

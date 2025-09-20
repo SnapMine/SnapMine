@@ -9,7 +9,7 @@ class StoneCutterInventory extends Inventory
 
     public function __construct()
     {
-        parent::__construct(InventoryType::STONECUTTER);
+        parent::__construct(InventoryType::STONECUTTER, "Stonecutter");
     }
 
     public function getWindowId(): int

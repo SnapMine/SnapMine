@@ -62,6 +62,25 @@ class Region
         return false;
     }
 
+    /**
+     * @return Chunk[]
+     */
+    public function getLoadedChunks(): array
+    {
+        $chunks = [];
+        for ($x = 0; $x < 32; $x++) {
+            for ($z = 0; $z < 32; $z++) {
+                if($this->hasChunk($x, $z)) {
+                    $chunk = $this->getChunk($x, $z);
+                    if ($chunk !== null) {
+                        $chunks[] = $chunk;
+                    }
+                }
+            }
+        }
+        return $chunks;
+    }
+
     public function getChunk(int $x, int $z): ?Chunk
     {
         if ($x < 0 || $x >= 32 || $z < 0 || $z >= 32) {

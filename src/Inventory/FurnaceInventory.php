@@ -10,7 +10,7 @@ class FurnaceInventory extends Inventory
 
     public function __construct()
     {
-        parent::__construct(InventoryType::FURNACE);
+        parent::__construct(InventoryType::FURNACE, "Furnace");
     }
 
     public function getWindowId(): int

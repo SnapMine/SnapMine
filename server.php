@@ -15,5 +15,6 @@ require 'src/Command/Default/SendCommand.php';
 require 'src/Command/Default/KickCommand.php';
 require 'src/Command/Default/SpawnCommand.php';
 require 'src/Command/Default/GiveCommand.php';
+require 'src/Command/Default/DebugCommand.php';
 
 $server->start();

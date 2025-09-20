@@ -3,6 +3,7 @@
 namespace SnapMine\Inventory;
 
 use InvalidArgumentException;
+use SnapMine\Component\TextComponent;
 use SnapMine\Entity\Player;
 use SnapMine\Material;
 use SnapMine\Network\Serializer\PacketSerializer;
@@ -16,6 +17,28 @@ class Inventory implements ProtocolEncodable
     private array $contents = [];
     private ?ItemStack $carriedItem = null;
 
+    public function __construct(
+        private readonly InventoryType $type,
+        private TextComponent|string $title,
+    )
+    {
+        for ($i = 0; $i < $this->type->getSize(); $i++) {
+            $this->contents[$i] = null;
+        }
+
+        if (is_string($this->title)) {
+            $this->title = TextComponent::text($this->title);
+        }
+    }
+
+    /**
+     * @return TextComponent
+     */
+    public function getTitle(): TextComponent
+    {
+        return $this->title;
+    }
+
     public function getCarriedItem(): ?ItemStack
     {
         return $this->carriedItem;
@@ -24,15 +47,6 @@ class Inventory implements ProtocolEncodable
     public function setCarriedItem(?ItemStack $carriedItem): void
     {
         $this->carriedItem = $carriedItem;
-    }
-
-    public function __construct(
-        private readonly InventoryType $type,
-    )
-    {
-        for ($i = 0; $i < $this->type->getSize(); $i++) {
-            $this->contents[$i] = null;
-        }
     }
 
     /**
@@ -115,28 +129,20 @@ class Inventory implements ProtocolEncodable
     public function addItem(ItemStack $itemStack): void
     {
         $itemStack = clone $itemStack;
-        $first = $this->first($itemStack->getMaterial());
+        $index = $this->first($itemStack->getMaterial());
 
-        if ($first !== -1) {
-            $currentItem = $this->getItem($first);
-            $newAmount = $currentItem->getAmount() + $itemStack->getAmount();
-
-            $currentItem->setAmount(min(64, $newAmount));
-            $this->setItem($first, $currentItem);
-
-            if ($newAmount > 64) {
-                $itemStack->setAmount($itemStack->getAmount() - 64);
-                $this->addItem($itemStack);
-            }
-        } else {
-            $first = $this->firstEmpty();
-
-            if ($first !== -1) {
-                $this->setItem($first, $itemStack);
-            }
+        if($index === -1) {
+            $index = $this->firstEmpty();
         }
 
+        $currentItem = $this->getItem($index);
+        $newAmount = $currentItem->getAmount() + $itemStack->getAmount();
+        $this->setItem($index, new ItemStack($itemStack->getMaterial(), min(64, $newAmount)));
 
+        if ($newAmount > 64) {
+            $itemStack->setAmount($newAmount - 64);
+            $this->addItem($itemStack);
+        }
     }
 
     public function firstEmpty(): int

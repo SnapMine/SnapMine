@@ -8,7 +8,7 @@ class BeaconInventory extends Inventory
 
     public function __construct()
     {
-        parent::__construct(InventoryType::BEACON);
+        parent::__construct(InventoryType::BEACON, "Beacon");
     }
 
     public function getWindowId(): int

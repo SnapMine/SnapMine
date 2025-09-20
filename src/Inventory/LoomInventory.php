@@ -11,7 +11,7 @@ class LoomInventory extends Inventory
 
     public function __construct()
     {
-        parent::__construct(InventoryType::LOOM);
+        parent::__construct(InventoryType::LOOM, "Loom");
     }
 
     public function getWindowId(): int

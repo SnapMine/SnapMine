@@ -49,6 +49,23 @@ class World
         return false;
     }
 
+    public function getChunkFromPosition(Position $position): ?Chunk
+    {
+        return $this->getChunk((int)$position->getX() >> 4, (int)$position->getZ() >> 4);
+    }
+
+    /**
+     * @return Chunk[]
+     */
+    public function getLoadedChunks(): array
+    {
+        $chunks = [];
+        foreach ($this->regions as $region) {
+            $chunks = array_merge($chunks, $region->getLoadedChunks());
+        }
+        return $chunks;
+    }
+
     public function getChunk(int $x, int $z): ?Chunk
     {
         $regX = $x >> 5;

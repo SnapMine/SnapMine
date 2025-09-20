@@ -10,7 +10,7 @@ class AnvilInventory extends Inventory
 
     public function __construct()
     {
-        parent::__construct(InventoryType::ANVIL);
+        parent::__construct(InventoryType::ANVIL, "Anvil");
     }
 
     public function getWindowId(): int

@@ -47,6 +47,7 @@ class ChunkSection
      */
     public function __construct(CompoundTag $tag, private array $blockLight, private array $skyLight) // TODO: Il faudrait que la logique de création soit ailleurs passer les arguments par des NBT c'es pas ouf
     {
+
         $this->palettedContainer = new PalettedContainer(
             $this->loadPalette($tag),
             $this->loadBlocksData($tag)
@@ -193,17 +194,12 @@ class ChunkSection
             return [0];
         }
 
-        $data = $blockStates->getLongArray("data");
-        if (!$data) {
+        $dataNbt = $blockStates->getLongArray("data");
+        if (!$dataNbt) {
             return [0];
         }
 
-        $blockData = [];
-        foreach ($data as $long) {
-            $blockData[] = $long;
-        }
-
-        return $blockData;
+        return $dataNbt->jsonSerialize();
     }
 
     /**
@@ -247,9 +243,6 @@ class ChunkSection
         return $this->palettedContainer[($localY * 256) + ($localZ * 16) + $localX];
     }
 
-    /**
-     * @return PalettedContainer<BlockData>
-     */
     public function getPalettedContainer(): PalettedContainer
     {
         return $this->palettedContainer;
@@ -274,5 +267,10 @@ class ChunkSection
     public function isEmpty(): bool
     {
         return $this->getBlockCount() === 0;
+    }
+
+    public function isFull(): bool
+    {
+        return in_array(BlockType::AIR->createBlockData(), $this->palettedContainer->getPalette());
     }
 }

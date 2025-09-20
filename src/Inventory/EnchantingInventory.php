@@ -9,7 +9,7 @@ class EnchantingInventory extends Inventory
 
     public function __construct()
     {
-        parent::__construct(InventoryType::ENCHANTING);
+        parent::__construct(InventoryType::ENCHANTING, "Enchanting Table");
     }
 
     public function getWindowId(): int

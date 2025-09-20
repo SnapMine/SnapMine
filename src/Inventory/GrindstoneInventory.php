@@ -10,7 +10,7 @@ class GrindstoneInventory extends Inventory
 
     public function __construct()
     {
-        parent::__construct(InventoryType::GRINDSTONE);
+        parent::__construct(InventoryType::GRINDSTONE, "Grindstone");
     }
 
     public function getWindowId(): int

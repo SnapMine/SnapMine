@@ -107,4 +107,9 @@ class Artisan
     {
         return self::$server->getCommandManager();
     }
+
+    public static function getVersion(): string
+    {
+        return "dev-0.1";
+    }
 }

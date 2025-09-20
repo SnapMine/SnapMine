@@ -10,7 +10,7 @@ class BrewingStandInventory extends Inventory
 
     public function __construct()
     {
-        parent::__construct(InventoryType::BREWING_STAND);
+        parent::__construct(InventoryType::BREWING_STAND, "Brewing Stand");
     }
 
     public function getWindowId(): int

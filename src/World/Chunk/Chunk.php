@@ -24,9 +24,10 @@ class Chunk
 
     public function __construct(
         private readonly World $world,
-        private readonly int $x,
-        private readonly int $z
-    ) {
+        private readonly int   $x,
+        private readonly int   $z
+    )
+    {
     }
 
     /**
@@ -80,7 +81,7 @@ class Chunk
             //try {
             $this->sections[$y] = new ChunkSection($section, $blockLight, $skyLight);
             //} catch (Exception $exception) {
-             //   throw new Exception("Failed to load chunk section at Y={$y}: " . $exception->getMessage());
+            //   throw new Exception("Failed to load chunk section at Y={$y}: " . $exception->getMessage());
             //}
         }
     }
@@ -193,7 +194,11 @@ class Chunk
 
     public function getBlock(Position $pos): Block
     {
-        $sectionIndex = (int)$pos->getY() >> 4;
+        $x = floor($pos->getX());
+        $y = floor($pos->getY());
+        $z = floor($pos->getZ());
+
+        $sectionIndex = $y >> 4;
         $worldPosition = WorldPosition::fromPosition($this->world, $pos);
 
         if (!isset($this->sections[$sectionIndex])) {
@@ -201,15 +206,23 @@ class Chunk
         }
 
         $blockData = $this->sections[$sectionIndex]
-            ->getBlockData((int)$pos->getX() & 0xF, (int)$pos->getY() & 0xF, (int)$pos->getZ() & 0xF);
+            ->getBlockData($x & 0xF, $y & 0xF, $z & 0xF);
 
         return new Block(Artisan::getServer(), $worldPosition, $blockData);
     }
 
-    public function setBlock(Position $pos, Block $block): void {
+    public function setBlock(Position $pos, Block $block): void
+    {
         $sectionIndex = $pos->getY() >> 4;
 
         $this->sections[$sectionIndex]
             ->setBlock($pos->getX() & 0xF, $pos->getY() & 0xF, $pos->getZ() & 0xF, $block);
+    }
+
+    public function getSection(float $getY): ?ChunkSection
+    {
+        $sectionIndex = (int)$getY >> 4;
+
+        return $this->sections[$sectionIndex] ?? null;
     }
 }

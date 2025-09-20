@@ -4,12 +4,12 @@ namespace SnapMine\Inventory;
 
 class CraftingInventory extends Inventory
 {
-    const CRAFTING_SLOT = range(1, 9);
+    const CRAFTING_SLOT = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     const OUTPUT_SLOT = 0;
 
     public function __construct()
     {
-        parent::__construct(InventoryType::CRAFTING);
+        parent::__construct(InventoryType::CRAFTING, "Crafting Table");
     }
 
     public function getWindowId(): int
