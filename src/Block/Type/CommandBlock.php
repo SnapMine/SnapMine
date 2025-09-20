@@ -21,4 +21,20 @@ class CommandBlock extends BlockData
     {
         return Direction::cases();
     }
+
+    /**
+     * @param bool $conditional
+     */
+    public function setConditional(bool $conditional): void
+    {
+        $this->conditional = $conditional;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isConditional(): bool
+    {
+        return $this->conditional;
+    }
 }
