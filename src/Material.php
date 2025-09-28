@@ -1597,4 +1597,9 @@ enum Material: int
         }
         return null;
     }
+
+    public function isSolid(): bool
+    {
+        return $this->isBlock() && $this != Material::AIR;
+    }
 }
