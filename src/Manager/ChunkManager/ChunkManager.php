@@ -10,35 +10,22 @@ use SnapMine\World\World;
 
 class ChunkManager
 {
-    private \SplQueue $chunkRequestQueue;
     private int $inflightChunks = 0;
-    private int $maxInflightChunks = 4;
 
     public function __construct()
     {
-        $this->chunkRequestQueue = new \SplQueue();
     }
 
     public function request(Player $player, World $world, int $x, int $z): void
     {
         $this->inflightChunks++;
 
-        Loop::addTimer($this->inflightChunks / 10, function () use ($player, $world, $x, $z) {
-//            if ($this->inflightChunks >= $this->maxInflightChunks) {
-//                $this->chunkRequestQueue->enqueue([$player, $world, $x, $z]);
-//                return;
-//            }
-
-//            $this->inflightChunks++;
+        Loop::addTimer($this->inflightChunks / 5, function () use ($player, $world, $x, $z) {
             $world->getChunkAsync($x, $z)
                 ->map(function (Chunk $chunk) use ($player) {
                     $player->sendPacket(new ChunkDataAndUpdateLightPacket($chunk));
 
                     $this->inflightChunks--;
-//                    if (!$this->chunkRequestQueue->isEmpty()) {
-//                        [$p, $w, $nx, $nz] = $this->chunkRequestQueue->dequeue();
-//                        $this->request($p, $w, $nx, $nz);
-//                    }
                 });
         });
     }

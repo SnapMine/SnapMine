@@ -50,10 +50,6 @@ class AcknowledgeFinishConfigurationPacket extends ServerboundPacket
 
         $cm = $player->getServer()->getChunkManager();
 
-//        async(function ($cm, $world, $player) {
-//            $cm->loadRadius($world, 0, 0, 15, $player);
-//        }, $cm, $world, $player);
-
         $cm->loadRadius($world, 0, 0, 15, $player);
 
         $player->sendPacket(new SynchronizePlayerPositionPacket($player, 0, 0, 0));

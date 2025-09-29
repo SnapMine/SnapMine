@@ -5,8 +5,6 @@ namespace SnapMine\Manager\ChunkManager;
 use Amp\Cancellation;
 use Amp\Parallel\Worker\Task;
 use Amp\Sync\Channel;
-use Aternos\Nbt\IO\Reader\ZLibCompressedStringReader;
-use Aternos\Nbt\NbtFormat;
 use Error;
 
 class ChunkTask implements Task
@@ -31,7 +29,7 @@ class ChunkTask implements Task
         $this->handle = null;
     }
 
-    public function init()
+    public function init(): void
     {
         if (! is_resource($this->handle)) {
             $this->handle = fopen($this->file, 'rb');

@@ -25,7 +25,7 @@ class World
     {
         $this->name = basename($worldFolder);
 
-        foreach (glob($worldFolder . '/region/*.mca') as $file) {
+        foreach (glob($worldFolder . 'region/*.mca') as $file) {
             $this->regions[basename($file, '.mca')] = new Region($this, $file);
         }
     }

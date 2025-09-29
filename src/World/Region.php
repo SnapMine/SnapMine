@@ -43,10 +43,7 @@ class Region
         for ($x = 0; $x < 32; $x++) {
             for ($z = 0; $z < 32; $z++) {
                 if($this->hasChunk($x, $z)) {
-                    $chunk = $this->getChunk($x, $z);
-                    if ($chunk !== null) {
-                        $chunks[] = $chunk;
-                    }
+                    $chunks[] = $this->getChunk($x, $z);
                 }
             }
         }
@@ -67,13 +64,15 @@ class Region
             $reader = new ZLibCompressedStringReader($chunk, NbtFormat::JAVA_EDITION);
             $tag = Tag::load($reader);
 
-            $this->chunks[$x][$z] = new Chunk($this->world, $x, $z);
-
             if ($tag instanceof CompoundTag) {
-                $this->chunks[$x][$z]->loadFromNbt($tag);
+                $chunk = Chunk::loadFromNbt($this->world, $tag);
+
+                $this->chunks[$chunk->getX()][$chunk->getZ()] = $chunk;
+
+                return $chunk;
             }
 
-            return $this->chunks[$x][$z];
+            return null;
         });
     }
 
