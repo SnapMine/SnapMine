@@ -30,7 +30,6 @@ use SnapMine\Registry\Registry;
 use SnapMine\Session\Session;
 use SnapMine\World\Location;
 use SnapMine\World\World;
-use React\EventLoop\Loop;
 use React\Socket\ConnectionInterface;
 use React\Socket\SocketServer;
 use ReflectionClass;
@@ -241,7 +240,7 @@ class Server
 
         $keepAliveManager = new KeepAliveManager();
         // Tick keep-alives periodically
-        EventLoop::repeat(1, function () use ($keepAliveManager) {
+        Loop::addPeriodicTimer(1, function () use ($keepAliveManager) {
             $keepAliveManager->tick($this);
         });
 
@@ -274,7 +273,7 @@ class Server
             });
         });
 
-        EventLoop::run();
+        Loop::run();
     }
 
     /**

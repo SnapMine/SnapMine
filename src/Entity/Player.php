@@ -149,7 +149,7 @@ class Player extends LivingEntity
 
     /**
      * Send a packet to this player.
-     * 
+     *
      * @param ClientboundPacket $packet The packet to send
      * @return void
      */

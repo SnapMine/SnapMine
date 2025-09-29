@@ -179,6 +179,7 @@ class Chunk
             $this->x,
             $this->z,
             $this->blockEntities,
+            $this->loaded,
         ];
     }
 

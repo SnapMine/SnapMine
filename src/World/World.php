@@ -2,6 +2,7 @@
 
 namespace SnapMine\World;
 
+use Amp\Future;
 use Error;
 use SnapMine\Artisan;
 use SnapMine\Block\Block;
@@ -76,6 +77,21 @@ class World
             $region = $this->regions[$key];
 
             return $region->getChunk($x & 0x1F, $z & 0x1F);
+        }
+
+        return null;
+    }
+
+    public function getChunkAsync(int $x, int $z): ?Future
+    {
+        $regX = $x >> 5;
+        $regZ = $z >> 5;
+        $key = 'r.' . $regX . '.' . $regZ;
+
+        if (isset($this->regions[$key])) {
+            $region = $this->regions[$key];
+
+            return $region->getChunkAsync($x & 0x1F, $z & 0x1F);
         }
 
         return null;

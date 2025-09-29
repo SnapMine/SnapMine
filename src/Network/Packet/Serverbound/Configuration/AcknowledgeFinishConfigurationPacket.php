@@ -2,6 +2,7 @@
 
 namespace SnapMine\Network\Packet\Serverbound\Configuration;
 
+use SnapMine\Network\Packet\Clientbound\Play\ChunkDataAndUpdateLightPacket;
 use SnapMine\Network\Packet\Clientbound\Play\GameEventPacket;
 use SnapMine\Network\Packet\Clientbound\Play\JoinGamePacket;
 use SnapMine\Network\Packet\Clientbound\Play\SetCenterChunk;
@@ -45,11 +46,15 @@ class AcknowledgeFinishConfigurationPacket extends ServerboundPacket
             new SetCenterChunk()
         );
 
+        $player->sendPacket(new ChunkDataAndUpdateLightPacket($world->getChunk(0, 0)));
+
         $cm = $player->getServer()->getChunkManager();
-        async(function () use ($cm, $world, $player) {
-            $cm->loadRadius($world, 0, 0, 15, $player);
-        });
-        $cm->request($player, $world, 0, 0);
+
+//        async(function ($cm, $world, $player) {
+//            $cm->loadRadius($world, 0, 0, 15, $player);
+//        }, $cm, $world, $player);
+
+        $cm->loadRadius($world, 0, 0, 15, $player);
 
         $player->sendPacket(new SynchronizePlayerPositionPacket($player, 0, 0, 0));
 
