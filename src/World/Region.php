@@ -24,7 +24,6 @@ class Region
         $this->worker = createWorker();
     }
 
-
     public function hasChunk(int $x, int $z): bool
     {
         if (isset($this->chunks[$x][$z])) {
@@ -60,7 +59,7 @@ class Region
             $this->file,
             $x,
             $z
-        ))->getFuture()->map(function ($chunk) use ($x, $z) {
+        ))->getFuture()->map(function ($chunk) {
             $reader = new ZLibCompressedStringReader($chunk, NbtFormat::JAVA_EDITION);
             $tag = Tag::load($reader);
 
