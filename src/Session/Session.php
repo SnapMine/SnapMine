@@ -37,7 +37,7 @@ class Session
         $this->serializer = new PacketSerializer("");
     }
 
-    public function sendPacket(ClientboundPacket $packet): void
+    public function sendPacket(ClientboundPacket $packet): bool
     {
         $serializer = new PacketSerializer("", 0);
 
@@ -49,7 +49,7 @@ class Session
 //            echo "Socket is not valid, cannot send packet.\n";
 //            return;
 //        }
-        $this->socket->write($serializer->getLengthPrefixedData());
+        return $this->socket->write($serializer->getLengthPrefixedData());
     }
 
     public function close(?string $reason = null): void

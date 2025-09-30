@@ -7,6 +7,8 @@ use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
+use React\EventLoop\Loop;
+use Revolt\EventLoop;
 use SnapMine\Block\BlockStateLoader;
 use SnapMine\Command\CommandManager;
 use SnapMine\Entity\Entity;
@@ -28,27 +30,25 @@ use SnapMine\Registry\Registry;
 use SnapMine\Session\Session;
 use SnapMine\World\Location;
 use SnapMine\World\World;
-use React\EventLoop\Loop;
 use React\Socket\ConnectionInterface;
 use React\Socket\SocketServer;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionNamedType;
 use Throwable;
-use function React\Async\async;
 
 /**
  * Main server class that handles the Minecraft server implementation.
- * 
+ *
  * This class is the core of the SnapMine server, managing all aspects of
  * server operation including network connections, player management,
  * world loading, event handling, and game mechanics.
- * 
+ *
  * The server uses ReactPHP for asynchronous networking and supports
  * multiple worlds, custom events, and plugin-like listeners.
  *
  * @since   0.0.1
- * 
+ *
  * @example
  * ```php
  * $server = new Server('127.0.0.1', 25565);
@@ -62,108 +62,108 @@ class Server
 
     /**
      * ReactPHP socket server for handling network connections.
-     * 
+     *
      * @var SocketServer
      */
     private SocketServer $socket;
-    
+
     /**
      * Array of active client connections.
-     * 
+     *
      * @var ConnectionInterface[]
      */
     private array $clients = [];
-    
+
     /**
      * Array of active player sessions mapped by connection ID.
-     * 
+     *
      * @var array<int, Session>
      */
     private array $sessions = [];
-    
+
     /**
      * Array of connected players mapped by UUID.
-     * 
+     *
      * @var array<string, Player>
      */
     private array $players = [];
-    
+
     /**
      * Event manager for handling custom events and listeners.
-     * 
+     *
      * @var EventManager
      */
     private EventManager $eventManager;
-    
+
     /**
      * Counter for generating unique entity IDs.
-     * 
+     *
      * @var int
      */
     private int $entityIdCounter = 0;
 
     /**
      * Static logger instance for server-wide logging.
-     * 
+     *
      * @var Logger|null
      */
     private static Logger|null $logger = null;
-    
+
     /**
      * Log message format string.
-     * 
+     *
      * @var string
      */
     private static string $logFormat = "[%datetime%] %level_name%: %message%\n";
-    
+
     /**
      * Array of loaded worlds mapped by world name.
-     * 
+     *
      * @var array<string, World>
      */
     private array $worlds = [];
-    
+
     /**
      * Maximum number of players allowed on the server.
-     * 
+     *
      * @var int
      */
     private int $maxPlayer = 20;
-    
+
     /**
      * Block state loader for handling block data.
-     * 
+     *
      * @var BlockStateLoader
      */
     private BlockStateLoader $blockStateLoader;
-    
+
     /**
      * Chunk manager for world chunk operations.
-     * 
+     *
      * @var ChunkManager
      */
     private ChunkManager $chunkManager;
-    
+
     /**
      * Server configuration handler.
-     * 
+     *
      * @var ServerConfig
      */
     private ServerConfig $config;
-    
+
     /**
      * Command manager for handling chat commands.
-     * 
+     *
      * @var CommandManager
      */
     private CommandManager $commandManager;
 
     /**
      * Create a new server instance.
-     * 
+     *
      * @param string|null $host The host address to bind to (defaults to config value)
      * @param int|null    $port The port to bind to (defaults to config value)
-     * 
+     *
      * @throws Exception If configuration loading fails
      */
     public function __construct(
@@ -200,7 +200,7 @@ class Server
 
     /**
      * Server destructor - clean up resources when server shuts down.
-     * 
+     *
      * Closes all client connections, shuts down the socket server,
      * and cleans up server state.
      */
@@ -222,27 +222,25 @@ class Server
 
     /**
      * Start the server and begin accepting connections.
-     * 
+     *
      * This method initializes the ReactPHP event loop, creates the socket server,
      * registers default listeners, and starts the main server loop. The method
      * blocks until the server is stopped.
-     * 
+     *
      * @return void
-     * 
+     *
      * @throws Exception If server startup fails
      */
     public function start(): void
     {
-        $loop = Loop::get();
-
-        $this->socket = new SocketServer("{$this->host}:{$this->port}", [], $loop);
+        $this->socket = new SocketServer("{$this->host}:{$this->port}", [], Loop::get());
         self::getLogger()->info("Serveur démarré sur {$this->host}:{$this->port}");
 
         $this->registerListener(new PlayerJoinListener());
 
         $keepAliveManager = new KeepAliveManager();
         // Tick keep-alives periodically
-        $loop->addPeriodicTimer(1.0, function () use ($keepAliveManager) {
+        Loop::addPeriodicTimer(1, function () use ($keepAliveManager) {
             $keepAliveManager->tick($this);
         });
 
@@ -261,7 +259,7 @@ class Server
                 /** @var Session $session */
                 $session = $this->sessions[$id];
                 $session->serializer->put($data);
-                async(function () use ($session) {$session->handle();})();
+                $session->handle();
             });
 
             $connection->on('close', function () use ($id, $connection) {
@@ -275,13 +273,12 @@ class Server
             });
         });
 
-        // Run the loop until stopped
-        $loop->run();
+        Loop::run();
     }
 
     /**
      * Close a player session and clean up associated resources.
-     * 
+     *
      * @param Session             $session The session to close
      * @param ConnectionInterface $socket  The socket connection to close
      * @return void
@@ -316,7 +313,7 @@ class Server
 
     /**
      * Increment and get the next available entity ID.
-     * 
+     *
      * @return int The next unique entity ID
      */
     public function incrementAndGetId(): int
@@ -326,7 +323,7 @@ class Server
 
     /**
      * Get a world by name.
-     * 
+     *
      * @param string $name The world name
      * @return World|null The world instance, or null if not found
      */
@@ -337,7 +334,7 @@ class Server
 
     /**
      * Get all loaded worlds.
-     * 
+     *
      * @return array<string, World> Array of worlds mapped by name
      */
     public function getWorlds(): array
@@ -347,7 +344,7 @@ class Server
 
     /**
      * Get the chunk manager instance.
-     * 
+     *
      * @return ChunkManager The chunk manager
      */
     public function getChunkManager(): ChunkManager
@@ -357,9 +354,9 @@ class Server
 
     /**
      * Get the static logger instance.
-     * 
+     *
      * Creates and configures the logger if it doesn't exist yet.
-     * 
+     *
      * @return Logger The configured logger instance
      */
     public static function getLogger(): Logger
@@ -378,7 +375,7 @@ class Server
 
     /**
      * Add a new player to the server.
-     * 
+     *
      * @param Player $player The player to add
      * @return void
      */
@@ -389,7 +386,7 @@ class Server
 
     /**
      * Get all connected players.
-     * 
+     *
      * @return array<string, Player> Array of players mapped by UUID
      */
     public function getPlayers(): array
@@ -399,7 +396,7 @@ class Server
 
     /**
      * Get a player by their UUID.
-     * 
+     *
      * @param string $uuid The player's UUID string
      * @return Player|null The player instance, or null if not found
      */
@@ -410,13 +407,13 @@ class Server
 
     /**
      * Register an event listener with the server.
-     * 
+     *
      * Uses reflection to automatically discover and register event handler methods
      * based on the EventBinding attribute and method parameters.
-     * 
+     *
      * @param Listener $listener The listener instance to register
      * @return void
-     * 
+     *
      * @throws Exception If listener registration fails
      */
     public function registerListener(Listener $listener): void
@@ -452,7 +449,7 @@ class Server
 
     /**
      * Get the maximum number of players allowed on the server.
-     * 
+     *
      * @return int The maximum player count
      */
     public function getMaxPlayer(): int
@@ -462,7 +459,7 @@ class Server
 
     /**
      * Set the maximum number of players allowed on the server.
-     * 
+     *
      * @param int $maxPlayer The new maximum player count
      * @return void
      */
@@ -489,7 +486,7 @@ class Server
 
     /**
      * Spawn a new entity in the world.
-     * 
+     *
      * @param EntityType    $entityType The type of entity to spawn
      * @param Location|null $location   The location to spawn at (defaults to world spawn)
      * @return Entity The spawned entity instance
@@ -505,7 +502,7 @@ class Server
 
     /**
      * Get the block state loader instance.
-     * 
+     *
      * @return BlockStateLoader The block state loader
      */
     public function getBlockStateLoader(): BlockStateLoader
@@ -515,14 +512,14 @@ class Server
 
     /**
      * Spawn a particle effect at the specified coordinates.
-     * 
+     *
      * @param Particle    $particle The particle type to spawn
      * @param float       $x        X coordinate
-     * @param float       $y        Y coordinate  
+     * @param float       $y        Y coordinate
      * @param float       $z        Z coordinate
      * @param object|null $data     Optional particle-specific data
      * @return void
-     * 
+     *
      * @throws Exception If particle requires data but none is provided
      */
     public function spawnParticle(Particle $particle, float $x, float $y, float $z, ?object $data = null): void
@@ -538,7 +535,7 @@ class Server
 
     /**
      * Get the server configuration instance.
-     * 
+     *
      * @return ServerConfig The server configuration
      */
     public function getConfig(): ServerConfig
@@ -548,7 +545,7 @@ class Server
 
     /**
      * Get the command manager instance.
-     * 
+     *
      * @return CommandManager The command manager
      */
     public function getCommandManager(): CommandManager

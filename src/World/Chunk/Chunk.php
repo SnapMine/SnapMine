@@ -33,16 +33,19 @@ class Chunk
     /**
      * @throws Exception
      */
-    public function loadFromNbt(CompoundTag $nbt): self
+    public static function loadFromNbt(World $world, CompoundTag $nbt): self
     {
+        $chunkX = $nbt->getInt('xPos')->getValue();
+        $chunkZ = $nbt->getInt('zPos')->getValue();
+        $self = new self($world, $chunkX, $chunkZ);
 
-        $this->loadHeightmaps($nbt);
-        $this->loadSections($nbt);
-        $this->loadBlockEntities($nbt);
+        $self->loadHeightmaps($nbt);
+        $self->loadSections($nbt);
+        $self->loadBlockEntities($nbt);
 
-        $this->loaded = true;
+        $self->loaded = true;
 
-        return $this;
+        return $self;
     }
 
     private function loadHeightmaps(CompoundTag $nbt): void
@@ -178,9 +181,8 @@ class Chunk
         return [
             $this->x,
             $this->z,
-            $this->sections,
             $this->blockEntities,
-            $this->heightmaps,
+            $this->loaded,
         ];
     }
 

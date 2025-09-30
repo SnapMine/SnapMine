@@ -2,56 +2,27 @@
 
 namespace SnapMine\World;
 
+use Amp\Future;
+use Amp\Parallel\Worker\Worker;
 use Aternos\Nbt\IO\Reader\ZLibCompressedStringReader;
 use Aternos\Nbt\NbtFormat;
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\Tag;
 use Error;
+use SnapMine\Manager\ChunkManager\ChunkTask;
 use SnapMine\World\Chunk\Chunk;
+use function Amp\Parallel\Worker\createWorker;
 
 class Region
 {
-    private string $file;
-    private string $offsetTable;
-    /** @var resource|null */
-    private $handle = null;
     /** @var array<int, array<int, Chunk>> */
     private array $chunks = [];
+    private Worker $worker;
 
-    public function __construct(private readonly World $world, string $file)
+    public function __construct(private readonly World $world, private readonly string $file)
     {
-        $this->file = $file;
-        $this->openHandle();
-
-        $this->offsetTable = fread($this->handle, 4096);
-        if (!$this->offsetTable || strlen($this->offsetTable) < 4096) {
-            throw new Error("Invalid region file: $file");
-        }
+        $this->worker = createWorker();
     }
-
-    private function openHandle(): void
-    {
-        if ($this->handle === null) {
-            $this->handle = fopen($this->file, 'rb');
-            if (!$this->handle) {
-                throw new Error("Cannot open: {$this->file}");
-            }
-        }
-    }
-
-    private function closeHandle(): void
-    {
-        if (is_resource($this->handle)) {
-            fclose($this->handle);
-        }
-        $this->handle = null;
-    }
-
-    public function __destruct()
-    {
-        $this->closeHandle();
-    }
-
 
     public function hasChunk(int $x, int $z): bool
     {
@@ -71,69 +42,46 @@ class Region
         for ($x = 0; $x < 32; $x++) {
             for ($z = 0; $z < 32; $z++) {
                 if($this->hasChunk($x, $z)) {
-                    $chunk = $this->getChunk($x, $z);
-                    if ($chunk !== null) {
-                        $chunks[] = $chunk;
-                    }
+                    $chunks[] = $this->getChunk($x, $z);
                 }
             }
         }
         return $chunks;
     }
 
-    public function getChunk(int $x, int $z): ?Chunk
+    public function getChunkAsync(int $x, int $z): Future
     {
         if ($x < 0 || $x >= 32 || $z < 0 || $z >= 32) {
             throw new Error("Invalid local coordinates ($x, $z)");
         }
 
-        if (isset($this->chunks[$x][$z])) {
+        return $this->worker->submit(new ChunkTask(
+            $this->file,
+            $x,
+            $z
+        ))->getFuture()->map(function ($chunk) {
+            $reader = new ZLibCompressedStringReader($chunk, NbtFormat::JAVA_EDITION);
+            $tag = Tag::load($reader);
+
+            if ($tag instanceof CompoundTag) {
+                $chunk = Chunk::loadFromNbt($this->world, $tag);
+
+                $this->chunks[$chunk->getX()][$chunk->getZ()] = $chunk;
+
+                return $chunk;
+            }
+
+            return null;
+        });
+    }
+
+    public function getChunk(int $x, int $z): Chunk
+    {
+        if ($this->hasChunk($x, $z)) {
             return $this->chunks[$x][$z];
         }
 
-        $i = $x + $z * 32;
-        $entryOffset = $i * 4;
-
-        $offset = unpack(
-            'N',
-            "\x00" .
-            $this->offsetTable[$entryOffset] .
-            $this->offsetTable[$entryOffset + 1] .
-            $this->offsetTable[$entryOffset + 2]
-        )[1];
-        $sectors = ord($this->offsetTable[$entryOffset + 3]);
-
-        if ($offset === 0 || $sectors === 0) {
-            return null; // empty chunk
-        }
-
-        $this->openHandle();
-
-        fseek($this->handle, $offset * 4096);
-        $lengthData = fread($this->handle, 4);
-        if ($lengthData === false || strlen($lengthData) < 4) {
-            return null;
-        }
-        $length = unpack('N', $lengthData)[1];
-
-        $compressionType = ord(fread($this->handle, 1));
-        $compressedData = fread($this->handle, $length - 1);
-
-        if ($compressionType === 2 && $compressedData !== false) {
-            $reader = new ZLibCompressedStringReader($compressedData, NbtFormat::JAVA_EDITION);
-            $nbt = Tag::load($reader);
-
-            if ($nbt instanceof CompoundTag) {
-                $chunkX = $nbt->getInt('xPos')->getValue();
-                $chunkZ = $nbt->getInt('zPos')->getValue();
-
-                $this->chunks[$x][$z] = (new Chunk($this->world, $chunkX, $chunkZ))->loadFromNbt($nbt);
-
-                return $this->chunks[$x][$z];
-            }
-        }
-
-        return null;
+        return $this->getChunkAsync($x, $z)->await();
     }
 
 }
