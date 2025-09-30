@@ -5,6 +5,7 @@ namespace SnapMine\Entity;
 use SnapMine\Component\TextComponent;
 use SnapMine\Entity\Metadata\Metadata;
 use SnapMine\Entity\Metadata\MetadataType;
+use SnapMine\Network\Packet\Clientbound\Play\EntityPositionSyncPacket;
 use SnapMine\Network\Packet\Clientbound\Play\SetEntityDataPacket;
 use SnapMine\Network\Serializer\PacketSerializer;
 use SnapMine\Server;
@@ -462,6 +463,36 @@ abstract class Entity
     public function getServer(): Server
     {
         return $this->server;
+    }
+
+    /**
+     * Teleport the entity to a new location.
+     *
+     * This method creates and broadcasts an {@see EntityPositionSyncPacket}
+     * to all connected players in order to instantly update the entity's
+     * position and orientation on the client side.
+     *
+     * @param Location $location The destination location
+     * @return void
+     */
+    public function teleport(Location $location): void
+    {
+        $packet = new EntityPositionSyncPacket(
+            $this->getId(),
+            $location->getX(),
+            $location->getY(),
+            $location->getZ(),
+            0,
+            0,
+            0,
+            $location->getYaw(),
+            $location->getPitch(),
+            true
+        );
+
+        $this->location = clone $location;
+
+        $this->getServer()->broadcastPacket($packet);
     }
 
     /**
