@@ -16,5 +16,10 @@ require 'src/Command/Default/KickCommand.php';
 require 'src/Command/Default/SpawnCommand.php';
 require 'src/Command/Default/GiveCommand.php';
 require 'src/Command/Default/DebugCommand.php';
+require 'src/Command/Default/TeleportCommand.php';
 
-$server->start();
+try {
+    $server->start();
+} catch (Exception $e) {
+    echo $e->getMessage() . PHP_EOL;
+}

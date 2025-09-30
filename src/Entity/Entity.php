@@ -7,6 +7,7 @@ use SnapMine\Entity\Metadata\Metadata;
 use SnapMine\Entity\Metadata\MetadataType;
 use SnapMine\Network\Packet\Clientbound\Play\EntityPositionSyncPacket;
 use SnapMine\Network\Packet\Clientbound\Play\SetEntityDataPacket;
+use SnapMine\Network\Packet\Clientbound\Play\SynchronizePlayerPositionPacket;
 use SnapMine\Network\Serializer\PacketSerializer;
 use SnapMine\Server;
 use SnapMine\Utils\UUID;
@@ -477,7 +478,7 @@ abstract class Entity
      */
     public function teleport(Location $location): void
     {
-        $packet = new EntityPositionSyncPacket(
+        $tpPacket = new EntityPositionSyncPacket(
             $this->getId(),
             $location->getX(),
             $location->getY(),
@@ -492,7 +493,17 @@ abstract class Entity
 
         $this->location = clone $location;
 
-        $this->getServer()->broadcastPacket($packet);
+        $this->getServer()->broadcastPacket($tpPacket);
+
+        if ($this instanceof Player) {
+            $this->sendPacket(new SynchronizePlayerPositionPacket(
+                $this,
+                0,
+                0,
+                0,
+                0
+            ));
+        }
     }
 
     /**
