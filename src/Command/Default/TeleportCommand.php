@@ -10,7 +10,12 @@ use SnapMine\World\Location;
 return Command::new('tp')
     ->group(function (CommandNode $group) {
         $group->argument('target', new ArgumentEntity(), function (Player $sender, ArgumentEntity $target) {
-            $sender->teleport($target->getValue());
+            if (is_null($target->getValue())) {
+                $sender->sendMessage('Player is required!');
+                return;
+            }
+
+            $sender->teleport($target->getValue()->getLocation());
         });
     })
     ->group(function (CommandNode $group) {
