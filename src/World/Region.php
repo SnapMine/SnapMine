@@ -66,7 +66,9 @@ class Region
             if ($tag instanceof CompoundTag) {
                 $chunk = Chunk::loadFromNbt($this->world, $tag);
 
-                $this->chunks[$chunk->getX()][$chunk->getZ()] = $chunk;
+                if (! $this->hasChunk($chunk->getX(), $chunk->getZ())) {
+                    $this->chunks[$chunk->getX()][$chunk->getZ()] = $chunk;
+                }
 
                 return $chunk;
             }

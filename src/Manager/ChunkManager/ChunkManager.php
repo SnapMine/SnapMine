@@ -10,23 +10,53 @@ use SnapMine\World\World;
 
 class ChunkManager
 {
-    private int $inflightChunks = 0;
+    private array $queue = [];
+    private int $chunksPerTick = 2;
+    private bool $taskRegistered = false;
 
-    public function __construct()
-    {
+    public function request(Player $player, World $world, int $x, int $z): void {
+        $this->queue[] = [
+            'player' => $player,
+            'world' => $world,
+            'x' => $x,
+            'z' => $z
+        ];
+
+        $this->ensureTaskRunning();
     }
 
-    public function request(Player $player, World $world, int $x, int $z): void
-    {
-        $this->inflightChunks++;
+    private function ensureTaskRunning(): void {
+        if ($this->taskRegistered || empty($this->queue)) {
+            return;
+        }
 
-        Loop::addTimer($this->inflightChunks / 5, function () use ($player, $world, $x, $z) {
-            $world->getChunkAsync($x, $z)
-                ->map(function (Chunk $chunk) use ($player) {
-                    $player->sendPacket(new ChunkDataAndUpdateLightPacket($chunk));
+        $this->taskRegistered = true;
 
-                    $this->inflightChunks--;
-                });
+        $handler = Loop::addPeriodicTimer(0.05, function () use (&$handler) {
+            $sent = 0;
+
+            while (!empty($this->queue) && $sent < $this->chunksPerTick) {
+                $request = array_shift($this->queue);
+
+                // Vérifie que le joueur est toujours connecté
+                if (!$request['player']->isConnected()) {
+                    continue;
+                }
+
+                $request['world']->getChunkAsync($request['x'], $request['z'])
+                    ->map(function (Chunk $chunk) use ($request) {
+                        if ($request['player']->isConnected()) {
+                            $request['player']->sendPacket(new ChunkDataAndUpdateLightPacket($chunk));
+                        }
+                    });
+
+                $sent++;
+            }
+
+            if (empty($this->queue)) {
+                Loop::cancelTimer($handler);
+                $this->taskRegistered = false;
+            }
         });
     }
 

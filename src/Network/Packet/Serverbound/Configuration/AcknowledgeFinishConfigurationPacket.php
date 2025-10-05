@@ -2,6 +2,7 @@
 
 namespace SnapMine\Network\Packet\Serverbound\Configuration;
 
+use SnapMine\Manager\ChunkManager\ChunkManager;
 use SnapMine\Network\Packet\Clientbound\Play\ChunkDataAndUpdateLightPacket;
 use SnapMine\Network\Packet\Clientbound\Play\GameEventPacket;
 use SnapMine\Network\Packet\Clientbound\Play\JoinGamePacket;
@@ -48,7 +49,7 @@ class AcknowledgeFinishConfigurationPacket extends ServerboundPacket
 
         $player->sendPacket(new ChunkDataAndUpdateLightPacket($world->getChunk(0, 0)));
 
-        $cm = $player->getServer()->getChunkManager();
+        $cm = new ChunkManager();
 
         $cm->loadRadius($world, 0, 0, 15, $player);
 
