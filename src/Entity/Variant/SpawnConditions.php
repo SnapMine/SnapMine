@@ -7,48 +7,36 @@ use Aternos\Nbt\Tag\FloatTag;
 use Aternos\Nbt\Tag\IntTag;
 use Aternos\Nbt\Tag\ListTag;
 use Aternos\Nbt\Tag\StringTag;
-use SnapMine\Registry\EncodableToNbt;
+use SnapMine\Nbt\NbtList;
+use SnapMine\Nbt\NbtTag;
+use SnapMine\NbtSerializable;
 
-readonly class SpawnConditions implements EncodableToNbt
+class SpawnConditions implements NbtSerializable
 {
-    public function __construct(
-        private array $spawn_conditions
-    )
+    #[NbtList('spawn_conditions', SpawnCondition::class, true)]
+    private array $spawn_conditions = [];
+
+    #[NbtTag(IntTag::class, 'priority')]
+    private int $priority = 0;
+
+    public function __construct(array $conditions)
     {
+        $this->spawn_conditions = $conditions;
     }
 
-    public function toNbt(): ListTag
+    /**
+     * @return array
+     */
+    public function getSpawnConditions(): array
     {
-        $base = new ListTag();
+        return $this->spawn_conditions;
+    }
 
-        foreach ($this->spawn_conditions as $condition) {
-            $baseCompound = new CompoundTag();
-
-            if (isset($condition['condition'])) {
-                $conditionCompoundTag = new CompoundTag();
-
-                $type = $condition['condition']['type'];
-
-                $conditionCompoundTag->set('type', (new StringTag())->setValue($type));
-
-                if ($type == 'minecraft:moon_brightness') {
-                    $conditionCompoundTag->set(
-                        'range',
-                        (new CompoundTag())
-                            ->set('min', (new FloatTag())->setValue($condition['condition']['range']['min']))
-                    );
-                } else {
-                    $key = str_replace("minecraft:", "", $type) . 's';
-                    $conditionCompoundTag->set($key, (new StringTag())->setValue($condition['condition'][$key]));
-                }
-
-                $baseCompound->set('condition', $conditionCompoundTag);
-            }
-
-            $baseCompound->set('priority', (new IntTag())->setValue($condition['priority']));
-            $base[] = $baseCompound;
-        }
-
-        return $base;
+    /**
+     * @return int
+     */
+    public function getPriority(): int
+    {
+        return $this->priority;
     }
 }

@@ -10,6 +10,7 @@ use SnapMine\Entity\Variant\PaintingVariant;
 use SnapMine\Entity\Variant\PigVariant;
 use SnapMine\Entity\Variant\WolfSoundVariant;
 use SnapMine\Entity\Variant\WolfVariant;
+use SnapMine\Utils\NbtJson;
 use SnapMine\World\Biome;
 use SnapMine\World\DimensionType;
 
@@ -46,7 +47,7 @@ enum Registry: string
                 $filename = basename($entry, ".json");
                 $data = json_decode(file_get_contents($entry), true);
 
-                $value->value::register($filename, 'minecraft:' . $filename, $data);
+                $value->value::register($filename, 'minecraft:' . $filename, NbtJson::fromJson($data, $value->value));
             }
         }
     }

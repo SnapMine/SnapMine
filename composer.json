@@ -27,7 +27,8 @@
     "symfony/yaml": "^7.3",
     "amphp/parallel": "^2.3",
     "revolt/event-loop": "^1.0",
-    "revolt/event-loop-adapter-react": "^1.1"
+    "revolt/event-loop-adapter-react": "^1.1",
+    "ramsey/collection": "^2.1"
   },
   "require-dev": {
     "pestphp/pest": "^3.8",
