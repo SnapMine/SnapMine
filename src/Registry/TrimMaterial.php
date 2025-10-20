@@ -19,48 +19,8 @@ use SnapMine\Keyed;
  * @method static TrimMaterial REDSTONE()
  * @method static TrimMaterial RESIN()
  */
-class TrimMaterial implements EncodableToNbt, Keyed
+class TrimMaterial extends RegistryData implements EncodableToNbt
 {
-    /** @var array<string, self> */
-    protected static array $entries = [];
-
-    public function __construct(
-        protected readonly string $key,
-        protected readonly array $data,
-    )
-    {
-    }
-
-    public static function register(string $name, string $key, array $data): self
-    {
-        $instance = new self($key, $data);
-        self::$entries[strtoupper($name)] = $instance;
-
-        return $instance;
-    }
-
-    public static function __callStatic(string $name, array $args): self {
-        $name = strtoupper($name);
-        if (!isset(self::$entries[$name])) {
-            throw new \RuntimeException("TrimMaterial '$name' not found");
-        }
-
-        return self::$entries[$name];
-    }
-
-    public function getKey(): string
-    {
-        return $this->key;
-    }
-
-    /**
-     * @return array
-     */
-    public static function getEntries(): array
-    {
-        return self::$entries;
-    }
-
     public function toNbt(): CompoundTag
     {
         $base = new CompoundTag();

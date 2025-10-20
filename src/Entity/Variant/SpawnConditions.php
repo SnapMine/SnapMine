@@ -2,11 +2,7 @@
 
 namespace SnapMine\Entity\Variant;
 
-use Aternos\Nbt\Tag\CompoundTag;
-use Aternos\Nbt\Tag\FloatTag;
 use Aternos\Nbt\Tag\IntTag;
-use Aternos\Nbt\Tag\ListTag;
-use Aternos\Nbt\Tag\StringTag;
 use SnapMine\Nbt\NbtList;
 use SnapMine\Nbt\NbtTag;
 use SnapMine\NbtSerializable;
