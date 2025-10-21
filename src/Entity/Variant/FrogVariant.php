@@ -4,6 +4,7 @@ namespace SnapMine\Entity\Variant;
 
 use Aternos\Nbt\Tag\StringTag;
 use SnapMine\Nbt\NbtCompound;
+use SnapMine\Nbt\NbtList;
 use SnapMine\Nbt\NbtTag;
 use SnapMine\NbtSerializable;
 use SnapMine\Registry\RegistryData;
@@ -18,6 +19,6 @@ class FrogVariant extends RegistryData implements NbtSerializable
     #[NbtTag(StringTag::class, 'asset_id')]
     private string $assetId = '';
 
-    #[NbtCompound('spawn_conditions')]
-    private SpawnConditions $spawnConditions;
+    #[NbtList('spawn_conditions', SpawnCondition::class, true)]
+    private array $spawnConditions = [];
 }
