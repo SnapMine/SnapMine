@@ -1,6 +1,7 @@
 <?php
 
 use SnapMine\Entity\Variant\CatVariant;
+use SnapMine\Entity\Variant\SpawnConditions;
 use SnapMine\Registry\DamageType;
 use SnapMine\Utils\Nbt;
 use SnapMine\Utils\NbtJson;
@@ -47,5 +48,6 @@ it('can serialize CatVariant correctly', function () {
 
     $catVariant = NbtJson::fromJson($json, CatVariant::class);
 
-    expect($catVariant)->toBeInstanceOf(CatVariant::class);
+    expect($catVariant)->toBeInstanceOf(CatVariant::class)
+        ->and($catVariant->getSpawnConditions())->toHaveCount(2);
 });

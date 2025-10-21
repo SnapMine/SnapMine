@@ -7,6 +7,7 @@ use Aternos\Nbt\Tag\StringTag;
 use Aternos\Nbt\Tag\Tag;
 use SnapMine\Keyed;
 use SnapMine\Nbt\NbtCompound;
+use SnapMine\Nbt\NbtList;
 use SnapMine\Nbt\NbtTag;
 use SnapMine\NbtSerializable;
 use SnapMine\Registry\EncodableToNbt;
@@ -33,8 +34,8 @@ class CatVariant extends RegistryData implements NbtSerializable
     #[NbtTag(StringTag::class, 'asset_id')]
     private string $assetId = '';
 
-    #[NbtCompound('spawn_conditions')]
-    private SpawnConditions $spawnConditions;
+    #[NbtList('spawn_conditions', SpawnCondition::class, true)]
+    private array $spawnConditions = [];
 
     /**
      * @return string
@@ -45,9 +46,9 @@ class CatVariant extends RegistryData implements NbtSerializable
     }
 
     /**
-     * @return SpawnConditions
+     * @return array
      */
-    public function getSpawnConditions(): SpawnConditions
+    public function getSpawnConditions(): array
     {
         return $this->spawnConditions;
     }

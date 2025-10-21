@@ -109,6 +109,7 @@ final class Nbt
      * @param mixed $childTag The NBT tag to deserialize
      * @param ReflectionProperty $property The target property
      * @return NbtSerializable|null The deserialized object or null
+     * @throws \ReflectionException
      */
     private static function deserializeCompound(mixed $childTag, ReflectionProperty $property): ?NbtSerializable
     {

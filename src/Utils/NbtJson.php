@@ -84,6 +84,7 @@ final class NbtJson
 
         $type = $property->getType()?->getName();
 
+        var_dump($value);
         return $type !== null ? self::fromJson($value, $type) : $value;
     }
 
