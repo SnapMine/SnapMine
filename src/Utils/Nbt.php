@@ -59,6 +59,10 @@ final class Nbt
         $reflection = new ReflectionClass($component);
 
         foreach ($reflection->getProperties() as $property) {
+            if (! $property->isInitialized($component)) {
+                continue;
+            }
+
             $nbtTag = self::serializeProperty($property, $component);
 
             if ($nbtTag !== null) {
@@ -79,28 +83,61 @@ final class Nbt
      */
     private static function deserializeProperty(ReflectionProperty $property, CompoundTag $tag): mixed
     {
-        $attribute = self::getNbtAttribute($property);
+        $attributes = self::getAllNbtAttributes($property);
 
-        if ($attribute === null) {
+        if (empty($attributes)) {
             return false;
         }
 
-        $tagName = $attribute['name'] ?? $property->getName();
+        $tagName = $attributes[0]['name'] ?? $property->getName();
         $childTag = $tag->get($tagName);
 
         if ($childTag === null) {
             return null;
         }
 
+        // Try each attribute until one successfully deserializes
+        foreach ($attributes as $attribute) {
+            $result = self::tryDeserializeWithAttribute($childTag, $attribute, $property);
+            if ($result !== false) {
+                return $result;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Tries to deserialize a tag with a specific attribute.
+     *
+     * @param mixed $childTag The NBT tag to deserialize
+     * @param array<string, mixed> $attribute The attribute metadata
+     * @param ReflectionProperty $property The target property
+     * @return mixed The deserialized value or false if incompatible
+     */
+    private static function tryDeserializeWithAttribute(mixed $childTag, array $attribute, ReflectionProperty $property): mixed
+    {
         if ($attribute['type'] === 'compound') {
+            if (!$childTag instanceof CompoundTag) {
+                return false;
+            }
             return self::deserializeCompound($childTag, $property);
         }
 
         if ($attribute['type'] === 'list') {
+            if (!$childTag instanceof ListTag) {
+                return false;
+            }
             return self::deserializeList($childTag, $attribute);
         }
 
-        return self::extractTagValue($childTag);
+        // For simple tags (StringTag, IntValueTag, etc.)
+        $value = self::extractTagValue($childTag);
+        if ($value === null) {
+            return false;
+        }
+
+        return $value;
     }
 
     /**
@@ -177,23 +214,34 @@ final class Nbt
      */
     private static function serializeProperty(ReflectionProperty $property, NbtSerializable $component): mixed
     {
-        $attribute = self::getNbtAttribute($property);
-
-        if ($attribute === null) {
-            return null;
-        }
-
         $value = $property->getValue($component);
 
         if ($value === null) {
             return null;
         }
 
-        return match ($attribute['type']) {
-            'compound' => self::toNbt($value),
-            'list' => self::serializeList($value, $attribute),
-            default => self::createTag($attribute['type'], $value),
-        };
+        $attributes = self::getAllNbtAttributes($property);
+
+        if (empty($attributes)) {
+            return null;
+        }
+
+        // Determine which attribute to use based on the value type
+        foreach ($attributes as $attribute) {
+            if ($attribute['type'] === 'compound' && $value instanceof NbtSerializable) {
+                return self::toNbt($value);
+            }
+
+            if ($attribute['type'] === 'list' && is_array($value)) {
+                return self::serializeList($value, $attribute);
+            }
+
+            if ($attribute['type'] !== 'compound' && $attribute['type'] !== 'list' && !is_array($value)) {
+                return self::createTag($attribute['type'], $value);
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -237,6 +285,34 @@ final class Nbt
     }
 
     /**
+     * Retrieves all NBT attribute metadata from a property.
+     *
+     * @param ReflectionProperty $property The property to inspect
+     * @return array<int, array<string, mixed>> Array of attribute metadata
+     */
+    public static function getAllNbtAttributes(ReflectionProperty $property): array
+    {
+        $attributes = [];
+
+        $compoundAttributes = $property->getAttributes(NbtCompound::class);
+        foreach ($compoundAttributes as $attr) {
+            $attributes[] = self::parseCompoundAttribute($attr->getArguments());
+        }
+
+        $listAttributes = $property->getAttributes(NbtList::class);
+        foreach ($listAttributes as $attr) {
+            $attributes[] = self::parseListAttribute($attr->getArguments());
+        }
+
+        $tagAttributes = $property->getAttributes(NbtTag::class);
+        foreach ($tagAttributes as $attr) {
+            $attributes[] = self::parseTagAttribute($attr->getArguments());
+        }
+
+        return $attributes;
+    }
+
+    /**
      * Retrieves NBT attribute metadata from a property.
      *
      * @param ReflectionProperty $property The property to inspect
@@ -244,22 +320,8 @@ final class Nbt
      */
     public static function getNbtAttribute(ReflectionProperty $property): ?array
     {
-        $compoundAttributes = $property->getAttributes(NbtCompound::class);
-        if (!empty($compoundAttributes)) {
-            return self::parseCompoundAttribute($compoundAttributes[0]->getArguments());
-        }
-
-        $listAttributes = $property->getAttributes(NbtList::class);
-        if (!empty($listAttributes)) {
-            return self::parseListAttribute($listAttributes[0]->getArguments());
-        }
-
-        $tagAttributes = $property->getAttributes(NbtTag::class);
-        if (!empty($tagAttributes)) {
-            return self::parseTagAttribute($tagAttributes[0]->getArguments());
-        }
-
-        return null;
+        $attributes = self::getAllNbtAttributes($property);
+        return $attributes[0] ?? null;
     }
 
     /**

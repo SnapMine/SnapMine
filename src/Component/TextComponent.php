@@ -18,9 +18,10 @@ class TextComponent implements JsonSerializable, NbtSerializable
 
     #[NbtTag(StringTag::class)]
     private ?string $translate = null;
+
+    /** @var TextComponent[]|null */
     #[NbtList('extra', TextComponent::class, true)]
-    /** @var TextComponent[] */
-    private array $children = [];
+    private ?array $children = null;
 
     #[NbtTag(StringTag::class)]
     private ?string $color = null;
@@ -29,33 +30,33 @@ class TextComponent implements JsonSerializable, NbtSerializable
     private ?string $font = null;
 
     #[NbtTag(ByteTag::class)]
-    private bool $bold = false;
+    private ?bool $bold = null;
 
     #[NbtTag(ByteTag::class)]
-    private bool $italic = false;
+    private ?bool $italic = null;
 
     #[NbtTag(ByteTag::class)]
-    private bool $underline = false;
+    private ?bool $underline = null;
 
     #[NbtTag(ByteTag::class)]
-    private bool $strike = false;
+    private ?bool $strike = null;
 
     #[NbtTag(ByteTag::class)]
-    private bool $obfuscated = false;
+    private ?bool $obfuscated = null;
 
     #[NbtTag(IntTag::class)]
-    private int $shadowColor = 0;
+    private ?int $shadowColor = null;
 
     public function __construct(
-        private readonly TextComponentType $type,
-        private readonly array $options = [],
+        TextComponentType $type = TextComponentType::TEXT,
+        array $options = [],
     ) {
-        switch ($this->type) {
+        switch ($type) {
             case TextComponentType::TEXT:
-                $this->text = $this->options['text'];
+                $this->text = $options['text'];
                 break;
             case TextComponentType::TRANSLATABLE:
-                $this->translate = $this->options['translate'];
+                $this->translate = $options['translate'];
                 // ...
                 break;
         }
@@ -151,7 +152,6 @@ class TextComponent implements JsonSerializable, NbtSerializable
     public function jsonSerialize(): array
     {
         $data = [
-            "type" => strtolower($this->type->name),
             "color" => $this->color,
             "font" => $this->font,
             "bold" => $this->bold,
@@ -163,7 +163,7 @@ class TextComponent implements JsonSerializable, NbtSerializable
             "extra" => $this->children,
         ];
 
-        $data = array_merge($data, $this->options);
+        // TODO : Add text, translation, ...
 
         return array_filter($data, fn ($item) => $item !== null);
     }

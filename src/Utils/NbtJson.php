@@ -37,6 +37,31 @@ final class NbtJson
     }
 
     /**
+     * Converts an NbtSerializable instance to a JSON array.
+     *
+     * @param NbtSerializable $instance The object to convert
+     * @return array<string, mixed> The JSON data as an associative array
+     * @throws \ReflectionException If the class cannot be reflected
+     */
+    public static function toJson(NbtSerializable $instance): array
+    {
+        $reflection = new ReflectionClass($instance);
+        $result = [];
+
+        foreach ($reflection->getProperties() as $property) {
+            $value = self::getPropertyValue($instance, $property);
+
+            if ($value !== null) {
+                $attribute = Nbt::getNbtAttribute($property);
+                $propertyName = $attribute['name'] ?? $property->getName();
+                $result[$propertyName] = $value;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Sets a property value from JSON data.
      *
      * @param object $instance The object instance
@@ -48,6 +73,7 @@ final class NbtJson
         ReflectionProperty $property,
         array $json
     ): void {
+        // Get the first attribute's name for the JSON key
         $attribute = Nbt::getNbtAttribute($property);
         $propertyName = $attribute['name'] ?? $property->getName();
 
@@ -57,15 +83,97 @@ final class NbtJson
 
         $value = $json[$propertyName];
 
-        if ($attribute !== null) {
-            $value = match ($attribute['type']) {
-                'compound' => self::processCompound($value, $property),
-                'list' => self::processList($value, $attribute),
-                default => $value
-            };
+        // Get all attributes to handle multi-type
+        $attributes = Nbt::getAllNbtAttributes($property);
+
+        if (!empty($attributes)) {
+            $value = self::processValueWithAttributes($value, $attributes, $property);
         }
 
         $property->setValue($instance, $value);
+    }
+
+    /**
+     * Processes a value with multiple attributes (multi-type support).
+     *
+     * @param mixed $value The value to process
+     * @param array<int, array<string, mixed>> $attributes All attributes
+     * @param ReflectionProperty $property The property reflection
+     * @return mixed The processed value
+     */
+    private static function processValueWithAttributes(
+        mixed $value,
+        array $attributes,
+        ReflectionProperty $property
+    ): mixed {
+        // Try each attribute based on the value type
+        foreach ($attributes as $attribute) {
+            if ($attribute['type'] === 'compound' && is_array($value) && self::isAssociativeArray($value)) {
+                return self::processCompound($value, $property);
+            }
+
+            if ($attribute['type'] === 'list' && is_array($value)) {
+                return self::processList($value, $attribute);
+            }
+
+            // For simple types (string, int, float, etc.)
+            if ($attribute['type'] !== 'compound' && $attribute['type'] !== 'list' && !is_array($value)) {
+                return $value;
+            }
+        }
+
+        return $value;
+    }
+
+    /**
+     * Gets a property value for JSON export.
+     *
+     * @param object $instance The object instance
+     * @param ReflectionProperty $property The property to get
+     * @return mixed The property value or null
+     */
+    private static function getPropertyValue(
+        object $instance,
+        ReflectionProperty $property
+    ): mixed {
+        $value = $property->getValue($instance);
+
+        if ($value === null) {
+            return null;
+        }
+
+        // Handle NbtSerializable objects
+        if ($value instanceof NbtSerializable) {
+            return self::toJson($value);
+        }
+
+        // Handle arrays
+        if (is_array($value)) {
+            return self::processArrayForJson($value);
+        }
+
+        return $value;
+    }
+
+    /**
+     * Processes an array for JSON export.
+     *
+     * @param array<int|string, mixed> $array The array to process
+     * @return array<int|string, mixed> The processed array
+     */
+    private static function processArrayForJson(array $array): array
+    {
+        $result = [];
+
+        foreach ($array as $key => $item) {
+            if ($item instanceof NbtSerializable) {
+                $result[$key] = self::toJson($item);
+            } else {
+                $result[$key] = $item;
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -84,12 +192,22 @@ final class NbtJson
         $type = $property->getType();
 
         if ($type instanceof ReflectionUnionType) {
-            $class = array_filter($type->getTypes(), fn (ReflectionType $t) => class_exists($t->getName()))[0]->getName();
+            // Find the first class type in the union
+            $classTypes = array_filter(
+                $type->getTypes(),
+                fn (ReflectionType $t) => !$t->isBuiltin() && class_exists($t->getName())
+            );
+
+            if (empty($classTypes)) {
+                return $value;
+            }
+
+            $class = reset($classTypes)->getName();
         } else {
-            $class = $type->getName();
+            $class = $type?->getName();
         }
 
-        return $class !== null ? self::fromJson($value, $class) : $value;
+        return ($class !== null && class_exists($class)) ? self::fromJson($value, $class) : $value;
     }
 
     /**
@@ -109,11 +227,26 @@ final class NbtJson
         $result = [];
 
         foreach ($value as $item) {
-            $result[] = ($elementClass !== null && is_array($item))
+            $result[] = ($elementClass !== null && is_array($item) && self::isAssociativeArray($item))
                 ? self::fromJson($item, $elementClass)
                 : $item;
         }
 
         return $result;
+    }
+
+    /**
+     * Checks if an array is associative.
+     *
+     * @param array<mixed, mixed> $array The array to check
+     * @return bool True if associative, false otherwise
+     */
+    private static function isAssociativeArray(array $array): bool
+    {
+        if (empty($array)) {
+            return false;
+        }
+
+        return array_keys($array) !== range(0, count($array) - 1);
     }
 }

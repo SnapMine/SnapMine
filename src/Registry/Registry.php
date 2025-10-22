@@ -52,11 +52,6 @@ enum Registry: string
 
                 $registryData::register($filename, 'minecraft:' . $filename, NbtJson::fromJson($data, $value->value));
             }
-
-            file_put_contents('000_' . $value->name . '.txt', print_r($registryData::getEntries(), true));
         }
-
-//        $data = json_decode(file_get_contents($dirPath . 'pig_variant/warm.json'), true);
-//        var_dump(NbtJson::fromJson($data, PigVariant::class));
     }
 }
