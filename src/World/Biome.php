@@ -68,4 +68,14 @@ class Biome extends RegistryData implements NbtSerializable
     {
         return $this->effects;
     }
+
+    public function isHasPrecipitation(): bool
+    {
+        return $this->hasPrecipitation;
+    }
+
+    public function setHasPrecipitation(bool $hasPrecipitation): void
+    {
+        $this->hasPrecipitation = $hasPrecipitation;
+    }
 }

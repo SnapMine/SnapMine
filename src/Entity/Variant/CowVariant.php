@@ -24,4 +24,28 @@ class CowVariant extends RegistryData implements NbtSerializable
 
     #[NbtList('spawn_conditions', SpawnConditions::class, true)]
     private array $spawnConditions = [];
+
+    /**
+     * @return string
+     */
+    public function getAssetId(): string
+    {
+        return $this->assetId;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getModel(): ?string
+    {
+        return $this->model;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSpawnConditions(): array
+    {
+        return $this->spawnConditions;
+    }
 }

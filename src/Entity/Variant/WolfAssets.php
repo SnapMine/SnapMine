@@ -9,11 +9,35 @@ use SnapMine\NbtSerializable;
 class WolfAssets implements NbtSerializable
 {
     #[NbtTag(StringTag::class)]
-    private string $angry = '';
+    private string $angry;
 
     #[NbtTag(StringTag::class)]
-    private string $tame = '';
+    private string $tame;
 
     #[NbtTag(StringTag::class)]
-    private string $wild = '';
+    private string $wild;
+
+    /**
+     * @return string
+     */
+    public function getAngry(): string
+    {
+        return $this->angry;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTame(): string
+    {
+        return $this->tame;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWild(): string
+    {
+        return $this->wild;
+    }
 }

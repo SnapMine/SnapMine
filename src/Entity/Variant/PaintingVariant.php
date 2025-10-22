@@ -26,4 +26,36 @@ class PaintingVariant extends RegistryData implements NbtSerializable
 
     #[NbtCompound('title')]
     private TextComponent $title;
+
+    /**
+     * @return string
+     */
+    public function getAssetId(): string
+    {
+        return $this->assetId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getHeight(): int
+    {
+        return $this->height;
+    }
+
+    /**
+     * @return TextComponent|null
+     */
+    public function getAuthor(): ?TextComponent
+    {
+        return $this->author;
+    }
+
+    /**
+     * @return TextComponent
+     */
+    public function getTitle(): TextComponent
+    {
+        return $this->title;
+    }
 }

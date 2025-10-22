@@ -25,4 +25,20 @@ class WolfVariant extends RegistryData implements NbtSerializable
 
     #[NbtList('spawn_conditions', SpawnConditions::class, true)]
     private array $spawnConditions = [];
+
+    /**
+     * @return WolfAssets
+     */
+    public function getAssets(): WolfAssets
+    {
+        return $this->assets;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSpawnConditions(): array
+    {
+        return $this->spawnConditions;
+    }
 }

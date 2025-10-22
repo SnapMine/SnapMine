@@ -17,4 +17,34 @@ class MonsterSpawnLightLevel implements NbtSerializable
 
     #[NbtTag(IntTag::class, 'min_inclusive')]
     private int $minInclusive;
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): void
+    {
+        $this->type = $type;
+    }
+
+    public function getMaxInclusive(): int
+    {
+        return $this->maxInclusive;
+    }
+
+    public function setMaxInclusive(int $maxInclusive): void
+    {
+        $this->maxInclusive = $maxInclusive;
+    }
+
+    public function getMinInclusive(): int
+    {
+        return $this->minInclusive;
+    }
+
+    public function setMinInclusive(int $minInclusive): void
+    {
+        $this->minInclusive = $minInclusive;
+    }
 }

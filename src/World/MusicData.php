@@ -21,4 +21,44 @@ class MusicData implements NbtSerializable
 
     #[NbtTag(StringTag::class)]
     private string $sound;
+
+    public function getMaxDelay(): int
+    {
+        return $this->maxDelay;
+    }
+
+    public function setMaxDelay(int $maxDelay): void
+    {
+        $this->maxDelay = $maxDelay;
+    }
+
+    public function getMinDelay(): int
+    {
+        return $this->minDelay;
+    }
+
+    public function setMinDelay(int $minDelay): void
+    {
+        $this->minDelay = $minDelay;
+    }
+
+    public function isReplaceCurrentMusic(): bool
+    {
+        return $this->replaceCurrentMusic;
+    }
+
+    public function setReplaceCurrentMusic(bool $replaceCurrentMusic): void
+    {
+        $this->replaceCurrentMusic = $replaceCurrentMusic;
+    }
+
+    public function getSound(): string
+    {
+        return $this->sound;
+    }
+
+    public function setSound(string $sound): void
+    {
+        $this->sound = $sound;
+    }
 }

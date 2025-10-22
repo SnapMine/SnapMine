@@ -5,6 +5,7 @@ namespace SnapMine\Network\Packet\Clientbound\Login;
 use SnapMine\Component\TextComponent;
 use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
 use SnapMine\Network\Serializer\PacketSerializer;
+use SnapMine\Utils\Nbt;
 
 class DisconnectPacket extends ClientboundPacket
 {
@@ -16,7 +17,7 @@ class DisconnectPacket extends ClientboundPacket
 
     public function write(PacketSerializer $serializer): void
     {
-        $serializer->putNBT($this->reason->toNBT());
+        $serializer->putNBT(Nbt::toNbt($this->reason));
     }
 
     public function getId(): int

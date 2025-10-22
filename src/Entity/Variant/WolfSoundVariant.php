@@ -26,4 +26,52 @@ class WolfSoundVariant extends RegistryData implements NbtSerializable
 
     #[NbtTag(StringTag::class, 'whine_sound')]
     private string $whineSound = '';
+
+    /**
+     * @return string
+     */
+    public function getAmbientSound(): string
+    {
+        return $this->ambientSound;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDeathSound(): string
+    {
+        return $this->deathSound;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGrowlSound(): string
+    {
+        return $this->growlSound;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHurtSound(): string
+    {
+        return $this->hurtSound;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPantSound(): string
+    {
+        return $this->pantSound;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWhineSound(): string
+    {
+        return $this->whineSound;
+    }
 }

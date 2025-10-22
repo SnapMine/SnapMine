@@ -28,4 +28,20 @@ class ChatType extends RegistryData implements NbtSerializable
 
     #[NbtCompound('narration')]
     private ChatData $narration;
+
+    /**
+     * @return ChatData
+     */
+    public function getChat(): ChatData
+    {
+        return $this->chat;
+    }
+
+    /**
+     * @return ChatData
+     */
+    public function getNarration(): ChatData
+    {
+        return $this->narration;
+    }
 }

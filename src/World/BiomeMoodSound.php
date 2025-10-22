@@ -21,4 +21,44 @@ class BiomeMoodSound implements NbtSerializable
 
     #[NbtTag(IntTag::class, 'tick_delay')]
     private int $tickDelay;
+
+    public function getBlockSearchExtent(): int
+    {
+        return $this->blockSearchExtent;
+    }
+
+    public function setBlockSearchExtent(int $blockSearchExtent): void
+    {
+        $this->blockSearchExtent = $blockSearchExtent;
+    }
+
+    public function getOffset(): float
+    {
+        return $this->offset;
+    }
+
+    public function setOffset(float $offset): void
+    {
+        $this->offset = $offset;
+    }
+
+    public function getSound(): string
+    {
+        return $this->sound;
+    }
+
+    public function setSound(string $sound): void
+    {
+        $this->sound = $sound;
+    }
+
+    public function getTickDelay(): int
+    {
+        return $this->tickDelay;
+    }
+
+    public function setTickDelay(int $tickDelay): void
+    {
+        $this->tickDelay = $tickDelay;
+    }
 }

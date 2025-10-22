@@ -45,9 +45,7 @@ class ChunkManager
 
                 $request['world']->getChunkAsync($request['x'], $request['z'])
                     ->map(function (Chunk $chunk) use ($request) {
-                        if ($request['player']->isConnected()) {
-                            $request['player']->sendPacket(new ChunkDataAndUpdateLightPacket($chunk));
-                        }
+                        $request['player']->sendPacket(new ChunkDataAndUpdateLightPacket($chunk));
                     });
 
                 $sent++;

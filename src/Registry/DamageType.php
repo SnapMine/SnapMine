@@ -16,10 +16,10 @@ class DamageType extends RegistryData implements NbtSerializable
     private float $exhaustion = 0.0;
 
     #[NbtTag(StringTag::class, 'message_id')]
-    private string $messageId = '';
+    private string $messageId;
 
     #[NbtTag(StringTag::class)]
-    private string $scaling = '';
+    private string $scaling;
 
     #[NbtTag(StringTag::class)]
     private ?string $effects = null;

@@ -14,4 +14,20 @@ class SpawnConditions implements NbtSerializable
 
     #[NbtTag(IntTag::class)]
     private int $priority;
+
+    /**
+     * @return SpawnCondition|null
+     */
+    public function getCondition(): ?SpawnCondition
+    {
+        return $this->condition;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPriority(): int
+    {
+        return $this->priority;
+    }
 }

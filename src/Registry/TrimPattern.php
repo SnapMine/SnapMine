@@ -40,4 +40,28 @@ class TrimPattern extends RegistryData implements NbtSerializable
 
     #[NbtCompound('description')]
     private TextComponent $description;
+
+    /**
+     * @return string
+     */
+    public function getAssetId(): string
+    {
+        return $this->assetId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDecal(): int
+    {
+        return $this->decal;
+    }
+
+    /**
+     * @return TextComponent
+     */
+    public function getDescription(): TextComponent
+    {
+        return $this->description;
+    }
 }

@@ -7,6 +7,7 @@ use Aternos\Nbt\NbtFormat;
 use BackedEnum;
 use SnapMine\Component\TextComponent;
 use SnapMine\Network\Serializer\PacketSerializer;
+use SnapMine\Utils\Nbt;
 
 class MetadataEntry
 {
@@ -93,7 +94,7 @@ class MetadataEntry
     private function serializeNBT(PacketSerializer $serializer): PacketSerializer
     {
         if ($this->value instanceof TextComponent) {
-            $nbt = $this->value->toNBT();
+            $nbt = Nbt::toNbt($this->value);
         } else {
             $nbt = $this->value;
         }

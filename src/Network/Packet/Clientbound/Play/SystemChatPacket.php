@@ -5,6 +5,7 @@ namespace SnapMine\Network\Packet\Clientbound\Play;
 use SnapMine\Component\TextComponent;
 use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
 use SnapMine\Network\Serializer\PacketSerializer;
+use SnapMine\Utils\Nbt;
 
 class SystemChatPacket extends ClientboundPacket
 {
@@ -18,7 +19,7 @@ class SystemChatPacket extends ClientboundPacket
     public function write(PacketSerializer $serializer): void
     {
         $serializer
-            ->putNBT($this->component->toNBT())
+            ->putNBT(Nbt::toNbt($this->component))
             ->putBool($this->overlay);
     }
 

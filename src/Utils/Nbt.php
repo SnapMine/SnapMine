@@ -10,6 +10,7 @@ use Aternos\Nbt\Tag\IntValueTag;
 use Aternos\Nbt\Tag\ListTag;
 use Aternos\Nbt\Tag\StringTag;
 use ReflectionClass;
+use ReflectionNamedType;
 use ReflectionProperty;
 use SnapMine\Nbt\NbtCompound;
 use SnapMine\Nbt\NbtList;
@@ -155,11 +156,16 @@ final class Nbt
         }
 
         $type = $property->getType();
+
         if ($type === null) {
             return null;
         }
 
-        return self::fromNbt($childTag, $type->getName());
+        if ($type instanceof ReflectionNamedType) {
+            return self::fromNbt($childTag, $type->getName());
+        } else {
+            return null;
+        }
     }
 
     /**
