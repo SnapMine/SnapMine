@@ -24,7 +24,7 @@ abstract class RegistryData implements Keyed
     public static function register(string $name, string $key, $instance)
     {
         $entries = &self::$entries[static::class];
-        $id = count($entries);
+        $id = is_null($entries) ? 0 : count($entries);
 
         $instance->key = $key;
         $instance->id = $id;
