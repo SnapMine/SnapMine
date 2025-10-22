@@ -59,4 +59,24 @@ class SpawnCondition implements NbtSerializable
     {
         return $this->biome;
     }
+
+    public function setType(string $type): void
+    {
+        $this->type = $type;
+    }
+
+    public function setBiome(?string $biome): void
+    {
+        $this->biome = $biome;
+    }
+
+    public function setMin(?float $min): void
+    {
+        $this->min = $min;
+    }
+
+    public function setRangeKey(?string $rangeKey): void
+    {
+        $this->rangeKey = $rangeKey;
+    }
 }

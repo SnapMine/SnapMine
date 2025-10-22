@@ -30,4 +30,14 @@ class SpawnConditions implements NbtSerializable
     {
         return $this->priority;
     }
+
+    public function setCondition(?SpawnCondition $condition): void
+    {
+        $this->condition = $condition;
+    }
+
+    public function setPriority(int $priority): void
+    {
+        $this->priority = $priority;
+    }
 }

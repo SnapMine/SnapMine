@@ -41,4 +41,14 @@ class WolfVariant extends RegistryData implements NbtSerializable
     {
         return $this->spawnConditions;
     }
+
+    public function setAssets(WolfAssets $assets): void
+    {
+        $this->assets = $assets;
+    }
+
+    public function setSpawnConditions(array $spawnConditions): void
+    {
+        $this->spawnConditions = $spawnConditions;
+    }
 }

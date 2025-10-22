@@ -44,4 +44,14 @@ class TrimMaterial extends RegistryData implements NbtSerializable
     {
         return $this->description;
     }
+
+    public function setAssetName(string $assetName): void
+    {
+        $this->assetName = $assetName;
+    }
+
+    public function setDescription(TextComponent $description): void
+    {
+        $this->description = $description;
+    }
 }

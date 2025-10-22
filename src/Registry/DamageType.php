@@ -66,4 +66,29 @@ class DamageType extends RegistryData implements NbtSerializable
     {
         return $this->scaling;
     }
+
+    public function setExhaustion(float $exhaustion): void
+    {
+        $this->exhaustion = $exhaustion;
+    }
+
+    public function setMessageId(string $messageId): void
+    {
+        $this->messageId = $messageId;
+    }
+
+    public function setScaling(string $scaling): void
+    {
+        $this->scaling = $scaling;
+    }
+
+    public function setEffects(?string $effects): void
+    {
+        $this->effects = $effects;
+    }
+
+    public function setDeathMessageType(?string $deathMessageType): void
+    {
+        $this->deathMessageType = $deathMessageType;
+    }
 }

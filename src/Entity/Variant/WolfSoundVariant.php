@@ -74,4 +74,34 @@ class WolfSoundVariant extends RegistryData implements NbtSerializable
     {
         return $this->whineSound;
     }
+
+    public function setAmbientSound(string $ambientSound): void
+    {
+        $this->ambientSound = $ambientSound;
+    }
+
+    public function setDeathSound(string $deathSound): void
+    {
+        $this->deathSound = $deathSound;
+    }
+
+    public function setGrowlSound(string $growlSound): void
+    {
+        $this->growlSound = $growlSound;
+    }
+
+    public function setHurtSound(string $hurtSound): void
+    {
+        $this->hurtSound = $hurtSound;
+    }
+
+    public function setPantSound(string $pantSound): void
+    {
+        $this->pantSound = $pantSound;
+    }
+
+    public function setWhineSound(string $whineSound): void
+    {
+        $this->whineSound = $whineSound;
+    }
 }

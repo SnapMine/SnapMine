@@ -48,4 +48,19 @@ class CowVariant extends RegistryData implements NbtSerializable
     {
         return $this->spawnConditions;
     }
+
+    public function setAssetId(string $assetId): void
+    {
+        $this->assetId = $assetId;
+    }
+
+    public function setModel(?string $model): void
+    {
+        $this->model = $model;
+    }
+
+    public function setSpawnConditions(array $spawnConditions): void
+    {
+        $this->spawnConditions = $spawnConditions;
+    }
 }

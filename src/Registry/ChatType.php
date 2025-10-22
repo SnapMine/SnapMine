@@ -44,4 +44,14 @@ class ChatType extends RegistryData implements NbtSerializable
     {
         return $this->narration;
     }
+
+    public function setChat(ChatData $chat): void
+    {
+        $this->chat = $chat;
+    }
+
+    public function setNarration(ChatData $narration): void
+    {
+        $this->narration = $narration;
+    }
 }

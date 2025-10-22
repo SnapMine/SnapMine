@@ -40,4 +40,19 @@ class WolfAssets implements NbtSerializable
     {
         return $this->wild;
     }
+
+    public function setAngry(string $angry): void
+    {
+        $this->angry = $angry;
+    }
+
+    public function setTame(string $tame): void
+    {
+        $this->tame = $tame;
+    }
+
+    public function setWild(string $wild): void
+    {
+        $this->wild = $wild;
+    }
 }

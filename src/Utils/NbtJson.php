@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SnapMine\Utils;
 
 use ReflectionClass;
+use ReflectionNamedType;
 use ReflectionProperty;
 use ReflectionType;
 use ReflectionUnionType;
@@ -204,7 +205,7 @@ final class NbtJson
 
             $class = reset($classTypes)->getName();
         } else {
-            $class = $type?->getName();
+            $class = $type instanceof ReflectionNamedType ? $type->getName() : null;
         }
 
         return ($class !== null && class_exists($class)) ? self::fromJson($value, $class) : $value;

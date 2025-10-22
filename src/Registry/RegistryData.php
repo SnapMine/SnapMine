@@ -18,13 +18,13 @@ abstract class RegistryData implements Keyed
     /**
      * @param string $name
      * @param string $key
-     * @param RegistryData $instance
+     * @param T $instance
      * @return T
      */
-    public static function register(string $name, string $key, RegistryData $instance)
+    public static function register(string $name, string $key, $instance)
     {
         $entries = &self::$entries[static::class];
-        $id = count($entries ?? []);
+        $id = count($entries);
 
         $instance->key = $key;
         $instance->id = $id;

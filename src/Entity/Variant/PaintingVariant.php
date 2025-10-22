@@ -58,4 +58,29 @@ class PaintingVariant extends RegistryData implements NbtSerializable
     {
         return $this->title;
     }
+
+    public function setAssetId(string $assetId): void
+    {
+        $this->assetId = $assetId;
+    }
+
+    public function setHeight(int $height): void
+    {
+        $this->height = $height;
+    }
+
+    public function setWidth(int $width): void
+    {
+        $this->width = $width;
+    }
+
+    public function setAuthor(?TextComponent $author): void
+    {
+        $this->author = $author;
+    }
+
+    public function setTitle(TextComponent $title): void
+    {
+        $this->title = $title;
+    }
 }
