@@ -2,39 +2,28 @@
 
 namespace SnapMine\Entity\Variant;
 
-use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\IntTag;
 use Aternos\Nbt\Tag\StringTag;
-use Aternos\Nbt\Tag\Tag;
+use SnapMine\Component\TextComponent;
+use SnapMine\Nbt\NbtCompound;
+use SnapMine\Nbt\NbtTag;
 use SnapMine\NbtSerializable;
 use SnapMine\Registry\RegistryData;
 
 class PaintingVariant extends RegistryData implements NbtSerializable
 {
+    #[NbtTag(StringTag::class, 'asset_id')]
+    private string $assetId;
 
-    public function toNbt(): Tag
-    {
-        $base = new CompoundTag();
+    #[NbtTag(IntTag::class, 'height')]
+    private int $height;
 
-        $base
-            ->set('asset_id', (new StringTag())->setValue($this->data['asset_id']))
-            ->set('height', (new IntTag())->setValue($this->data['height']))
-            ->set('width', (new IntTag())->setValue($this->data['width']));
+    #[NbtTag(IntTag::class, 'width')]
+    private int $width;
 
-        if (isset($this->data['author'])) {
-            $author = (new CompoundTag())
-                ->set('color', (new StringTag())->setValue($this->data['author']['color']))
-                ->set('translate', (new StringTag())->setValue($this->data['author']['translate']));
+    #[NbtCompound('author')]
+    private ?TextComponent $author = null;
 
-            $base->set('author', $author);
-        }
-
-        $title = (new CompoundTag())
-            ->set('color', (new StringTag())->setValue($this->data['title']['color']))
-            ->set('translate', (new StringTag())->setValue($this->data['title']['translate']));
-
-        $base->set('title', $title);
-
-        return $base;
-    }
+    #[NbtCompound('title')]
+    private TextComponent $title;
 }

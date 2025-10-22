@@ -6,6 +6,8 @@ namespace SnapMine\Utils;
 
 use ReflectionClass;
 use ReflectionProperty;
+use ReflectionType;
+use ReflectionUnionType;
 use SnapMine\NbtSerializable;
 
 /**
@@ -55,18 +57,15 @@ final class NbtJson
 
         $value = $json[$propertyName];
 
-        if ($attribute === null) {
-            $property->setValue($instance, $value);
-            return;
+        if ($attribute !== null) {
+            $value = match ($attribute['type']) {
+                'compound' => self::processCompound($value, $property),
+                'list' => self::processList($value, $attribute),
+                default => $value
+            };
         }
 
-        $processedValue = match ($attribute['type']) {
-            'compound' => self::processCompound($value, $property),
-            'list' => self::processList($value, $attribute),
-            default => $value
-        };
-
-        $property->setValue($instance, $processedValue);
+        $property->setValue($instance, $value);
     }
 
     /**
@@ -82,10 +81,15 @@ final class NbtJson
             return $value;
         }
 
-        $type = $property->getType()?->getName();
+        $type = $property->getType();
 
-        var_dump($value);
-        return $type !== null ? self::fromJson($value, $type) : $value;
+        if ($type instanceof ReflectionUnionType) {
+            $class = array_filter($type->getTypes(), fn (ReflectionType $t) => class_exists($t->getName()))[0]->getName();
+        } else {
+            $class = $type->getName();
+        }
+
+        return $class !== null ? self::fromJson($value, $class) : $value;
     }
 
     /**
@@ -111,49 +115,5 @@ final class NbtJson
         }
 
         return $result;
-    }
-
-    /**
-     * Parses NbtCompound attribute arguments.
-     *
-     * @param array<string|int, mixed> $args The attribute arguments
-     * @return array<string, mixed> The parsed attribute data
-     */
-    private static function parseCompoundAttribute(array $args): array
-    {
-        return [
-            'type' => 'compound',
-            'name' => $args['name'] ?? $args[0] ?? null,
-        ];
-    }
-
-    /**
-     * Parses NbtList attribute arguments.
-     *
-     * @param array<string|int, mixed> $args The attribute arguments
-     * @return array<string, mixed> The parsed attribute data
-     */
-    private static function parseListAttribute(array $args): array
-    {
-        return [
-            'type' => 'list',
-            'name' => $args['name'] ?? $args[0] ?? null,
-            'listType' => $args['type'] ?? null,
-            'compound' => $args['compound'] ?? false,
-        ];
-    }
-
-    /**
-     * Parses NbtTag attribute arguments.
-     *
-     * @param array<string|int, mixed> $args The attribute arguments
-     * @return array<string, mixed> The parsed attribute data
-     */
-    private static function parseTagAttribute(array $args): array
-    {
-        return [
-            'type' => $args[0] ?? null,
-            'name' => $args[1] ?? null,
-        ];
     }
 }

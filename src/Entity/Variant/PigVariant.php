@@ -19,8 +19,16 @@ class PigVariant extends RegistryData implements NbtSerializable
     private string $assetId;
 
     #[NbtTag(StringTag::class)]
-    private string $model;
+    private ?string $model = null;
 
-    #[NbtList('spawn_conditions', SpawnCondition::class, true)]
+    #[NbtList('spawn_conditions', SpawnConditions::class, true)]
     private array $spawnConditions = [];
+
+    /**
+     * @return array
+     */
+    public function getSpawnConditions(): array
+    {
+        return $this->spawnConditions;
+    }
 }

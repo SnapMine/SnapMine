@@ -2,9 +2,11 @@
 
 namespace SnapMine\Registry;
 
-use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\StringTag;
-use SnapMine\Keyed;
+use SnapMine\Component\TextComponent;
+use SnapMine\Nbt\NbtCompound;
+use SnapMine\Nbt\NbtTag;
+use SnapMine\NbtSerializable;
 
 /**
  * @method static TrimMaterial AMETHYST()
@@ -19,19 +21,11 @@ use SnapMine\Keyed;
  * @method static TrimMaterial REDSTONE()
  * @method static TrimMaterial RESIN()
  */
-class TrimMaterial extends RegistryData implements EncodableToNbt
+class TrimMaterial extends RegistryData implements NbtSerializable
 {
-    public function toNbt(): CompoundTag
-    {
-        $base = new CompoundTag();
+    #[NbtTag(StringTag::class, 'asset_name')]
+    private string $assetName;
 
-        $base
-            ->set('asset_name', (new StringTag())->setValue($this->data['asset_name']))
-            ->set('description', (new CompoundTag())
-                ->set('color', (new StringTag())->setValue($this->data['description']['color']))
-                ->set('translate', (new StringTag())->setValue($this->data['description']['translate']))
-            );
-
-        return $base;
-    }
+    #[NbtCompound('description')]
+    private TextComponent $description;
 }

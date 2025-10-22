@@ -3,94 +3,68 @@
 namespace SnapMine\World;
 
 use Aternos\Nbt\Tag\ByteTag;
-use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\FloatTag;
 use Aternos\Nbt\Tag\IntTag;
 use Aternos\Nbt\Tag\StringTag;
-use Aternos\Nbt\Tag\Tag;
-use SnapMine\Keyed;
-use SnapMine\Registry\EncodableToNbt;
+use SnapMine\Nbt\NbtCompound;
+use SnapMine\Nbt\NbtTag;
+use SnapMine\NbtSerializable;
+use SnapMine\Registry\RegistryData;
 
-class DimensionType implements EncodableToNbt, Keyed
+class DimensionType extends RegistryData implements NbtSerializable
 {
-    /** @var array<string, self> */
-    protected static array $entries = [];
+    #[NbtTag(FloatTag::class, 'ambient_light')]
+    private float $ambientLight;
 
-    /**
-     * @param string $key
-     * @param array $data
-     */
-    public function __construct(
-        protected readonly string $key,
-        protected readonly array $data,
-    )
-    {
-    }
+    #[NbtTag(ByteTag::class, 'bed_works')]
+    private bool $bedWorks;
 
-    public static function register(string $name, string $key, array $data): self
-    {
-        $instance = new self($key, $data);
-        self::$entries[strtoupper($name)] = $instance;
+    #[NbtTag(FloatTag::class, 'coordinate_scale')]
+    private float $coordinateScale;
 
-        return $instance;
-    }
+    #[NbtTag(StringTag::class)]
+    private string $effects;
 
-    public static function __callStatic(string $name, array $args): self {
-        $name = strtoupper($name);
-        if (!isset(self::$entries[$name])) {
-            throw new \RuntimeException("TrimMaterial '$name' not found");
-        }
+    #[NbtTag(ByteTag::class, 'has_ceiling')]
+    private bool $hasCeiling;
 
-        return self::$entries[$name];
-    }
+    #[NbtTag(ByteTag::class, 'has_raids')]
+    private bool $hasRaids;
 
-    public function getKey(): string
-    {
-        return $this->key;
-    }
+    #[NbtTag(ByteTag::class, 'has_skylight')]
+    private bool $hasSkylight;
 
-    /**
-     * @return array
-     */
-    public static function getEntries(): array
-    {
-        return self::$entries;
-    }
+    #[NbtTag(IntTag::class)]
+    private int $height;
 
-    public function toNbt(): Tag
-    {
-        $base = (new CompoundTag())
-            ->set('ambient_light', (new FloatTag())->setValue($this->data['ambient_light']))
-            ->set('bed_works', (new ByteTag())->setValue($this->data['bed_works']))
-            ->set('coordinate_scale', (new FloatTag())->setValue($this->data['coordinate_scale']))
-            ->set('effects', (new StringTag())->setValue($this->data['effects']))
-            ->set('has_ceiling', (new ByteTag())->setValue($this->data['has_ceiling']))
-            ->set('has_raids', (new ByteTag())->setValue($this->data['has_raids']))
-            ->set('has_skylight', (new ByteTag())->setValue($this->data['has_skylight']))
-            ->set('height', (new IntTag())->setValue($this->data['height']))
-            ->set('infiniburn', (new StringTag())->setValue($this->data['infiniburn']))
-            ->set('logical_height', (new IntTag())->setValue($this->data['logical_height']))
-            ->set('min_y', (new IntTag())->setValue($this->data['min_y']))
-            ->set('monster_spawn_block_light_limit', (new IntTag())->setValue($this->data['monster_spawn_block_light_limit']))
-            ->set('natural', (new ByteTag())->setValue($this->data['natural']))
-            ->set('piglin_safe', (new ByteTag())->setValue($this->data['piglin_safe']))
-            ->set('respawn_anchor_works', (new ByteTag())->setValue($this->data['respawn_anchor_works']))
-            ->set('ultrawarm', (new ByteTag())->setValue($this->data['ultrawarm']));
+    #[NbtTag(StringTag::class)]
+    private string $infiniburn;
 
-        if (is_int($this->data['monster_spawn_light_level'])) {
-            $base->set('monster_spawn_light_level', (new IntTag())->setValue($this->data['monster_spawn_light_level']));
-        } else {
-            $base->set('monster_spawn_light_level', (new CompoundTag())
-                ->set('type', (new StringTag())->setValue($this->data['monster_spawn_light_level']['type']))
-                ->set('max_inclusive', (new IntTag())->setValue($this->data['monster_spawn_light_level']['max_inclusive']))
-                ->set('min_inclusive', (new IntTag())->setValue($this->data['monster_spawn_light_level']['min_inclusive']))
-            );
-        }
+    #[NbtTag(IntTag::class, 'logical_height')]
+    private int $logicalHeight;
 
-        if (isset($this->data['fixed_time'])) {
-            $base->set('fixed_time', (new IntTag())->setValue($this->data['fixed_time']));
-        }
+    #[NbtTag(IntTag::class, 'min_y')]
+    private int $minY;
 
-        return $base;
-    }
+    #[NbtTag(IntTag::class, 'monster_spawn_block_light_limit')]
+    private int $monsterSpawnBlockLightLimit;
+
+    #[NbtTag(ByteTag::class)]
+    private bool $natural;
+
+    #[NbtTag(ByteTag::class, 'piglin_safe')]
+    private bool $piglinSafe;
+
+    #[NbtTag(ByteTag::class, 'respawn_anchor_works')]
+    private bool $respawnAnchorWorks;
+
+    #[NbtTag(ByteTag::class)]
+    private bool $ultrawarm;
+
+    #[NbtTag(IntTag::class, 'monster_spawn_light_level')]
+    #[NbtCompound('monster_spawn_light_level')]
+    private MonsterSpawnLightLevel|int $monsterSpawnLightLevel;
+
+    #[NbtTag(IntTag::class, 'fixed_time')]
+    private ?int $fixedTime = null;
 }

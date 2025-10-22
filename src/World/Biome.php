@@ -3,74 +3,69 @@
 namespace SnapMine\World;
 
 use Aternos\Nbt\Tag\ByteTag;
-use Aternos\Nbt\Tag\CompoundTag;
-use Aternos\Nbt\Tag\DoubleTag;
 use Aternos\Nbt\Tag\FloatTag;
-use Aternos\Nbt\Tag\IntTag;
-use Aternos\Nbt\Tag\ListTag;
 use Aternos\Nbt\Tag\StringTag;
-use SnapMine\Registry\EncodableToNbt;
+use SnapMine\Nbt\NbtCompound;
+use SnapMine\Nbt\NbtList;
+use SnapMine\Nbt\NbtTag;
+use SnapMine\NbtSerializable;
 use SnapMine\Registry\RegistryData;
 
-class Biome extends RegistryData implements EncodableToNbt
+class Biome extends RegistryData implements NbtSerializable
 {
+    #[NbtTag(FloatTag::class)]
+    private float $downfall = 0.0;
 
-    public function toNbt(): CompoundTag
+    #[NbtTag(ByteTag::class, 'has_precipitation')]
+    private bool $hasPrecipitation = false;
+
+    #[NbtTag(FloatTag::class)]
+    private float $temperature = 0.0;
+
+    #[NbtTag(StringTag::class)]
+    #[NbtList('carvers', 'string')]
+    private string|array $carvers;
+
+    #[NbtCompound('effects')]
+    private BiomeEffects $effects;
+
+    /**
+     * @return float
+     */
+    public function getDownfall(): float
     {
-        $base = (new CompoundTag())
-            ->set('downfall', (new FloatTag())->setValue($this->data['downfall']))
-            ->set('has_precipitation', (new ByteTag())->setValue($this->data['has_precipitation']))
-            ->set('temperature', (new FloatTag())->setValue($this->data['temperature']));
-
-        if (is_string($this->data['carvers'])) {
-            $base->set('carvers', (new StringTag())->setValue($this->data['carvers']));
-        } else {
-            $carvers = new ListTag();
-
-            foreach ($this->data['carvers'] as $carver) {
-                $carvers[] = (new StringTag())->setValue($carver);
-            }
-
-            $base->set('carvers', $carvers);
-        }
-
-        $effects = (new CompoundTag())
-            ->set('fog_color', (new IntTag())->setValue($this->data['effects']['fog_color']))
-            ->set('music_volume', (new FloatTag())->setValue($this->data['effects']['music_volume']))
-            ->set('sky_color', (new IntTag())->setValue($this->data['effects']['sky_color']))
-            ->set('water_color', (new IntTag())->setValue($this->data['effects']['water_color']))
-            ->set('water_fog_color', (new IntTag())->setValue($this->data['effects']['water_fog_color']))
-            ->set('mood_sound', (new CompoundTag())
-                ->set('block_search_extent', (new IntTag())->setValue($this->data['effects']['mood_sound']['block_search_extent']))
-                ->set('offset', (new DoubleTag())->setValue($this->data['effects']['mood_sound']['offset']))
-                ->set('sound', (new StringTag())->setValue($this->data['effects']['mood_sound']['sound']))
-                ->set('tick_delay', (new IntTag())->setValue($this->data['effects']['mood_sound']['tick_delay']))
-            )
-            ->set('music', $this->encodeMusicEffects());
-
-        $base->set('effects', $effects);
-
-        return $base;
+        return $this->downfall;
     }
 
-    private function encodeMusicEffects(): ListTag
+    /**
+     * @return bool
+     */
+    public function hasPrecipitation(): bool
     {
-        $list = new ListTag();
+        return $this->hasPrecipitation;
+    }
 
-        if (!isset($this->data['effects']['music']))
-            return $list;
+    /**
+     * @return float
+     */
+    public function getTemperature(): float
+    {
+        return $this->temperature;
+    }
 
-        foreach ($this->data['effects']['music'] as $music) {
-            $list[] = (new CompoundTag())
-                ->set('data', (new CompoundTag())
-                    ->set('max_delay', (new IntTag())->setValue($music['data']['max_delay']))
-                    ->set('min_delay', (new IntTag())->setValue($music['data']['min_delay']))
-                    ->set('replace_current_music', (new ByteTag())->setValue($music['data']['replace_current_music']))
-                    ->set('sound', (new StringTag())->setValue($music['data']['sound']))
-                )
-                ->set('weight', (new IntTag())->setValue($music['weight']));
-        }
+    /**
+     * @return array|string
+     */
+    public function getCarvers(): array|string
+    {
+        return $this->carvers;
+    }
 
-        return $list;
+    /**
+     * @return BiomeEffects
+     */
+    public function getEffects(): BiomeEffects
+    {
+        return $this->effects;
     }
 }

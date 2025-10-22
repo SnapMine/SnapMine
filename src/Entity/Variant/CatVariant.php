@@ -2,17 +2,11 @@
 
 namespace SnapMine\Entity\Variant;
 
-use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\StringTag;
-use Aternos\Nbt\Tag\Tag;
-use SnapMine\Keyed;
-use SnapMine\Nbt\NbtCompound;
 use SnapMine\Nbt\NbtList;
 use SnapMine\Nbt\NbtTag;
 use SnapMine\NbtSerializable;
-use SnapMine\Registry\EncodableToNbt;
 use SnapMine\Registry\RegistryData;
-use RuntimeException;
 
 /**
  * @extends RegistryData<CatVariant>
@@ -34,7 +28,7 @@ class CatVariant extends RegistryData implements NbtSerializable
     #[NbtTag(StringTag::class, 'asset_id')]
     private string $assetId = '';
 
-    #[NbtList('spawn_conditions', SpawnCondition::class, true)]
+    #[NbtList('spawn_conditions', SpawnConditions::class, true)]
     private array $spawnConditions = [];
 
     /**

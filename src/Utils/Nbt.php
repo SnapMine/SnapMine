@@ -185,6 +185,10 @@ final class Nbt
 
         $value = $property->getValue($component);
 
+        if ($value === null) {
+            return null;
+        }
+
         return match ($attribute['type']) {
             'compound' => self::toNbt($value),
             'list' => self::serializeList($value, $attribute),
@@ -226,7 +230,7 @@ final class Nbt
         $tag = new $type();
 
         if ($tag instanceof StringTag || $tag instanceof IntValueTag || $tag instanceof FloatValueTag) {
-            $tag->setValue($value);
+            $tag->setValue(is_bool($value) ? (int)$value : $value);
         }
 
         return $tag;
@@ -268,7 +272,7 @@ final class Nbt
     {
         return [
             'type' => 'compound',
-            'name' => $args['name'] ?? $args[0] ?? null,
+            'name' => $args[0] ?? null,
         ];
     }
 
@@ -282,9 +286,9 @@ final class Nbt
     {
         return [
             'type' => 'list',
-            'name' => $args['name'] ?? $args[0] ?? null,
-            'listType' => $args['type'] ?? StringTag::class,
-            'compound' => $args['compound'] ?? false,
+            'name' => $args[0] ?? null,
+            'listType' => $args[1] ?? StringTag::class,
+            'compound' => $args[2] ?? false,
         ];
     }
 

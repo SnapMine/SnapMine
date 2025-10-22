@@ -3,31 +3,62 @@
 namespace SnapMine\Component;
 
 use Aternos\Nbt\Tag\ByteTag;
-use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\IntTag;
-use Aternos\Nbt\Tag\ListTag;
 use Aternos\Nbt\Tag\StringTag;
 use JsonSerializable;
-use SnapMine\Registry\EncodableToNbt;
+use SnapMine\Nbt\NbtList;
+use SnapMine\Nbt\NbtTag;
+use SnapMine\NbtSerializable;
 use SnapMine\Utils\DyeColor;
 
-class TextComponent implements JsonSerializable, EncodableToNbt
+class TextComponent implements JsonSerializable, NbtSerializable
 {
+    #[NbtTag(StringTag::class)]
+    private ?string $text = null;
+
+    #[NbtTag(StringTag::class)]
+    private ?string $translate = null;
+    #[NbtList('extra', TextComponent::class, true)]
     /** @var TextComponent[] */
     private array $children = [];
+
+    #[NbtTag(StringTag::class)]
     private ?string $color = null;
+
+    #[NbtTag(StringTag::class)]
     private ?string $font = null;
+
+    #[NbtTag(ByteTag::class)]
     private bool $bold = false;
+
+    #[NbtTag(ByteTag::class)]
     private bool $italic = false;
+
+    #[NbtTag(ByteTag::class)]
     private bool $underline = false;
+
+    #[NbtTag(ByteTag::class)]
     private bool $strike = false;
+
+    #[NbtTag(ByteTag::class)]
     private bool $obfuscated = false;
+
+    #[NbtTag(IntTag::class)]
     private int $shadowColor = 0;
 
     public function __construct(
         private readonly TextComponentType $type,
         private readonly array $options = [],
     ) {
+        switch ($this->type) {
+            case TextComponentType::TEXT:
+                $this->text = $this->options['text'];
+                break;
+            case TextComponentType::TRANSLATABLE:
+                $this->translate = $this->options['translate'];
+                // ...
+                break;
+        }
     }
 
     public static function text(string $text): self
@@ -135,38 +166,5 @@ class TextComponent implements JsonSerializable, EncodableToNbt
         $data = array_merge($data, $this->options);
 
         return array_filter($data, fn ($item) => $item !== null);
-    }
-
-    public function toNBT(): CompoundTag
-    {
-        $tag = new CompoundTag();
-
-        $tag->set('text', (new StringTag())->setValue($this->options['text']));
-
-        if (! is_null($this->color))
-            $tag->set('color', (new StringTag())->setValue($this->color));
-
-        if (! is_null($this->font))
-            $tag->set('font', (new StringTag())->setValue($this->font));
-
-        $tag->set('bold', (new ByteTag())->setValue((int) $this->bold));
-        $tag->set('underlined', (new ByteTag())->setValue((int) $this->underline));
-        $tag->set('italic', (new ByteTag())->setValue((int) $this->italic));
-        $tag->set('strikethrough', (new ByteTag())->setValue((int) $this->strike));
-        $tag->set('obfuscated', (new ByteTag())->setValue((int) $this->obfuscated));
-
-        $tag->set('shadow_color', (new IntTag())->setValue($this->shadowColor));
-
-        if (count($this->children) > 0) {
-            $childrenTag = new ListTag();
-
-            foreach ($this->children as $child) {
-                $childrenTag[] = $child->toNBT();
-            }
-
-            $tag->set('extra', $childrenTag);
-        }
-
-        return $tag;
     }
 }

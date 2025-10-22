@@ -19,6 +19,6 @@ class FrogVariant extends RegistryData implements NbtSerializable
     #[NbtTag(StringTag::class, 'asset_id')]
     private string $assetId = '';
 
-    #[NbtList('spawn_conditions', SpawnCondition::class, true)]
+    #[NbtList('spawn_conditions', SpawnConditions::class, true)]
     private array $spawnConditions = [];
 }

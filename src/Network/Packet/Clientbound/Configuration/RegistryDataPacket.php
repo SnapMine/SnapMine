@@ -37,9 +37,13 @@ class RegistryDataPacket extends ClientboundPacket
                 continue;
             }
 
-            $serializer->putString($entry->getKey())
-                ->putBool(true)
-                ->putNBT(Nbt::toNbt($entry));
+            try {
+                $serializer->putString($entry->getKey())
+                    ->putBool(true)
+                    ->putNBT(Nbt::toNbt($entry));
+            } catch (\Error) {
+                var_dump($entry::class);
+            }
         }
     }
 }

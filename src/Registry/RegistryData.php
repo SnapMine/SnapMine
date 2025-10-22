@@ -13,18 +13,21 @@ abstract class RegistryData implements Keyed
     protected static array $entries = [];
 
     protected string $key;
-    protected array|object $data;
     protected int $id;
 
-    public static function register(string $name, string $key, array|object $data): static
+    /**
+     * @param string $name
+     * @param string $key
+     * @param RegistryData $instance
+     * @return T
+     */
+    public static function register(string $name, string $key, RegistryData $instance)
     {
         $entries = &self::$entries[static::class];
         $id = count($entries ?? []);
-        $instance = new static();
 
         $instance->key = $key;
         $instance->id = $id;
-        $instance->data = $data;
 
         $entries[strtoupper($name)] = $instance;
 
@@ -34,11 +37,11 @@ abstract class RegistryData implements Keyed
     public static function __callStatic(string $name, array $args): static
     {
         $name = strtoupper($name);
-        if (!isset(self::$entries[self::class][$name])) {
+        if (!isset(self::$entries[static::class][$name])) {
             throw new \RuntimeException("Registry data '$name' not found for " . static::class);
         }
 
-        return self::$entries[self::class][$name];
+        return self::$entries[static::class][$name];
     }
 
     public function getId(): int
@@ -53,6 +56,6 @@ abstract class RegistryData implements Keyed
 
     public static function getEntries(): array
     {
-        return self::$entries[self::class] ?? [];
+        return self::$entries[static::class] ?? [];
     }
 }

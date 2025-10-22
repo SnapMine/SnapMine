@@ -7,16 +7,19 @@ use Aternos\Nbt\Tag\StringTag;
 use SnapMine\Nbt\NbtTag;
 use SnapMine\NbtSerializable;
 
-readonly class SpawnCondition implements NbtSerializable
+class SpawnCondition implements NbtSerializable
 {
     #[NbtTag(StringTag::class)]
     private string $type;
 
+    #[NbtTag(StringTag::class)]
+    private ?string $biome = null;
+
     #[NbtTag(FloatTag::class)]
-    private ?float $min;
+    private ?float $min = null;
 
     #[NbtTag(StringTag::class)]
-    private ?string $rangeKey;
+    private ?string $rangeKey = null;
 
     public function __construct(string $type, ?float $min = null, ?string $rangeKey = null)
     {
@@ -47,5 +50,13 @@ readonly class SpawnCondition implements NbtSerializable
     public function getRangeKey(): ?string
     {
         return $this->rangeKey;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getBiome(): ?string
+    {
+        return $this->biome;
     }
 }

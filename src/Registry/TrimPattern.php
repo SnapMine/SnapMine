@@ -5,6 +5,10 @@ namespace SnapMine\Registry;
 use Aternos\Nbt\Tag\ByteTag;
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\StringTag;
+use SnapMine\Component\TextComponent;
+use SnapMine\Nbt\NbtCompound;
+use SnapMine\Nbt\NbtTag;
+use SnapMine\NbtSerializable;
 
 /**
  * @method static TrimPattern BOLT()
@@ -26,20 +30,14 @@ use Aternos\Nbt\Tag\StringTag;
  * @method static TrimPattern WAYFINDER()
  * @method static TrimPattern WILD()
  */
-class TrimPattern extends RegistryData implements EncodableToNbt
+class TrimPattern extends RegistryData implements NbtSerializable
 {
+    #[NbtTag(StringTag::class, 'asset_id')]
+    private string $assetId;
 
-    public function toNbt(): CompoundTag
-    {
-        $base = new CompoundTag();
+    #[NbtTag(ByteTag::class)]
+    private int $decal;
 
-        $base
-            ->set('asset_id', (new StringTag())->setValue($this->data['asset_id']))
-            ->set('decal', (new ByteTag())->setValue($this->data['decal']))
-            ->set('description', (new CompoundTag())
-                ->set('translate', (new StringTag())->setValue($this->data['description']['translate']))
-            );
-
-        return $base;
-    }
+    #[NbtCompound('description')]
+    private TextComponent $description;
 }
