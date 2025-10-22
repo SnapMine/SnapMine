@@ -34,7 +34,12 @@ abstract class RegistryData implements Keyed
         return $instance;
     }
 
-    public static function __callStatic(string $name, array $args): static
+    /**
+     * @param string $name
+     * @param array $args
+     * @return T
+     */
+    public static function __callStatic(string $name, array $args)
     {
         $name = strtoupper($name);
         if (!isset(self::$entries[static::class][$name])) {
