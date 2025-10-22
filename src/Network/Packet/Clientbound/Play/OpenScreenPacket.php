@@ -6,6 +6,7 @@ use SnapMine\Component\TextComponent;
 use SnapMine\Inventory\InventoryType;
 use SnapMine\Network\Serializer\PacketSerializer;
 use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
+use SnapMine\Utils\Nbt;
 
 class OpenScreenPacket extends ClientboundPacket
 {
@@ -26,6 +27,6 @@ public function write(PacketSerializer $serializer): void
 {
     $serializer->putVarInt($this->windowId)
         ->putVarInt($this->windowType->value)
-        ->putNBT($this->windowTitle->toNBT());
+        ->putNBT(Nbt::toNbt($this->windowTitle));
 }
 }

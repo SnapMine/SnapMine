@@ -2,61 +2,106 @@
 
 namespace SnapMine\Entity\Variant;
 
-use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\StringTag;
-use SnapMine\Keyed;
-use SnapMine\Registry\EncodableToNbt;
+use SnapMine\Nbt\NbtTag;
+use SnapMine\NbtSerializable;
+use SnapMine\Registry\RegistryData;
 
-class WolfSoundVariant implements EncodableToNbt, Keyed
+class WolfSoundVariant extends RegistryData implements NbtSerializable
 {
-    /** @var array<string, self> */
-    protected static array $entries = [];
+    #[NbtTag(StringTag::class, 'ambient_sound')]
+    private string $ambientSound = '';
 
-    public function __construct(
-        protected readonly string $key,
-        protected readonly array $data,
-    )
+    #[NbtTag(StringTag::class, 'death_sound')]
+    private string $deathSound = '';
+
+    #[NbtTag(StringTag::class, 'growl_sound')]
+    private string $growlSound = '';
+
+    #[NbtTag(StringTag::class, 'hurt_sound')]
+    private string $hurtSound = '';
+
+    #[NbtTag(StringTag::class, 'pant_sound')]
+    private string $pantSound = '';
+
+    #[NbtTag(StringTag::class, 'whine_sound')]
+    private string $whineSound = '';
+
+    /**
+     * @return string
+     */
+    public function getAmbientSound(): string
     {
-    }
-
-    public static function register(string $name, string $key, array $data): self
-    {
-        $instance = new self($key, $data);
-        self::$entries[strtoupper($name)] = $instance;
-
-        return $instance;
-    }
-
-    public static function __callStatic(string $name, array $args): self {
-        $name = strtoupper($name);
-        if (!isset(self::$entries[$name])) {
-            throw new \RuntimeException("TrimMaterial '$name' not found");
-        }
-
-        return self::$entries[$name];
-    }
-
-    public function getKey(): string
-    {
-        return $this->key;
+        return $this->ambientSound;
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public static function getEntries(): array
+    public function getDeathSound(): string
     {
-        return self::$entries;
+        return $this->deathSound;
     }
 
-    public function toNbt(): CompoundTag
+    /**
+     * @return string
+     */
+    public function getGrowlSound(): string
     {
-        return (new CompoundTag())
-            ->set('ambient_sound', (new StringTag())->setValue($this->data['ambient_sound']))
-            ->set('death_sound', (new StringTag())->setValue($this->data['death_sound']))
-            ->set('growl_sound', (new StringTag())->setValue($this->data['growl_sound']))
-            ->set('hurt_sound', (new StringTag())->setValue($this->data['hurt_sound']))
-            ->set('pant_sound', (new StringTag())->setValue($this->data['pant_sound']))
-            ->set('whine_sound', (new StringTag())->setValue($this->data['whine_sound']));
+        return $this->growlSound;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHurtSound(): string
+    {
+        return $this->hurtSound;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPantSound(): string
+    {
+        return $this->pantSound;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWhineSound(): string
+    {
+        return $this->whineSound;
+    }
+
+    public function setAmbientSound(string $ambientSound): void
+    {
+        $this->ambientSound = $ambientSound;
+    }
+
+    public function setDeathSound(string $deathSound): void
+    {
+        $this->deathSound = $deathSound;
+    }
+
+    public function setGrowlSound(string $growlSound): void
+    {
+        $this->growlSound = $growlSound;
+    }
+
+    public function setHurtSound(string $hurtSound): void
+    {
+        $this->hurtSound = $hurtSound;
+    }
+
+    public function setPantSound(string $pantSound): void
+    {
+        $this->pantSound = $pantSound;
+    }
+
+    public function setWhineSound(string $whineSound): void
+    {
+        $this->whineSound = $whineSound;
     }
 }

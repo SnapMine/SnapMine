@@ -3,31 +3,63 @@
 namespace SnapMine\Component;
 
 use Aternos\Nbt\Tag\ByteTag;
-use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\IntTag;
-use Aternos\Nbt\Tag\ListTag;
 use Aternos\Nbt\Tag\StringTag;
 use JsonSerializable;
-use SnapMine\Registry\EncodableToNbt;
+use SnapMine\Nbt\NbtList;
+use SnapMine\Nbt\NbtTag;
+use SnapMine\NbtSerializable;
 use SnapMine\Utils\DyeColor;
 
-class TextComponent implements JsonSerializable, EncodableToNbt
+class TextComponent implements JsonSerializable, NbtSerializable
 {
-    /** @var TextComponent[] */
-    private array $children = [];
+    #[NbtTag(StringTag::class)]
+    private ?string $text = null;
+
+    #[NbtTag(StringTag::class)]
+    private ?string $translate = null;
+
+    /** @var TextComponent[]|null */
+    #[NbtList('extra', TextComponent::class, true)]
+    private ?array $children = null;
+
+    #[NbtTag(StringTag::class)]
     private ?string $color = null;
+
+    #[NbtTag(StringTag::class)]
     private ?string $font = null;
-    private bool $bold = false;
-    private bool $italic = false;
-    private bool $underline = false;
-    private bool $strike = false;
-    private bool $obfuscated = false;
-    private int $shadowColor = 0;
+
+    #[NbtTag(ByteTag::class)]
+    private ?bool $bold = null;
+
+    #[NbtTag(ByteTag::class)]
+    private ?bool $italic = null;
+
+    #[NbtTag(ByteTag::class)]
+    private ?bool $underline = null;
+
+    #[NbtTag(ByteTag::class)]
+    private ?bool $strike = null;
+
+    #[NbtTag(ByteTag::class)]
+    private ?bool $obfuscated = null;
+
+    #[NbtTag(IntTag::class)]
+    private ?int $shadowColor = null;
 
     public function __construct(
-        private readonly TextComponentType $type,
-        private readonly array $options = [],
+        TextComponentType $type = TextComponentType::TEXT,
+        array $options = [],
     ) {
+        switch ($type) {
+            case TextComponentType::TEXT:
+                $this->text = $options['text'];
+                break;
+            case TextComponentType::TRANSLATABLE:
+                $this->translate = $options['translate'];
+                // ...
+                break;
+        }
     }
 
     public static function text(string $text): self
@@ -120,7 +152,6 @@ class TextComponent implements JsonSerializable, EncodableToNbt
     public function jsonSerialize(): array
     {
         $data = [
-            "type" => strtolower($this->type->name),
             "color" => $this->color,
             "font" => $this->font,
             "bold" => $this->bold,
@@ -132,41 +163,8 @@ class TextComponent implements JsonSerializable, EncodableToNbt
             "extra" => $this->children,
         ];
 
-        $data = array_merge($data, $this->options);
+        // TODO : Add text, translation, ...
 
         return array_filter($data, fn ($item) => $item !== null);
-    }
-
-    public function toNBT(): CompoundTag
-    {
-        $tag = new CompoundTag();
-
-        $tag->set('text', (new StringTag())->setValue($this->options['text']));
-
-        if (! is_null($this->color))
-            $tag->set('color', (new StringTag())->setValue($this->color));
-
-        if (! is_null($this->font))
-            $tag->set('font', (new StringTag())->setValue($this->font));
-
-        $tag->set('bold', (new ByteTag())->setValue((int) $this->bold));
-        $tag->set('underlined', (new ByteTag())->setValue((int) $this->underline));
-        $tag->set('italic', (new ByteTag())->setValue((int) $this->italic));
-        $tag->set('strikethrough', (new ByteTag())->setValue((int) $this->strike));
-        $tag->set('obfuscated', (new ByteTag())->setValue((int) $this->obfuscated));
-
-        $tag->set('shadow_color', (new IntTag())->setValue($this->shadowColor));
-
-        if (count($this->children) > 0) {
-            $childrenTag = new ListTag();
-
-            foreach ($this->children as $child) {
-                $childrenTag[] = $child->toNBT();
-            }
-
-            $tag->set('extra', $childrenTag);
-        }
-
-        return $tag;
     }
 }

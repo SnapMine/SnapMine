@@ -2,68 +2,93 @@
 
 namespace SnapMine\Registry;
 
-use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\FloatTag;
 use Aternos\Nbt\Tag\StringTag;
-use SnapMine\Keyed;
+use SnapMine\Nbt\NbtTag;
+use SnapMine\NbtSerializable;
 
-class DamageType implements EncodableToNbt, Keyed
+/**
+ * @extends RegistryData<DamageType>
+ */
+class DamageType extends RegistryData implements NbtSerializable
 {
-    /** @var array<string, self> */
-    protected static array $entries = [];
+    #[NbtTag(FloatTag::class)]
+    private float $exhaustion = 0.0;
 
-    public function __construct(
-        protected readonly string $key,
-        protected readonly array $data,
-    )
+    #[NbtTag(StringTag::class, 'message_id')]
+    private string $messageId;
+
+    #[NbtTag(StringTag::class)]
+    private string $scaling;
+
+    #[NbtTag(StringTag::class)]
+    private ?string $effects = null;
+
+    #[NbtTag(StringTag::class, 'death_message_type')]
+    private ?string $deathMessageType = null;
+
+    /**
+     * @return float
+     */
+    public function getExhaustion(): float
     {
-    }
-
-    public static function register(string $name, string $key, array $data): self
-    {
-        $instance = new self($key, $data);
-        self::$entries[strtoupper($name)] = $instance;
-
-        return $instance;
-    }
-
-    public static function __callStatic(string $name, array $args): self {
-        $name = strtoupper($name);
-        if (!isset(self::$entries[$name])) {
-            throw new \RuntimeException("TrimMaterial '$name' not found");
-        }
-
-        return self::$entries[$name];
-    }
-
-    public function getKey(): string
-    {
-        return $this->key;
+        return $this->exhaustion;
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public static function getEntries(): array
+    public function getMessageId(): string
     {
-        return self::$entries;
+        return $this->messageId;
     }
 
-    public function toNbt(): CompoundTag
+    /**
+     * @return string|null
+     */
+    public function getEffects(): ?string
     {
-        $base = (new CompoundTag())
-            ->set('exhaustion', (new FloatTag())->setValue($this->data['exhaustion']))
-            ->set('message_id', (new StringTag())->setValue($this->data['message_id']))
-            ->set('scaling', (new StringTag())->setValue($this->data['scaling']));
+        return $this->effects;
+    }
 
-        if (isset($this->data['effects'])) {
-            $base->set('effects', (new StringTag())->setValue($this->data['effects']));
-        }
+    /**
+     * @return string|null
+     */
+    public function getDeathMessageType(): ?string
+    {
+        return $this->deathMessageType;
+    }
 
-        if (isset($this->data['death_message_type'])) {
-            $base->set('death_message_type', (new StringTag())->setValue($this->data['death_message_type']));
-        }
+    /**
+     * @return string
+     */
+    public function getScaling(): string
+    {
+        return $this->scaling;
+    }
 
-        return $base;
+    public function setExhaustion(float $exhaustion): void
+    {
+        $this->exhaustion = $exhaustion;
+    }
+
+    public function setMessageId(string $messageId): void
+    {
+        $this->messageId = $messageId;
+    }
+
+    public function setScaling(string $scaling): void
+    {
+        $this->scaling = $scaling;
+    }
+
+    public function setEffects(?string $effects): void
+    {
+        $this->effects = $effects;
+    }
+
+    public function setDeathMessageType(?string $deathMessageType): void
+    {
+        $this->deathMessageType = $deathMessageType;
     }
 }

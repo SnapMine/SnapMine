@@ -2,10 +2,10 @@
 
 namespace SnapMine\Entity\Variant;
 
-use Aternos\Nbt\Tag\CompoundTag;
-use Aternos\Nbt\Tag\StringTag;
-use SnapMine\Keyed;
-use SnapMine\Registry\EncodableToNbt;
+use SnapMine\Nbt\NbtCompound;
+use SnapMine\Nbt\NbtList;
+use SnapMine\NbtSerializable;
+use SnapMine\Registry\RegistryData;
 
 /**
  * @method static WolfVariant ASHEN()
@@ -18,63 +18,37 @@ use SnapMine\Registry\EncodableToNbt;
  * @method static WolfVariant STRIPED()
  * @method static WolfVariant WOODS()
  */
-class WolfVariant implements EncodableToNbt, Keyed
+class WolfVariant extends RegistryData implements NbtSerializable
 {
-    /** @var array<string, self> */
-    protected static array $entries = [];
+    #[NbtCompound('assets')]
+    private WolfAssets $assets;
 
-    public function __construct(
-        protected readonly string $key,
-        protected readonly array $data,
-    )
+    #[NbtList('spawn_conditions', SpawnConditions::class, true)]
+    private array $spawnConditions = [];
+
+    /**
+     * @return WolfAssets
+     */
+    public function getAssets(): WolfAssets
     {
-    }
-
-    public static function register(string $name, string $key, array $data): self
-    {
-        $instance = new self($key, $data);
-        self::$entries[strtoupper($name)] = $instance;
-
-        return $instance;
-    }
-
-    public static function __callStatic(string $name, array $args): self {
-        $name = strtoupper($name);
-        if (!isset(self::$entries[$name])) {
-            throw new \RuntimeException("TrimMaterial '$name' not found");
-        }
-
-        return self::$entries[$name];
-    }
-
-    public function getKey(): string
-    {
-        return $this->key;
+        return $this->assets;
     }
 
     /**
      * @return array
      */
-    public static function getEntries(): array
+    public function getSpawnConditions(): array
     {
-        return self::$entries;
+        return $this->spawnConditions;
     }
 
-    public function toNbt(): CompoundTag
+    public function setAssets(WolfAssets $assets): void
     {
-        $base = new CompoundTag();
+        $this->assets = $assets;
+    }
 
-        $base
-            ->set('assets', (new CompoundTag())
-                ->set('angry', (new StringTag())->setValue($this->data['assets']['angry']))
-                ->set('tame', (new StringTag())->setValue($this->data['assets']['tame']))
-                ->set('wild', (new StringTag())->setValue($this->data['assets']['wild']))
-            );
-
-        $conditionsTag = (new SpawnConditions($this->data['spawn_conditions']))->toNbt();
-
-        $base->set('spawn_conditions', $conditionsTag);
-
-        return $base;
+    public function setSpawnConditions(array $spawnConditions): void
+    {
+        $this->spawnConditions = $spawnConditions;
     }
 }

@@ -5,7 +5,10 @@ namespace SnapMine\Registry;
 use Aternos\Nbt\Tag\ByteTag;
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\StringTag;
-use SnapMine\Keyed;
+use SnapMine\Component\TextComponent;
+use SnapMine\Nbt\NbtCompound;
+use SnapMine\Nbt\NbtTag;
+use SnapMine\NbtSerializable;
 
 /**
  * @method static TrimPattern BOLT()
@@ -27,59 +30,53 @@ use SnapMine\Keyed;
  * @method static TrimPattern WAYFINDER()
  * @method static TrimPattern WILD()
  */
-class TrimPattern implements EncodableToNbt, Keyed
+class TrimPattern extends RegistryData implements NbtSerializable
 {
-    /** @var array<string, self> */
-    protected static array $entries = [];
+    #[NbtTag(StringTag::class, 'asset_id')]
+    private string $assetId;
 
-    public function __construct(
-        protected readonly string $key,
-        protected readonly array $data,
-    )
+    #[NbtTag(ByteTag::class)]
+    private int $decal;
+
+    #[NbtCompound('description')]
+    private TextComponent $description;
+
+    /**
+     * @return string
+     */
+    public function getAssetId(): string
     {
-    }
-
-    public static function register(string $name, string $key, array $data): self
-    {
-        $instance = new self($key, $data);
-        self::$entries[strtoupper($name)] = $instance;
-
-        return $instance;
-    }
-
-    public static function __callStatic(string $name, array $args): self {
-        $name = strtoupper($name);
-        if (!isset(self::$entries[$name])) {
-            throw new \RuntimeException("TrimMaterial '$name' not found");
-        }
-
-        return self::$entries[$name];
-    }
-
-    public function getKey(): string
-    {
-        return $this->key;
+        return $this->assetId;
     }
 
     /**
-     * @return array
+     * @return int
      */
-    public static function getEntries(): array
+    public function getDecal(): int
     {
-        return self::$entries;
+        return $this->decal;
     }
 
-    public function toNbt(): CompoundTag
+    /**
+     * @return TextComponent
+     */
+    public function getDescription(): TextComponent
     {
-        $base = new CompoundTag();
+        return $this->description;
+    }
 
-        $base
-            ->set('asset_id', (new StringTag())->setValue($this->data['asset_id']))
-            ->set('decal', (new ByteTag())->setValue($this->data['decal']))
-            ->set('description', (new CompoundTag())
-                ->set('translate', (new StringTag())->setValue($this->data['description']['translate']))
-            );
+    public function setAssetId(string $assetId): void
+    {
+        $this->assetId = $assetId;
+    }
 
-        return $base;
+    public function setDecal(int $decal): void
+    {
+        $this->decal = $decal;
+    }
+
+    public function setDescription(TextComponent $description): void
+    {
+        $this->description = $description;
     }
 }

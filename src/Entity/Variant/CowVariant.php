@@ -2,75 +2,65 @@
 
 namespace SnapMine\Entity\Variant;
 
-use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\StringTag;
-use Aternos\Nbt\Tag\Tag;
-use SnapMine\Keyed;
-use SnapMine\Registry\EncodableToNbt;
+use SnapMine\Nbt\NbtCompound;
+use SnapMine\Nbt\NbtList;
+use SnapMine\Nbt\NbtTag;
+use SnapMine\NbtSerializable;
+use SnapMine\Registry\RegistryData;
 
 /**
  * @method static CowVariant COLD()
  * @method static CowVariant TEMPERATE()
  * @method static CowVariant WARM()
  */
-class CowVariant implements EncodableToNbt, Keyed
+class CowVariant extends RegistryData implements NbtSerializable
 {
-    /** @var array<string, self> */
-    protected static array $entries = [];
+    #[NbtTag(StringTag::class, 'asset_id')]
+    private string $assetId;
 
-    public function __construct(
-        protected readonly string $key,
-        protected readonly array $data,
-        protected readonly int $id,
-    )
+    #[NbtTag(StringTag::class)]
+    private ?string $model = null;
+
+    #[NbtList('spawn_conditions', SpawnConditions::class, true)]
+    private array $spawnConditions = [];
+
+    /**
+     * @return string
+     */
+    public function getAssetId(): string
     {
+        return $this->assetId;
     }
 
-    public static function register(string $name, string $key, array $data): self
+    /**
+     * @return string|null
+     */
+    public function getModel(): ?string
     {
-        $instance = new self($key, $data, count(self::$entries));
-        self::$entries[strtoupper($name)] = $instance;
-
-        return $instance;
-    }
-
-    public static function __callStatic(string $name, array $args): self {
-        $name = strtoupper($name);
-        if (!isset(self::$entries[$name])) {
-            throw new \RuntimeException("TrimMaterial '$name' not found");
-        }
-
-        return self::$entries[$name];
-    }
-
-    public function getKey(): string
-    {
-        return $this->key;
+        return $this->model;
     }
 
     /**
      * @return array
      */
-    public static function getEntries(): array
+    public function getSpawnConditions(): array
     {
-        return self::$entries;
+        return $this->spawnConditions;
     }
 
-    public function getId(): int
+    public function setAssetId(string $assetId): void
     {
-        return $this->id;
+        $this->assetId = $assetId;
     }
 
-    public function toNbt(): Tag
+    public function setModel(?string $model): void
     {
-        $base = (new CompoundTag())
-            ->set('asset_id', (new StringTag())->setValue($this->data['asset_id']));
+        $this->model = $model;
+    }
 
-        if (isset($this->data['model']))
-            $base->set('model', (new StringTag())->setValue($this->data['model']));
-
-        $base->set('spawn_conditions', (new SpawnConditions($this->data['spawn_conditions']))->toNbt());
-
-        return $base;
+    public function setSpawnConditions(array $spawnConditions): void
+    {
+        $this->spawnConditions = $spawnConditions;
     }
 }

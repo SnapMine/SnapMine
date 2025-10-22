@@ -2,78 +2,85 @@
 
 namespace SnapMine\Entity\Variant;
 
-use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\IntTag;
 use Aternos\Nbt\Tag\StringTag;
-use Aternos\Nbt\Tag\Tag;
-use SnapMine\Keyed;
-use SnapMine\Registry\EncodableToNbt;
+use SnapMine\Component\TextComponent;
+use SnapMine\Nbt\NbtCompound;
+use SnapMine\Nbt\NbtTag;
+use SnapMine\NbtSerializable;
+use SnapMine\Registry\RegistryData;
 
-class PaintingVariant implements EncodableToNbt, Keyed
+class PaintingVariant extends RegistryData implements NbtSerializable
 {
-    /** @var array<string, self> */
-    protected static array $entries = [];
+    #[NbtTag(StringTag::class, 'asset_id')]
+    private string $assetId;
 
-    public function __construct(
-        protected readonly string $key,
-        protected readonly array $data,
-    )
+    #[NbtTag(IntTag::class, 'height')]
+    private int $height;
+
+    #[NbtTag(IntTag::class, 'width')]
+    private int $width;
+
+    #[NbtCompound('author')]
+    private ?TextComponent $author = null;
+
+    #[NbtCompound('title')]
+    private TextComponent $title;
+
+    /**
+     * @return string
+     */
+    public function getAssetId(): string
     {
-    }
-
-    public static function register(string $name, string $key, array $data): self
-    {
-        $instance = new self($key, $data);
-        self::$entries[strtoupper($name)] = $instance;
-
-        return $instance;
-    }
-
-    public static function __callStatic(string $name, array $args): self {
-        $name = strtoupper($name);
-        if (!isset(self::$entries[$name])) {
-            throw new \RuntimeException("TrimMaterial '$name' not found");
-        }
-
-        return self::$entries[$name];
-    }
-
-    public function getKey(): string
-    {
-        return $this->key;
+        return $this->assetId;
     }
 
     /**
-     * @return array
+     * @return int
      */
-    public static function getEntries(): array
+    public function getHeight(): int
     {
-        return self::$entries;
+        return $this->height;
     }
 
-    public function toNbt(): Tag
+    /**
+     * @return TextComponent|null
+     */
+    public function getAuthor(): ?TextComponent
     {
-        $base = new CompoundTag();
+        return $this->author;
+    }
 
-        $base
-            ->set('asset_id', (new StringTag())->setValue($this->data['asset_id']))
-            ->set('height', (new IntTag())->setValue($this->data['height']))
-            ->set('width', (new IntTag())->setValue($this->data['width']));
+    /**
+     * @return TextComponent
+     */
+    public function getTitle(): TextComponent
+    {
+        return $this->title;
+    }
 
-        if (isset($this->data['author'])) {
-            $author = (new CompoundTag())
-                ->set('color', (new StringTag())->setValue($this->data['author']['color']))
-                ->set('translate', (new StringTag())->setValue($this->data['author']['translate']));
+    public function setAssetId(string $assetId): void
+    {
+        $this->assetId = $assetId;
+    }
 
-            $base->set('author', $author);
-        }
+    public function setHeight(int $height): void
+    {
+        $this->height = $height;
+    }
 
-        $title = (new CompoundTag())
-            ->set('color', (new StringTag())->setValue($this->data['title']['color']))
-            ->set('translate', (new StringTag())->setValue($this->data['title']['translate']));
+    public function setWidth(int $width): void
+    {
+        $this->width = $width;
+    }
 
-        $base->set('title', $title);
+    public function setAuthor(?TextComponent $author): void
+    {
+        $this->author = $author;
+    }
 
-        return $base;
+    public function setTitle(TextComponent $title): void
+    {
+        $this->title = $title;
     }
 }

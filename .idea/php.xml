@@ -109,6 +109,7 @@
       <path value="$PROJECT_DIR$/vendor/amphp/process" />
       <path value="$PROJECT_DIR$/vendor/react/async" />
       <path value="$PROJECT_DIR$/vendor/revolt/event-loop-adapter-react" />
+      <path value="$PROJECT_DIR$/vendor/ramsey/collection" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2">
