@@ -2,6 +2,7 @@
 
 use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
 use SnapMine\Network\Serializer\PacketSerializer;
+use SnapMine\Server;
 
 /**
  * Dumps packet information for debugging purposes.
@@ -75,5 +76,14 @@ if (!function_exists('has_trait')) {
         $traits = class_uses($object);
 
         return in_array($trait, $traits);
+    }
+}
+
+if (!function_exists('server')) {
+    function server(): Server
+    {
+        static $server = new Server();
+
+        return $server;
     }
 }

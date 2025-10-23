@@ -2,12 +2,9 @@
 
 namespace SnapMine\Command\ArgumentTypes;
 
-use SnapMine\Artisan;
-use SnapMine\Command\ArgumentTypes\CommandArgumentType;
 use SnapMine\Entity\Player;
 use SnapMine\Network\Serializer\PacketSerializer;
 use SnapMine\Utils\Flags;
-use SnapMine\Utils\UUID;
 
 class ArgumentEntity extends CommandArgumentType
 {
@@ -63,7 +60,7 @@ class ArgumentEntity extends CommandArgumentType
         $clone = clone $this;
 
         $playerName = $args[0];
-        foreach (Artisan::getServer()->getPlayers() as $player) {
+        foreach (server()->getPlayers() as $player) {
             if ($player->getName() === $playerName || $player->getUuid()->toString() === $playerName) {
                 $clone->player = $player;
 
