@@ -4,7 +4,6 @@ namespace SnapMine\World;
 
 use Amp\Future;
 use Error;
-use SnapMine\Artisan;
 use SnapMine\Block\Block;
 use SnapMine\Entity\Entity;
 use SnapMine\Entity\EntityType;
@@ -113,7 +112,7 @@ class World
 
     public function spawnEntity(EntityType $entityType, Location $location): Entity
     {
-        $server = Artisan::getServer();
+        $server = server();
         $class = $entityType->getClass();
         /** @var Entity $entity */
         $entity = new $class($server, clone $location);
@@ -160,7 +159,7 @@ class World
         if (isset($this->entities[$id])) {
             unset($this->entities[$id]);
 
-            Artisan::getServer()->broadcastPacket(new RemoveEntitiesPacket([$id]));
+            server()->broadcastPacket(new RemoveEntitiesPacket([$id]));
         }
     }
 

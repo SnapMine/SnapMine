@@ -5,7 +5,6 @@ namespace SnapMine\World\Chunk;
 use Aternos\Nbt\Tag\CompoundTag;
 use Aternos\Nbt\Tag\LongArrayTag;
 use Exception;
-use SnapMine\Artisan;
 use SnapMine\Block\Block;
 use SnapMine\Block\BlockType;
 use SnapMine\World\Position;
@@ -204,13 +203,13 @@ class Chunk
         $worldPosition = WorldPosition::fromPosition($this->world, $pos);
 
         if (!isset($this->sections[$sectionIndex])) {
-            return new Block(Artisan::getServer(), $worldPosition, BlockType::AIR->createBlockData());
+            return new Block(server(), $worldPosition, BlockType::AIR->createBlockData());
         }
 
         $blockData = $this->sections[$sectionIndex]
             ->getBlockData($x & 0xF, $y & 0xF, $z & 0xF);
 
-        return new Block(Artisan::getServer(), $worldPosition, $blockData);
+        return new Block(server(), $worldPosition, $blockData);
     }
 
     public function setBlock(Position $pos, Block $block): void

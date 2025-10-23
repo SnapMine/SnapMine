@@ -2,7 +2,6 @@
 
 namespace SnapMine\Listener;
 
-use SnapMine\Artisan;
 use SnapMine\Entity\Player;
 use SnapMine\Event\EventBinding;
 use SnapMine\Event\Listener;
@@ -39,7 +38,7 @@ class PlayerJoinListener implements Listener
             0,
         );
 
-        Artisan::getServer()->broadcastPacket($playerInfoPacket);
-        Artisan::getServer()->broadcastPacket($addEntityPacket);
+        server()->broadcastPacket($playerInfoPacket);
+        server()->broadcastPacket($addEntityPacket);
     }
 }

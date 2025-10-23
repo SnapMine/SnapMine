@@ -3,7 +3,6 @@
 namespace SnapMine\Command;
 
 use Closure;
-use SnapMine\Artisan;
 use SnapMine\Command\Nodes\LiteralNode;
 use SnapMine\Network\Serializer\PacketSerializer;
 use SnapMine\Network\Serializer\ProtocolEncodable;
@@ -53,7 +52,7 @@ class Command implements ProtocolEncodable
      */
     private function __construct()
     {
-        $this->index = count(Artisan::getCommandManager()->getNodes());
+        $this->index = count(server()->getCommandManager()->getNodes());
     }
 
     /**
@@ -103,8 +102,8 @@ class Command implements ProtocolEncodable
         //$nodes = array_merge([$this->root], $this->root->getAllNodes());
         $nodes = $this->root->getAllNodes();
 
-        Artisan::getCommandManager()->addNodes($nodes);
-        Artisan::getCommandManager()->add($this);
+        server()->getCommandManager()->addNodes($nodes);
+        server()->getCommandManager()->add($this);
 
         return $this;
     }

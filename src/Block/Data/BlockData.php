@@ -2,7 +2,6 @@
 
 namespace SnapMine\Block\Data;
 
-use SnapMine\Artisan;
 use SnapMine\Block\Block;
 use SnapMine\Material;
 use SnapMine\Network\Packet\Clientbound\Play\BlockUpdatePacket;
@@ -62,7 +61,7 @@ class BlockData
             }
         }
 
-        return Artisan::getBlockStateLoader()
+        return server()->getBlockStateLoader()
             ->getBlockStateId($this->getMaterial(), $data);
     }
 
@@ -70,7 +69,7 @@ class BlockData
     {
         $block->getChunk()->setBlock($block->getLocation(), $block);
 
-        Artisan::getServer()->broadcastPacket(
+        server()->broadcastPacket(
             new BlockUpdatePacket($block->getLocation(), $block)
         );
     }

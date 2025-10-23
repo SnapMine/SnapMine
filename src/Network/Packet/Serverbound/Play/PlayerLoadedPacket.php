@@ -2,7 +2,6 @@
 
 namespace SnapMine\Network\Packet\Serverbound\Play;
 
-use SnapMine\Artisan;
 use SnapMine\Event\EventManager;
 use SnapMine\Event\Player\PlayerJoinEvent;
 use SnapMine\Network\Packet\Clientbound\Play\AddEntityPacket;
@@ -34,7 +33,7 @@ class PlayerLoadedPacket extends ServerboundPacket {
             return;
         }
 
-        foreach (Artisan::getPlayers() as $player) {
+        foreach (server()->getPlayers() as $player) {
             $infos[$player->getUuid()->toString()] = [
                 [
                     'name' => $player->getName(),
@@ -50,7 +49,7 @@ class PlayerLoadedPacket extends ServerboundPacket {
                 $infos
             ));
 
-            foreach (Artisan::getPlayers() as $player) {
+            foreach (server()->getPlayers() as $player) {
                 $packetAddEntity = new AddEntityPacket(
                     $player,
                     0,

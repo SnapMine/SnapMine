@@ -1,13 +1,12 @@
 <?php
 
-use SnapMine\Artisan;
 use SnapMine\Command\Command;
 use SnapMine\Command\Nodes\CommandNode;
 use SnapMine\Entity\Player;
 
 $baseCmd = Command::new('debug', function (Player $player) {
     $player->sendMessage("\n-------------- [GENERAL DEBUG INFO] -------------- \nSnapMine by SnapMine Contributors");
-    $player->sendMessage(" - Running version " . Artisan::getVersion());
+    $player->sendMessage(" - Running version " . server()->getVersion());
     $player->sendMessage("\n - Memory Usage: " . round(memory_get_usage() / 1024 / 1024, 2) . " MB");
     $player->sendMessage(" - Uptime: " . getrusage()['ru_utime.tv_sec'] . " seconds");
 });

@@ -8,7 +8,6 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
 use React\EventLoop\Loop;
-use Revolt\EventLoop;
 use SnapMine\Block\BlockStateLoader;
 use SnapMine\Command\CommandManager;
 use SnapMine\Entity\Entity;
@@ -59,6 +58,9 @@ class Server
 {
     /** Current server version identifier */
     public const VERSION = 'v0.0.1-dev';
+
+    /** Server is started */
+    private bool $started = false;
 
     /**
      * ReactPHP socket server for handling network connections.
@@ -171,8 +173,6 @@ class Server
         private ?int    $port = null,
     )
     {
-        Artisan::setServer($this);
-
         $this->eventManager = new EventManager();
         $this->blockStateLoader = new BlockStateLoader(__DIR__ . '/../resources/blocks.json');
         $this->config = new ServerConfig(dirname(__DIR__) . "/config.yml");
@@ -217,7 +217,10 @@ class Server
         $this->clients = [];
         $this->sessions = [];
         $this->players = [];
-        self::getLogger()->info("Server stopped.");
+
+        if ($this->started) {
+            self::getLogger()->info("Server stopped.");
+        }
     }
 
     /**
@@ -233,6 +236,7 @@ class Server
      */
     public function start(): void
     {
+        $this->started = true;
         $this->socket = new SocketServer("{$this->host}:{$this->port}", [], Loop::get());
         self::getLogger()->info("Serveur démarré sur {$this->host}:{$this->port}");
 
@@ -551,5 +555,30 @@ class Server
     public function getCommandManager(): CommandManager
     {
         return $this->commandManager;
+    }
+
+    /**
+     * Load all command
+     *
+     * @param string $path
+     * @return void
+     */
+    public function loadCommands(string $path): void
+    {
+        $files = glob(trim($path, '/') . '/*.php');
+
+        foreach ($files as $file) {
+            require_once $file;
+        }
+    }
+
+    /**
+     * Get server version
+     *
+     * @return string
+     */
+    public function getVersion(): string
+    {
+        return self::VERSION;
     }
 }

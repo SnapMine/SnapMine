@@ -9,7 +9,7 @@ use SnapMine\Keyed;
  */
 abstract class RegistryData implements Keyed
 {
-    /** @var array<class-string<T>, array<string, T>> */
+    /** @var array<class-string<T>, array<string, T>|null> */
     protected static array $entries = [];
 
     protected string $key;
