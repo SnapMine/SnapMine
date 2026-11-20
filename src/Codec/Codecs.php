@@ -144,4 +144,24 @@ final class Codecs
     {
         return new EnumCodec($enum);
     }
+
+    /**
+     * @param Closure():Codec $factory
+     * @return Codec<mixed>
+     */
+    public static function lazy(Closure $factory): Codec
+    {
+        return new LazyCodec($factory);
+    }
+
+    /**
+     * Tries each alternative codec in order; the first success wins.
+     *
+     * @param Codec ...$alternatives
+     * @return Codec<mixed>
+     */
+    public static function either(Codec ...$alternatives): Codec
+    {
+        return new EitherCodec(...$alternatives);
+    }
 }

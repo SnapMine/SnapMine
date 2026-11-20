@@ -1,107 +1,73 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SnapMine\Entity\Variant;
 
-use Aternos\Nbt\Tag\StringTag;
-use SnapMine\Nbt\NbtTag;
-use SnapMine\NbtSerializable;
+use SnapMine\Codec\Codec;
+use SnapMine\Codec\CodecProvider;
+use SnapMine\Codec\Codecs;
+use SnapMine\Codec\Field;
+use SnapMine\Codec\RecordCodec;
 use SnapMine\Registry\RegistryData;
 
-class WolfSoundVariant extends RegistryData implements NbtSerializable
+/**
+ * @extends RegistryData<WolfSoundVariant>
+ */
+final class WolfSoundVariant extends RegistryData implements CodecProvider
 {
-    #[NbtTag(StringTag::class, 'ambient_sound')]
-    private string $ambientSound = '';
+    public function __construct(
+        private readonly string $ambientSound,
+        private readonly string $deathSound,
+        private readonly string $growlSound,
+        private readonly string $hurtSound,
+        private readonly string $pantSound,
+        private readonly string $whineSound,
+    ) {
+    }
 
-    #[NbtTag(StringTag::class, 'death_sound')]
-    private string $deathSound = '';
+    public static function codec(): Codec
+    {
+        static $codec;
 
-    #[NbtTag(StringTag::class, 'growl_sound')]
-    private string $growlSound = '';
+        return $codec ??= RecordCodec::of(
+            self::class,
+            Field::required('ambient_sound', Codecs::string(), fn (self $v) => $v->ambientSound),
+            Field::required('death_sound', Codecs::string(), fn (self $v) => $v->deathSound),
+            Field::required('growl_sound', Codecs::string(), fn (self $v) => $v->growlSound),
+            Field::required('hurt_sound', Codecs::string(), fn (self $v) => $v->hurtSound),
+            Field::required('pant_sound', Codecs::string(), fn (self $v) => $v->pantSound),
+            Field::required('whine_sound', Codecs::string(), fn (self $v) => $v->whineSound),
+        );
+    }
 
-    #[NbtTag(StringTag::class, 'hurt_sound')]
-    private string $hurtSound = '';
-
-    #[NbtTag(StringTag::class, 'pant_sound')]
-    private string $pantSound = '';
-
-    #[NbtTag(StringTag::class, 'whine_sound')]
-    private string $whineSound = '';
-
-    /**
-     * @return string
-     */
     public function getAmbientSound(): string
     {
         return $this->ambientSound;
     }
 
-    /**
-     * @return string
-     */
     public function getDeathSound(): string
     {
         return $this->deathSound;
     }
 
-    /**
-     * @return string
-     */
     public function getGrowlSound(): string
     {
         return $this->growlSound;
     }
 
-    /**
-     * @return string
-     */
     public function getHurtSound(): string
     {
         return $this->hurtSound;
     }
 
-    /**
-     * @return string
-     */
     public function getPantSound(): string
     {
         return $this->pantSound;
     }
 
-    /**
-     * @return string
-     */
     public function getWhineSound(): string
     {
         return $this->whineSound;
-    }
-
-    public function setAmbientSound(string $ambientSound): void
-    {
-        $this->ambientSound = $ambientSound;
-    }
-
-    public function setDeathSound(string $deathSound): void
-    {
-        $this->deathSound = $deathSound;
-    }
-
-    public function setGrowlSound(string $growlSound): void
-    {
-        $this->growlSound = $growlSound;
-    }
-
-    public function setHurtSound(string $hurtSound): void
-    {
-        $this->hurtSound = $hurtSound;
-    }
-
-    public function setPantSound(string $pantSound): void
-    {
-        $this->pantSound = $pantSound;
-    }
-
-    public function setWhineSound(string $whineSound): void
-    {
-        $this->whineSound = $whineSound;
     }
 }

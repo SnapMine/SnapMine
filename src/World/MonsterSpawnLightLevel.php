@@ -1,31 +1,39 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SnapMine\World;
 
-use Aternos\Nbt\Tag\IntTag;
-use Aternos\Nbt\Tag\StringTag;
-use SnapMine\Nbt\NbtTag;
-use SnapMine\NbtSerializable;
+use SnapMine\Codec\Codec;
+use SnapMine\Codec\CodecProvider;
+use SnapMine\Codec\Codecs;
+use SnapMine\Codec\Field;
+use SnapMine\Codec\RecordCodec;
 
-class MonsterSpawnLightLevel implements NbtSerializable
+final class MonsterSpawnLightLevel implements CodecProvider
 {
-    #[NbtTag(StringTag::class)]
-    private string $type;
+    public function __construct(
+        private readonly string $type,
+        private readonly int $maxInclusive,
+        private readonly int $minInclusive,
+    ) {
+    }
 
-    #[NbtTag(IntTag::class, 'max_inclusive')]
-    private int $maxInclusive;
+    public static function codec(): Codec
+    {
+        static $codec;
 
-    #[NbtTag(IntTag::class, 'min_inclusive')]
-    private int $minInclusive;
+        return $codec ??= RecordCodec::of(
+            self::class,
+            Field::required('type', Codecs::string(), fn (self $m) => $m->type),
+            Field::required('max_inclusive', Codecs::int(), fn (self $m) => $m->maxInclusive),
+            Field::required('min_inclusive', Codecs::int(), fn (self $m) => $m->minInclusive),
+        );
+    }
 
     public function getType(): string
     {
         return $this->type;
-    }
-
-    public function setType(string $type): void
-    {
-        $this->type = $type;
     }
 
     public function getMaxInclusive(): int
@@ -33,18 +41,8 @@ class MonsterSpawnLightLevel implements NbtSerializable
         return $this->maxInclusive;
     }
 
-    public function setMaxInclusive(int $maxInclusive): void
-    {
-        $this->maxInclusive = $maxInclusive;
-    }
-
     public function getMinInclusive(): int
     {
         return $this->minInclusive;
-    }
-
-    public function setMinInclusive(int $minInclusive): void
-    {
-        $this->minInclusive = $minInclusive;
     }
 }

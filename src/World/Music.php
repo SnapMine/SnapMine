@@ -1,39 +1,41 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SnapMine\World;
 
-use Aternos\Nbt\Tag\IntTag;
-use SnapMine\Nbt\NbtCompound;
-use SnapMine\Nbt\NbtTag;
-use SnapMine\NbtSerializable;
+use SnapMine\Codec\Codec;
+use SnapMine\Codec\CodecProvider;
+use SnapMine\Codec\Codecs;
+use SnapMine\Codec\Field;
+use SnapMine\Codec\RecordCodec;
 
-class Music implements NbtSerializable
+final class Music implements CodecProvider
 {
-    #[NbtCompound('data')]
-    private MusicData $data;
+    public function __construct(
+        private readonly MusicData $data,
+        private readonly int $weight,
+    ) {
+    }
 
-    #[NbtTag(IntTag::class)]
-    private int $weight = 0;
+    public static function codec(): Codec
+    {
+        static $codec;
+
+        return $codec ??= RecordCodec::of(
+            self::class,
+            Field::required('data', MusicData::codec(), fn (self $m) => $m->data),
+            Field::required('weight', Codecs::int(), fn (self $m) => $m->weight),
+        );
+    }
 
     public function getData(): MusicData
     {
         return $this->data;
     }
 
-    public function setData(MusicData $data): void
-    {
-        $this->data = $data;
-    }
-
     public function getWeight(): int
     {
         return $this->weight;
     }
-
-    public function setWeight(int $weight): void
-    {
-        $this->weight = $weight;
-    }
-
-
 }

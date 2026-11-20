@@ -1,14 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SnapMine\Registry;
 
-use Aternos\Nbt\Tag\ByteTag;
-use Aternos\Nbt\Tag\CompoundTag;
-use Aternos\Nbt\Tag\ListTag;
-use Aternos\Nbt\Tag\StringTag;
-use SnapMine\Keyed;
-use SnapMine\Nbt\NbtCompound;
-use SnapMine\NbtSerializable;
+use SnapMine\Codec\Codec;
+use SnapMine\Codec\CodecProvider;
+use SnapMine\Codec\Field;
+use SnapMine\Codec\RecordCodec;
 
 /**
  * @extends RegistryData<ChatType>
@@ -21,37 +20,32 @@ use SnapMine\NbtSerializable;
  * @method static ChatType TEAM_MSG_COMMAND_INCOMING()
  * @method static ChatType TEAM_MSG_COMMAND_OUTGOING()
  */
-class ChatType extends RegistryData implements NbtSerializable
+final class ChatType extends RegistryData implements CodecProvider
 {
-    #[NbtCompound('chat')]
-    private ChatData $chat;
+    public function __construct(
+        private readonly ChatData $chat,
+        private readonly ChatData $narration,
+    ) {
+    }
 
-    #[NbtCompound('narration')]
-    private ChatData $narration;
+    public static function codec(): Codec
+    {
+        static $codec;
 
-    /**
-     * @return ChatData
-     */
+        return $codec ??= RecordCodec::of(
+            self::class,
+            Field::required('chat', ChatData::codec(), fn (self $c) => $c->chat),
+            Field::required('narration', ChatData::codec(), fn (self $c) => $c->narration),
+        );
+    }
+
     public function getChat(): ChatData
     {
         return $this->chat;
     }
 
-    /**
-     * @return ChatData
-     */
     public function getNarration(): ChatData
     {
         return $this->narration;
-    }
-
-    public function setChat(ChatData $chat): void
-    {
-        $this->chat = $chat;
-    }
-
-    public function setNarration(ChatData $narration): void
-    {
-        $this->narration = $narration;
     }
 }

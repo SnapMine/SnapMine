@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SnapMine\Registry;
 
-use Aternos\Nbt\Tag\ByteTag;
-use Aternos\Nbt\Tag\CompoundTag;
-use Aternos\Nbt\Tag\StringTag;
+use SnapMine\Codec\Codec;
+use SnapMine\Codec\CodecProvider;
+use SnapMine\Codec\Codecs;
+use SnapMine\Codec\Field;
+use SnapMine\Codec\RecordCodec;
 use SnapMine\Component\TextComponent;
-use SnapMine\Nbt\NbtCompound;
-use SnapMine\Nbt\NbtTag;
-use SnapMine\NbtSerializable;
 
 /**
  * @method static TrimPattern BOLT()
@@ -18,65 +19,49 @@ use SnapMine\NbtSerializable;
  * @method static TrimPattern FLOW()
  * @method static TrimPattern HOST()
  * @method static TrimPattern RAISER()
- * @method static TrimPattern RIB()
  * @method static TrimPattern SENTRY()
- * @method static TrimPattern SHAPER()
  * @method static TrimPattern SILENCE()
  * @method static TrimPattern SNOUT()
  * @method static TrimPattern SPIRE()
  * @method static TrimPattern TIDE()
  * @method static TrimPattern VEX()
- * @method static TrimPattern WARD()
  * @method static TrimPattern WAYFINDER()
+ * @method static TrimPattern WARD()
  * @method static TrimPattern WILD()
  */
-class TrimPattern extends RegistryData implements NbtSerializable
+final class TrimPattern extends RegistryData implements CodecProvider
 {
-    #[NbtTag(StringTag::class, 'asset_id')]
-    private string $assetId;
+    public function __construct(
+        private readonly string $assetId,
+        private readonly bool $decal,
+        private readonly TextComponent $description,
+    ) {
+    }
 
-    #[NbtTag(ByteTag::class)]
-    private int $decal;
+    public static function codec(): Codec
+    {
+        static $codec;
 
-    #[NbtCompound('description')]
-    private TextComponent $description;
+        return $codec ??= RecordCodec::of(
+            self::class,
+            Field::required('asset_id', Codecs::string(), fn (self $p) => $p->assetId),
+            Field::required('decal', Codecs::bool(), fn (self $p) => $p->decal),
+            Field::required('description', TextComponent::codec(), fn (self $p) => $p->description),
+        );
+    }
 
-    /**
-     * @return string
-     */
     public function getAssetId(): string
     {
         return $this->assetId;
     }
 
-    /**
-     * @return int
-     */
-    public function getDecal(): int
+    public function getDecal(): bool
     {
         return $this->decal;
     }
 
-    /**
-     * @return TextComponent
-     */
     public function getDescription(): TextComponent
     {
         return $this->description;
-    }
-
-    public function setAssetId(string $assetId): void
-    {
-        $this->assetId = $assetId;
-    }
-
-    public function setDecal(int $decal): void
-    {
-        $this->decal = $decal;
-    }
-
-    public function setDescription(TextComponent $description): void
-    {
-        $this->description = $description;
     }
 }

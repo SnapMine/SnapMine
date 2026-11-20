@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SnapMine\Registry;
 
-use Aternos\Nbt\Tag\StringTag;
+use SnapMine\Codec\Codec;
+use SnapMine\Codec\CodecProvider;
+use SnapMine\Codec\Codecs;
+use SnapMine\Codec\Field;
+use SnapMine\Codec\RecordCodec;
 use SnapMine\Component\TextComponent;
-use SnapMine\Nbt\NbtCompound;
-use SnapMine\Nbt\NbtTag;
-use SnapMine\NbtSerializable;
 
 /**
  * @method static TrimMaterial AMETHYST()
@@ -21,37 +24,42 @@ use SnapMine\NbtSerializable;
  * @method static TrimMaterial REDSTONE()
  * @method static TrimMaterial RESIN()
  */
-class TrimMaterial extends RegistryData implements NbtSerializable
+final class TrimMaterial extends RegistryData implements CodecProvider
 {
-    #[NbtTag(StringTag::class, 'asset_name')]
-    private string $assetName;
+    public function __construct(
+        private readonly string $assetName,
+        private readonly TextComponent $description,
+        private readonly ?array $overrideArmorAssets = null,
+    ) {
+    }
 
-    #[NbtCompound('description')]
-    private TextComponent $description;
+    public static function codec(): Codec
+    {
+        static $codec;
 
-    /**
-     * @return string
-     */
+        return $codec ??= RecordCodec::of(
+            self::class,
+            Field::required('asset_name', Codecs::string(), fn (self $m) => $m->assetName),
+            Field::required('description', TextComponent::codec(), fn (self $m) => $m->description),
+            Field::optional('override_armor_assets', Codecs::mapOf(Codecs::string()), fn (self $m) => $m->overrideArmorAssets),
+        );
+    }
+
     public function getAssetName(): string
     {
         return $this->assetName;
     }
 
-    /**
-     * @return TextComponent
-     */
     public function getDescription(): TextComponent
     {
         return $this->description;
     }
 
-    public function setAssetName(string $assetName): void
+    /**
+     * @return array<string, string>|null
+     */
+    public function getOverrideArmorAssets(): ?array
     {
-        $this->assetName = $assetName;
-    }
-
-    public function setDescription(TextComponent $description): void
-    {
-        $this->description = $description;
+        return $this->overrideArmorAssets;
     }
 }

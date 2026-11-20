@@ -1,54 +1,56 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SnapMine\Entity\Variant;
 
-use SnapMine\Nbt\NbtCompound;
-use SnapMine\Nbt\NbtList;
-use SnapMine\NbtSerializable;
+use SnapMine\Codec\Codec;
+use SnapMine\Codec\CodecProvider;
+use SnapMine\Codec\Codecs;
+use SnapMine\Codec\Field;
+use SnapMine\Codec\RecordCodec;
 use SnapMine\Registry\RegistryData;
 
 /**
+ * @extends RegistryData<WolfVariant>
+ *
  * @method static WolfVariant ASHEN()
  * @method static WolfVariant BLACK()
  * @method static WolfVariant CHESTNUT()
  * @method static WolfVariant PALE()
  * @method static WolfVariant RUSTY()
  * @method static WolfVariant SNOWY()
- * @method static WolfVariant SPOTTED()
- * @method static WolfVariant STRIPED()
  * @method static WolfVariant WOODS()
  */
-class WolfVariant extends RegistryData implements NbtSerializable
+final class WolfVariant extends RegistryData implements CodecProvider
 {
-    #[NbtCompound('assets')]
-    private WolfAssets $assets;
+    public function __construct(
+        private readonly WolfAssets $assets,
+        private readonly array $spawnConditions,
+    ) {
+    }
 
-    #[NbtList('spawn_conditions', SpawnConditions::class, true)]
-    private array $spawnConditions = [];
+    public static function codec(): Codec
+    {
+        static $codec;
 
-    /**
-     * @return WolfAssets
-     */
+        return $codec ??= RecordCodec::of(
+            self::class,
+            Field::required('assets', WolfAssets::codec(), fn (self $v) => $v->assets),
+            Field::required('spawn_conditions', Codecs::listOf(SpawnConditions::codec()), fn (self $v) => $v->spawnConditions),
+        );
+    }
+
     public function getAssets(): WolfAssets
     {
         return $this->assets;
     }
 
     /**
-     * @return array
+     * @return SpawnConditions[]
      */
     public function getSpawnConditions(): array
     {
         return $this->spawnConditions;
-    }
-
-    public function setAssets(WolfAssets $assets): void
-    {
-        $this->assets = $assets;
-    }
-
-    public function setSpawnConditions(array $spawnConditions): void
-    {
-        $this->spawnConditions = $spawnConditions;
     }
 }

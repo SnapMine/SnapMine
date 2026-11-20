@@ -1,55 +1,61 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SnapMine\World;
 
-use Aternos\Nbt\Tag\FloatTag;
-use Aternos\Nbt\Tag\IntTag;
-use SnapMine\Nbt\NbtCompound;
-use SnapMine\Nbt\NbtList;
-use SnapMine\Nbt\NbtTag;
-use SnapMine\NbtSerializable;
+use SnapMine\Codec\Codec;
+use SnapMine\Codec\CodecProvider;
+use SnapMine\Codec\Codecs;
+use SnapMine\Codec\Field;
+use SnapMine\Codec\RecordCodec;
 
-class BiomeEffects implements NbtSerializable
+final class BiomeEffects implements CodecProvider
 {
-    #[NbtTag(IntTag::class, 'fog_color')]
-    private int $fogColor;
+    public function __construct(
+        private readonly int $fogColor,
+        private readonly int $skyColor,
+        private readonly int $waterColor,
+        private readonly int $waterFogColor,
+        private readonly ?float $musicVolume = null,
+        private readonly ?array $music = null,
+        private readonly ?BiomeMoodSound $moodSound = null,
+        private readonly ?string $grassColorModifier = null,
+        private readonly ?int $grassColor = null,
+        private readonly ?int $foliageColor = null,
+        private readonly ?int $dryFoliageColor = null,
+        private readonly ?BiomeParticle $particle = null,
+        private readonly ?string $ambientSound = null,
+        private readonly ?AmbientSound $additionsSound = null,
+    ) {
+    }
 
-    #[NbtTag(FloatTag::class, 'music_volume')]
-    private float $musicVolume;
+    public static function codec(): Codec
+    {
+        static $codec;
 
-    #[NbtTag(IntTag::class, 'sky_color')]
-    private int $skyColor;
-
-    #[NbtTag(IntTag::class, 'water_color')]
-    private int $waterColor;
-
-    #[NbtTag(IntTag::class, 'water_fog_color')]
-    private int $waterFogColor;
-
-    #[NbtCompound('mood_sound')]
-    private BiomeMoodSound $moodSound;
-
-    #[NbtList('music', Music::class, true)]
-    private array $music;
+        return $codec ??= RecordCodec::of(
+            self::class,
+            Field::required('fog_color', Codecs::int(), fn (self $e) => $e->fogColor),
+            Field::required('sky_color', Codecs::int(), fn (self $e) => $e->skyColor),
+            Field::required('water_color', Codecs::int(), fn (self $e) => $e->waterColor),
+            Field::required('water_fog_color', Codecs::int(), fn (self $e) => $e->waterFogColor),
+            Field::optional('music_volume', Codecs::float(), fn (self $e) => $e->musicVolume),
+            Field::optional('music', Codecs::listOf(Music::codec()), fn (self $e) => $e->music),
+            Field::optional('mood_sound', BiomeMoodSound::codec(), fn (self $e) => $e->moodSound),
+            Field::optional('grass_color_modifier', Codecs::string(), fn (self $e) => $e->grassColorModifier),
+            Field::optional('grass_color', Codecs::int(), fn (self $e) => $e->grassColor),
+            Field::optional('foliage_color', Codecs::int(), fn (self $e) => $e->foliageColor),
+            Field::optional('dry_foliage_color', Codecs::int(), fn (self $e) => $e->dryFoliageColor),
+            Field::optional('particle', BiomeParticle::codec(), fn (self $e) => $e->particle),
+            Field::optional('ambient_sound', Codecs::string(), fn (self $e) => $e->ambientSound),
+            Field::optional('additions_sound', AmbientSound::codec(), fn (self $e) => $e->additionsSound),
+        );
+    }
 
     public function getFogColor(): int
     {
         return $this->fogColor;
-    }
-
-    public function setFogColor(int $fogColor): void
-    {
-        $this->fogColor = $fogColor;
-    }
-
-    public function getMusicVolume(): float
-    {
-        return $this->musicVolume;
-    }
-
-    public function setMusicVolume(float $musicVolume): void
-    {
-        $this->musicVolume = $musicVolume;
     }
 
     public function getSkyColor(): int
@@ -57,19 +63,9 @@ class BiomeEffects implements NbtSerializable
         return $this->skyColor;
     }
 
-    public function setSkyColor(int $skyColor): void
-    {
-        $this->skyColor = $skyColor;
-    }
-
     public function getWaterColor(): int
     {
         return $this->waterColor;
-    }
-
-    public function setWaterColor(int $waterColor): void
-    {
-        $this->waterColor = $waterColor;
     }
 
     public function getWaterFogColor(): int
@@ -77,28 +73,56 @@ class BiomeEffects implements NbtSerializable
         return $this->waterFogColor;
     }
 
-    public function setWaterFogColor(int $waterFogColor): void
+    public function getMusicVolume(): ?float
     {
-        $this->waterFogColor = $waterFogColor;
+        return $this->musicVolume;
     }
 
-    public function getMoodSound(): BiomeMoodSound
-    {
-        return $this->moodSound;
-    }
-
-    public function setMoodSound(BiomeMoodSound $moodSound): void
-    {
-        $this->moodSound = $moodSound;
-    }
-
-    public function getMusic(): array
+    /**
+     * @return Music[]|null
+     */
+    public function getMusic(): ?array
     {
         return $this->music;
     }
 
-    public function setMusic(array $music): void
+    public function getMoodSound(): ?BiomeMoodSound
     {
-        $this->music = $music;
+        return $this->moodSound;
+    }
+
+    public function getGrassColorModifier(): ?string
+    {
+        return $this->grassColorModifier;
+    }
+
+    public function getGrassColor(): ?int
+    {
+        return $this->grassColor;
+    }
+
+    public function getFoliageColor(): ?int
+    {
+        return $this->foliageColor;
+    }
+
+    public function getDryFoliageColor(): ?int
+    {
+        return $this->dryFoliageColor;
+    }
+
+    public function getParticle(): ?BiomeParticle
+    {
+        return $this->particle;
+    }
+
+    public function getAmbientSound(): ?string
+    {
+        return $this->ambientSound;
+    }
+
+    public function getAdditionsSound(): ?AmbientSound
+    {
+        return $this->additionsSound;
     }
 }

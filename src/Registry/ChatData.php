@@ -1,61 +1,52 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SnapMine\Registry;
 
-use Aternos\Nbt\Tag\StringTag;
+use SnapMine\Codec\Codec;
+use SnapMine\Codec\CodecProvider;
+use SnapMine\Codec\Codecs;
+use SnapMine\Codec\Field;
+use SnapMine\Codec\RecordCodec;
 use SnapMine\Component\TextComponent;
-use SnapMine\Nbt\NbtCompound;
-use SnapMine\Nbt\NbtList;
-use SnapMine\Nbt\NbtTag;
-use SnapMine\NbtSerializable;
 
-class ChatData implements NbtSerializable
+final class ChatData implements CodecProvider
 {
-    #[NbtTag(StringTag::class, 'translation_key')]
-    private string $translationKey;
+    public function __construct(
+        private readonly string $translationKey,
+        private readonly array $parameters,
+        private readonly ?TextComponent $style = null,
+    ) {
+    }
 
-    #[NbtList('parameters', 'string')]
-    private array $parameters;
+    public static function codec(): Codec
+    {
+        static $codec;
 
-    #[NbtCompound('style')]
-    private ?TextComponent $style = null;
+        return $codec ??= RecordCodec::of(
+            self::class,
+            Field::required('translation_key', Codecs::string(), fn (self $d) => $d->translationKey),
+            Field::required('parameters', Codecs::listOf(Codecs::string()), fn (self $d) => $d->parameters),
+            Field::optional('style', TextComponent::codec(), fn (self $d) => $d->style),
+        );
+    }
 
-    /**
-     * @return string
-     */
     public function getTranslationKey(): string
     {
         return $this->translationKey;
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     public function getParameters(): array
     {
         return $this->parameters;
     }
 
-    /**
-     * @return TextComponent|null
-     */
     public function getStyle(): ?TextComponent
     {
         return $this->style;
-    }
-
-    public function setTranslationKey(string $translationKey): void
-    {
-        $this->translationKey = $translationKey;
-    }
-
-    public function setParameters(array $parameters): void
-    {
-        $this->parameters = $parameters;
-    }
-
-    public function setStyle(?TextComponent $style): void
-    {
-        $this->style = $style;
     }
 }
