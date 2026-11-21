@@ -1,94 +1,71 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SnapMine\Registry;
 
-use Aternos\Nbt\Tag\FloatTag;
-use Aternos\Nbt\Tag\StringTag;
-use SnapMine\Nbt\NbtTag;
-use SnapMine\NbtSerializable;
+use SnapMine\Codec\Codec;
+use SnapMine\Codec\CodecProvider;
+use SnapMine\Codec\Codecs;
+use SnapMine\Codec\Field;
+use SnapMine\Codec\RecordCodec;
 
 /**
  * @extends RegistryData<DamageType>
  */
-class DamageType extends RegistryData implements NbtSerializable
+final class DamageType extends RegistryData implements CodecProvider
 {
-    #[NbtTag(FloatTag::class)]
-    private float $exhaustion = 0.0;
-
-    #[NbtTag(StringTag::class, 'message_id')]
-    private string $messageId;
-
-    #[NbtTag(StringTag::class)]
-    private string $scaling;
-
-    #[NbtTag(StringTag::class)]
-    private ?string $effects = null;
-
-    #[NbtTag(StringTag::class, 'death_message_type')]
-    private ?string $deathMessageType = null;
+    public function __construct(
+        private readonly float $exhaustion = 0.0,
+        private readonly string $messageId = '',
+        private readonly string $scaling = '',
+        private readonly ?string $effects = null,
+        private readonly ?string $deathMessageType = null,
+    ) {
+    }
 
     /**
-     * @return float
+     * The single declaration used to decode AND encode a DamageType,
+     * whatever the format (registry JSON, NBT of the Registry Data packet...).
+     *
+     * The field order is the constructor argument order.
      */
+    public static function codec(): Codec
+    {
+        static $codec;
+
+        return $codec ??= RecordCodec::of(
+            self::class,
+            Field::withDefault('exhaustion', Codecs::float(), 0.0, fn (self $d) => $d->exhaustion),
+            Field::required('message_id', Codecs::string(), fn (self $d) => $d->messageId),
+            Field::required('scaling', Codecs::string(), fn (self $d) => $d->scaling),
+            Field::optional('effects', Codecs::string(), fn (self $d) => $d->effects),
+            Field::optional('death_message_type', Codecs::string(), fn (self $d) => $d->deathMessageType),
+        );
+    }
+
     public function getExhaustion(): float
     {
         return $this->exhaustion;
     }
 
-    /**
-     * @return string
-     */
     public function getMessageId(): string
     {
         return $this->messageId;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getEffects(): ?string
-    {
-        return $this->effects;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getDeathMessageType(): ?string
-    {
-        return $this->deathMessageType;
-    }
-
-    /**
-     * @return string
-     */
     public function getScaling(): string
     {
         return $this->scaling;
     }
 
-    public function setExhaustion(float $exhaustion): void
+    public function getEffects(): ?string
     {
-        $this->exhaustion = $exhaustion;
+        return $this->effects;
     }
 
-    public function setMessageId(string $messageId): void
+    public function getDeathMessageType(): ?string
     {
-        $this->messageId = $messageId;
-    }
-
-    public function setScaling(string $scaling): void
-    {
-        $this->scaling = $scaling;
-    }
-
-    public function setEffects(?string $effects): void
-    {
-        $this->effects = $effects;
-    }
-
-    public function setDeathMessageType(?string $deathMessageType): void
-    {
-        $this->deathMessageType = $deathMessageType;
+        return $this->deathMessageType;
     }
 }

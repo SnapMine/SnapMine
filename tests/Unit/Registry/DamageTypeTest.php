@@ -1,21 +1,22 @@
 <?php
 
-use SnapMine\Entity\Variant\CatVariant;
-use SnapMine\Entity\Variant\SpawnConditions;
-use SnapMine\Registry\DamageType;
-use SnapMine\Utils\Nbt;
-use SnapMine\Utils\NbtJson;
+declare(strict_types=1);
 
-it('can serialize and deserialize DamageType correctly', function () {
+use SnapMine\Codec\Io\JsonIO;
+use SnapMine\Codec\Io\NbtIO;
+use SnapMine\Entity\Variant\CatVariant;
+use SnapMine\Registry\DamageType;
+
+it('can decode a DamageType from JSON data', function () {
     $json = [
         'exhaustion' => 1.5,
         'message_id' => 'damage.fire',
         'scaling' => 'linear',
         'effects' => 'burn',
-        'death_message_type' => 'fire'
+        'death_message_type' => 'fire',
     ];
 
-    $damageType = NbtJson::fromJson($json, DamageType::class);
+    $damageType = JsonIO::decode(DamageType::codec(), $json);
 
     expect($damageType)->toBeInstanceOf(DamageType::class)
         ->and($damageType->getExhaustion())->toBe(1.5)
@@ -23,17 +24,45 @@ it('can serialize and deserialize DamageType correctly', function () {
         ->and($damageType->getScaling())->toBe('linear')
         ->and($damageType->getEffects())->toBe('burn')
         ->and($damageType->getDeathMessageType())->toBe('fire');
+});
 
-    $nbt = Nbt::toNbt($damageType);
+it('applies defaults and omits null optional fields', function () {
+    $damageType = JsonIO::decode(DamageType::codec(), [
+        'message_id' => 'arrow',
+        'scaling' => 'when_caused_by_living_non_player',
+    ]);
 
-    expect($nbt)->not->toBeNull()
-        ->and($nbt->get('exhaustion')->getValue())->toBe(1.5)
-        ->and($nbt->get('message_id')->getValue())->toBe('damage.fire')
-        ->and($nbt->get('scaling')->getValue())->toBe('linear')
-        ->and($nbt->get('effects')->getValue())->toBe('burn')
-        ->and($nbt->get('death_message_type')->getValue())->toBe('fire');
+    expect($damageType->getExhaustion())->toBe(0.0)
+        ->and($damageType->getEffects())->toBeNull()
+        ->and($damageType->getDeathMessageType())->toBeNull();
 
-    $damageType2 = Nbt::fromNbt($nbt, DamageType::class);
+    $encoded = JsonIO::encode(DamageType::codec(), $damageType);
+
+    expect($encoded)->toBe([
+        'exhaustion' => 0.0,
+        'message_id' => 'arrow',
+        'scaling' => 'when_caused_by_living_non_player',
+    ]);
+});
+
+it('can round-trip a DamageType through NBT', function () {
+    $damageType = JsonIO::decode(DamageType::codec(), [
+        'exhaustion' => 1.5,
+        'message_id' => 'damage.fire',
+        'scaling' => 'linear',
+        'effects' => 'burn',
+        'death_message_type' => 'fire',
+    ]);
+
+    $tag = NbtIO::toTag(DamageType::codec(), $damageType);
+
+    expect($tag->get('exhaustion')->getValue())->toBe(1.5)
+        ->and($tag->get('message_id')->getValue())->toBe('damage.fire')
+        ->and($tag->get('scaling')->getValue())->toBe('linear')
+        ->and($tag->get('effects')->getValue())->toBe('burn')
+        ->and($tag->get('death_message_type')->getValue())->toBe('fire');
+
+    $damageType2 = NbtIO::fromTag(DamageType::codec(), $tag);
 
     expect($damageType2)->toBeInstanceOf(DamageType::class)
         ->and($damageType2->getExhaustion())->toBe(1.5)
@@ -46,8 +75,10 @@ it('can serialize and deserialize DamageType correctly', function () {
 it('can serialize CatVariant correctly', function () {
     $json = json_decode(file_get_contents(dirname(__DIR__, 3) . '/resources/registries/cat_variant/all_black.json'), true);
 
-    $catVariant = NbtJson::fromJson($json, CatVariant::class);
+    $catVariant = JsonIO::decode(CatVariant::codec(), $json);
 
     expect($catVariant)->toBeInstanceOf(CatVariant::class)
-        ->and($catVariant->getSpawnConditions())->toHaveCount(2);
+        ->and($catVariant->getSpawnConditions())->toHaveCount(2)
+        ->and($catVariant->getSpawnConditions()[0]->getCondition()->getType())->toBe('minecraft:structure')
+        ->and($catVariant->getSpawnConditions()[1]->getCondition()->getRange()?->getMin())->toBe(0.9);
 });

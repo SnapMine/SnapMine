@@ -1,43 +1,41 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SnapMine\Entity\Variant;
 
-use Aternos\Nbt\Tag\IntTag;
-use SnapMine\Nbt\NbtCompound;
-use SnapMine\Nbt\NbtTag;
-use SnapMine\NbtSerializable;
+use SnapMine\Codec\Codec;
+use SnapMine\Codec\CodecProvider;
+use SnapMine\Codec\Codecs;
+use SnapMine\Codec\Field;
+use SnapMine\Codec\RecordCodec;
 
-class SpawnConditions implements NbtSerializable
+final class SpawnConditions implements CodecProvider
 {
-    #[NbtCompound('condition')]
-    private ?SpawnCondition $condition = null;
-
-    #[NbtTag(IntTag::class)]
-    private int $priority;
-
-    /**
-     * @return SpawnCondition|null
-     */
-    public function getCondition(): ?SpawnCondition
-    {
-        return $this->condition;
+    public function __construct(
+        private readonly int $priority,
+        private readonly ?SpawnCondition $condition = null,
+    ) {
     }
 
-    /**
-     * @return int
-     */
+    public static function codec(): Codec
+    {
+        static $codec;
+
+        return $codec ??= RecordCodec::of(
+            self::class,
+            Field::required('priority', Codecs::int(), fn (self $s) => $s->priority),
+            Field::optional('condition', SpawnCondition::codec(), fn (self $s) => $s->condition),
+        );
+    }
+
     public function getPriority(): int
     {
         return $this->priority;
     }
 
-    public function setCondition(?SpawnCondition $condition): void
+    public function getCondition(): ?SpawnCondition
     {
-        $this->condition = $condition;
-    }
-
-    public function setPriority(int $priority): void
-    {
-        $this->priority = $priority;
+        return $this->condition;
     }
 }

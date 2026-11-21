@@ -306,7 +306,7 @@ class PacketSerializer
      */
     public function putByte(int $value): PacketSerializer
     {
-        $this->put(chr($value));
+        $this->put(chr((($value % 256) + 256) % 256));
         return $this;
     }
 

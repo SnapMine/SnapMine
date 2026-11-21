@@ -2,18 +2,17 @@
 
 namespace SnapMine\Network\Packet\Clientbound\Configuration;
 
+use SnapMine\Codec\CodecProvider;
+use SnapMine\Codec\Io\NbtIO;
 use SnapMine\Keyed;
-use SnapMine\NbtSerializable;
 use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
 use SnapMine\Network\Serializer\PacketSerializer;
-use SnapMine\Registry\EncodableToNbt;
-use SnapMine\Utils\Nbt;
 
 class RegistryDataPacket extends ClientboundPacket
 {
     /**
      * @param string $registryId
-     * @param array<string, NbtSerializable> $entries
+     * @param array<string, CodecProvider> $entries
      */
     public function __construct(
         private readonly string $registryId,
@@ -39,7 +38,7 @@ class RegistryDataPacket extends ClientboundPacket
 
             $serializer->putString($entry->getKey())
                 ->putBool(true)
-                ->putNBT(Nbt::toNbt($entry));
+                ->putNBT(NbtIO::toTag($entry::codec(), $entry));
         }
     }
 }

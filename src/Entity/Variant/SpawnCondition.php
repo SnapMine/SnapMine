@@ -1,82 +1,61 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SnapMine\Entity\Variant;
 
-use Aternos\Nbt\Tag\FloatTag;
-use Aternos\Nbt\Tag\StringTag;
-use SnapMine\Nbt\NbtTag;
-use SnapMine\NbtSerializable;
+use SnapMine\Codec\Codec;
+use SnapMine\Codec\CodecProvider;
+use SnapMine\Codec\Codecs;
+use SnapMine\Codec\Field;
+use SnapMine\Codec\RecordCodec;
 
-class SpawnCondition implements NbtSerializable
+/**
+ * A single spawn condition of a variant (`spawn_conditions[].condition`).
+ *
+ * Faithful to the vanilla data: `type` identifies the condition, and the
+ * remaining fields depend on it (`biomes`, `structures`, `range`...).
+ */
+final class SpawnCondition implements CodecProvider
 {
-    #[NbtTag(StringTag::class)]
-    private string $type;
-
-    #[NbtTag(StringTag::class)]
-    private ?string $biome = null;
-
-    #[NbtTag(FloatTag::class)]
-    private ?float $min = null;
-
-    #[NbtTag(StringTag::class)]
-    private ?string $rangeKey = null;
-
-    public function __construct(string $type, ?float $min = null, ?string $rangeKey = null)
-    {
-        $this->type = $type;
-        $this->min = $min;
-        $this->rangeKey = $rangeKey;
+    public function __construct(
+        private readonly string $type,
+        private readonly ?string $biomes = null,
+        private readonly ?string $structures = null,
+        private readonly ?FloatRange $range = null,
+    ) {
     }
 
-    /**
-     * @return string
-     */
+    public static function codec(): Codec
+    {
+        static $codec;
+
+        return $codec ??= RecordCodec::of(
+            self::class,
+            Field::required('type', Codecs::string(), fn (self $c) => $c->type),
+            Field::optional('biomes', Codecs::string(), fn (self $c) => $c->biomes),
+            Field::optional('structures', Codecs::string(), fn (self $c) => $c->structures),
+            Field::optional('range', FloatRange::codec(), fn (self $c) => $c->range),
+        );
+    }
+
     public function getType(): string
     {
         return $this->type;
     }
 
-    /**
-     * @return float|null
-     */
-    public function getMin(): ?float
+    public function getBiomes(): ?string
     {
-        return $this->min;
+        return $this->biomes;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getRangeKey(): ?string
+    public function getStructures(): ?string
     {
-        return $this->rangeKey;
+        return $this->structures;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getBiome(): ?string
+    public function getRange(): ?FloatRange
     {
-        return $this->biome;
-    }
-
-    public function setType(string $type): void
-    {
-        $this->type = $type;
-    }
-
-    public function setBiome(?string $biome): void
-    {
-        $this->biome = $biome;
-    }
-
-    public function setMin(?float $min): void
-    {
-        $this->min = $min;
-    }
-
-    public function setRangeKey(?string $rangeKey): void
-    {
-        $this->rangeKey = $rangeKey;
+        return $this->range;
     }
 }

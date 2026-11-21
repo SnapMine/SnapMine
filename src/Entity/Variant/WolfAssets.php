@@ -1,58 +1,48 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SnapMine\Entity\Variant;
 
-use Aternos\Nbt\Tag\StringTag;
-use SnapMine\Nbt\NbtTag;
-use SnapMine\NbtSerializable;
+use SnapMine\Codec\Codec;
+use SnapMine\Codec\CodecProvider;
+use SnapMine\Codec\Codecs;
+use SnapMine\Codec\Field;
+use SnapMine\Codec\RecordCodec;
 
-class WolfAssets implements NbtSerializable
+final class WolfAssets implements CodecProvider
 {
-    #[NbtTag(StringTag::class)]
-    private string $angry;
+    public function __construct(
+        private readonly string $angry,
+        private readonly string $tame,
+        private readonly string $wild,
+    ) {
+    }
 
-    #[NbtTag(StringTag::class)]
-    private string $tame;
+    public static function codec(): Codec
+    {
+        static $codec;
 
-    #[NbtTag(StringTag::class)]
-    private string $wild;
+        return $codec ??= RecordCodec::of(
+            self::class,
+            Field::required('angry', Codecs::string(), fn (self $a) => $a->angry),
+            Field::required('tame', Codecs::string(), fn (self $a) => $a->tame),
+            Field::required('wild', Codecs::string(), fn (self $a) => $a->wild),
+        );
+    }
 
-    /**
-     * @return string
-     */
     public function getAngry(): string
     {
         return $this->angry;
     }
 
-    /**
-     * @return string
-     */
     public function getTame(): string
     {
         return $this->tame;
     }
 
-    /**
-     * @return string
-     */
     public function getWild(): string
     {
         return $this->wild;
-    }
-
-    public function setAngry(string $angry): void
-    {
-        $this->angry = $angry;
-    }
-
-    public function setTame(string $tame): void
-    {
-        $this->tame = $tame;
-    }
-
-    public function setWild(string $wild): void
-    {
-        $this->wild = $wild;
     }
 }

@@ -1,35 +1,41 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SnapMine\World;
 
-use Aternos\Nbt\Tag\DoubleTag;
-use Aternos\Nbt\Tag\IntTag;
-use Aternos\Nbt\Tag\StringTag;
-use SnapMine\Nbt\NbtTag;
-use SnapMine\NbtSerializable;
+use SnapMine\Codec\Codec;
+use SnapMine\Codec\CodecProvider;
+use SnapMine\Codec\Codecs;
+use SnapMine\Codec\Field;
+use SnapMine\Codec\RecordCodec;
 
-class BiomeMoodSound implements NbtSerializable
+final class BiomeMoodSound implements CodecProvider
 {
-    #[NbtTag(IntTag::class, 'block_search_extent')]
-    private int $blockSearchExtent;
+    public function __construct(
+        private readonly int $blockSearchExtent,
+        private readonly float $offset,
+        private readonly string $sound,
+        private readonly int $tickDelay,
+    ) {
+    }
 
-    #[NbtTag(DoubleTag::class)]
-    private float $offset;
+    public static function codec(): Codec
+    {
+        static $codec;
 
-    #[NbtTag(StringTag::class)]
-    private string $sound;
-
-    #[NbtTag(IntTag::class, 'tick_delay')]
-    private int $tickDelay;
+        return $codec ??= RecordCodec::of(
+            self::class,
+            Field::required('block_search_extent', Codecs::int(), fn (self $m) => $m->blockSearchExtent),
+            Field::required('offset', Codecs::double(), fn (self $m) => $m->offset),
+            Field::required('sound', Codecs::string(), fn (self $m) => $m->sound),
+            Field::required('tick_delay', Codecs::int(), fn (self $m) => $m->tickDelay),
+        );
+    }
 
     public function getBlockSearchExtent(): int
     {
         return $this->blockSearchExtent;
-    }
-
-    public function setBlockSearchExtent(int $blockSearchExtent): void
-    {
-        $this->blockSearchExtent = $blockSearchExtent;
     }
 
     public function getOffset(): float
@@ -37,28 +43,13 @@ class BiomeMoodSound implements NbtSerializable
         return $this->offset;
     }
 
-    public function setOffset(float $offset): void
-    {
-        $this->offset = $offset;
-    }
-
     public function getSound(): string
     {
         return $this->sound;
     }
 
-    public function setSound(string $sound): void
-    {
-        $this->sound = $sound;
-    }
-
     public function getTickDelay(): int
     {
         return $this->tickDelay;
-    }
-
-    public function setTickDelay(int $tickDelay): void
-    {
-        $this->tickDelay = $tickDelay;
     }
 }

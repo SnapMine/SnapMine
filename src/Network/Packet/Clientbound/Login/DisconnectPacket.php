@@ -5,7 +5,6 @@ namespace SnapMine\Network\Packet\Clientbound\Login;
 use SnapMine\Component\TextComponent;
 use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
 use SnapMine\Network\Serializer\PacketSerializer;
-use SnapMine\Utils\Nbt;
 
 class DisconnectPacket extends ClientboundPacket
 {
@@ -17,7 +16,9 @@ class DisconnectPacket extends ClientboundPacket
 
     public function write(PacketSerializer $serializer): void
     {
-        $serializer->putNBT(Nbt::toNbt($this->reason));
+        // The login disconnect reason is a JSON Text Component (a String),
+        // NOT an NBT tag — unlike the configuration/play disconnect packets.
+        $serializer->putString(json_encode($this->reason));
     }
 
     public function getId(): int

@@ -1,50 +1,52 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SnapMine\Entity\Variant;
 
-use Aternos\Nbt\Tag\StringTag;
-use SnapMine\Nbt\NbtCompound;
-use SnapMine\Nbt\NbtList;
-use SnapMine\Nbt\NbtTag;
-use SnapMine\NbtSerializable;
+use SnapMine\Codec\Codec;
+use SnapMine\Codec\CodecProvider;
+use SnapMine\Codec\Codecs;
+use SnapMine\Codec\Field;
+use SnapMine\Codec\RecordCodec;
 use SnapMine\Registry\RegistryData;
 
 /**
+ * @extends RegistryData<FrogVariant>
+ *
  * @method static FrogVariant COLD()
  * @method static FrogVariant TEMPERATE()
  * @method static FrogVariant WARM()
  */
-class FrogVariant extends RegistryData implements NbtSerializable
+final class FrogVariant extends RegistryData implements CodecProvider
 {
-    #[NbtTag(StringTag::class, 'asset_id')]
-    private string $assetId = '';
+    public function __construct(
+        private readonly string $assetId,
+        private readonly array $spawnConditions,
+    ) {
+    }
 
-    #[NbtList('spawn_conditions', SpawnConditions::class, true)]
-    private array $spawnConditions = [];
+    public static function codec(): Codec
+    {
+        static $codec;
 
-    /**
-     * @return string
-     */
+        return $codec ??= RecordCodec::of(
+            self::class,
+            Field::required('asset_id', Codecs::string(), fn (self $v) => $v->assetId),
+            Field::required('spawn_conditions', Codecs::listOf(SpawnConditions::codec()), fn (self $v) => $v->spawnConditions),
+        );
+    }
+
     public function getAssetId(): string
     {
         return $this->assetId;
     }
 
     /**
-     * @return array
+     * @return SpawnConditions[]
      */
     public function getSpawnConditions(): array
     {
         return $this->spawnConditions;
-    }
-
-    public function setAssetId(string $assetId): void
-    {
-        $this->assetId = $assetId;
-    }
-
-    public function setSpawnConditions(array $spawnConditions): void
-    {
-        $this->spawnConditions = $spawnConditions;
     }
 }

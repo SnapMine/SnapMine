@@ -1,72 +1,62 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SnapMine\World;
 
-use Aternos\Nbt\Tag\ByteTag;
-use Aternos\Nbt\Tag\FloatTag;
-use Aternos\Nbt\Tag\StringTag;
-use SnapMine\Nbt\NbtCompound;
-use SnapMine\Nbt\NbtList;
-use SnapMine\Nbt\NbtTag;
-use SnapMine\NbtSerializable;
+use SnapMine\Codec\Codec;
+use SnapMine\Codec\CodecProvider;
+use SnapMine\Codec\Codecs;
+use SnapMine\Codec\Field;
+use SnapMine\Codec\RecordCodec;
 use SnapMine\Registry\RegistryData;
 
-class Biome extends RegistryData implements NbtSerializable
+/**
+ * @extends RegistryData<Biome>
+ *
+ * @method static Biome BADLANDS()
+ * @method static Biome BAMBOO_JUNGLE()
+ * @method static Biome BASALT_DELTAS()
+ * @method static Biome BEACH()
+ * @method static Biome BIRCH_FOREST()
+ */
+final class Biome extends RegistryData implements CodecProvider
 {
-    #[NbtTag(FloatTag::class)]
-    private float $downfall = 0.0;
-
-    #[NbtTag(ByteTag::class, 'has_precipitation')]
-    private bool $hasPrecipitation = false;
-
-    #[NbtTag(FloatTag::class)]
-    private float $temperature = 0.0;
-
-    #[NbtTag(StringTag::class)]
-    #[NbtList('carvers', 'string')]
-    private string|array $carvers;
-
-    #[NbtCompound('effects')]
-    private BiomeEffects $effects;
-
-    /**
-     * @return float
-     */
-    public function getDownfall(): float
-    {
-        return $this->downfall;
+    public function __construct(
+        private readonly bool $hasPrecipitation,
+        private readonly float $temperature,
+        private readonly float $downfall,
+        private readonly BiomeEffects $effects,
+        private readonly string|array $carvers,
+        private readonly array $features,
+        private readonly array $spawners,
+        private readonly array $spawnCosts,
+        private readonly ?float $creatureSpawnProbability = null,
+        private readonly ?string $temperatureModifier = null,
+    ) {
     }
 
-    /**
-     * @return bool
-     */
-    public function hasPrecipitation(): bool
+    public static function codec(): Codec
     {
-        return $this->hasPrecipitation;
-    }
+        static $codec;
 
-    /**
-     * @return float
-     */
-    public function getTemperature(): float
-    {
-        return $this->temperature;
-    }
-
-    /**
-     * @return array|string
-     */
-    public function getCarvers(): array|string
-    {
-        return $this->carvers;
-    }
-
-    /**
-     * @return BiomeEffects
-     */
-    public function getEffects(): BiomeEffects
-    {
-        return $this->effects;
+        return $codec ??= RecordCodec::of(
+            self::class,
+            Field::required('has_precipitation', Codecs::bool(), fn (self $b) => $b->hasPrecipitation),
+            Field::required('temperature', Codecs::float(), fn (self $b) => $b->temperature),
+            Field::required('downfall', Codecs::float(), fn (self $b) => $b->downfall),
+            Field::required('effects', BiomeEffects::codec(), fn (self $b) => $b->effects),
+            Field::required(
+                'carvers',
+                Codecs::either(Codecs::string(), Codecs::listOf(Codecs::string())),
+                fn (self $b) => $b->carvers,
+            ),
+            Field::required('features', Codecs::listOf(Codecs::listOf(Codecs::string())), fn (self $b) => $b->features),
+            Field::required('spawners', Codecs::mapOf(Codecs::listOf(SpawnerEntry::codec())), fn (self $b) => $b->spawners),
+            Field::required('spawn_costs', Codecs::mapOf(SpawnCost::codec()), fn (self $b) => $b->spawnCosts),
+            Field::optional('creature_spawn_probability', Codecs::float(), fn (self $b) => $b->creatureSpawnProbability),
+            Field::optional('temperature_modifier', Codecs::string(), fn (self $b) => $b->temperatureModifier),
+        );
     }
 
     public function isHasPrecipitation(): bool
@@ -74,28 +64,57 @@ class Biome extends RegistryData implements NbtSerializable
         return $this->hasPrecipitation;
     }
 
-    public function setHasPrecipitation(bool $hasPrecipitation): void
+    public function getTemperature(): float
     {
-        $this->hasPrecipitation = $hasPrecipitation;
+        return $this->temperature;
     }
 
-    public function setDownfall(float $downfall): void
+    public function getDownfall(): float
     {
-        $this->downfall = $downfall;
+        return $this->downfall;
     }
 
-    public function setTemperature(float $temperature): void
+    public function getEffects(): BiomeEffects
     {
-        $this->temperature = $temperature;
+        return $this->effects;
     }
 
-    public function setCarvers(array|string $carvers): void
+    public function getCarvers(): string|array
     {
-        $this->carvers = $carvers;
+        return $this->carvers;
     }
 
-    public function setEffects(BiomeEffects $effects): void
+    /**
+     * @return string[][]
+     */
+    public function getFeatures(): array
     {
-        $this->effects = $effects;
+        return $this->features;
+    }
+
+    /**
+     * @return array<string, SpawnerEntry[]>
+     */
+    public function getSpawners(): array
+    {
+        return $this->spawners;
+    }
+
+    /**
+     * @return array<string, SpawnCost>
+     */
+    public function getSpawnCosts(): array
+    {
+        return $this->spawnCosts;
+    }
+
+    public function getCreatureSpawnProbability(): ?float
+    {
+        return $this->creatureSpawnProbability;
+    }
+
+    public function getTemperatureModifier(): ?string
+    {
+        return $this->temperatureModifier;
     }
 }

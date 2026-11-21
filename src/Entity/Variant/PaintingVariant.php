@@ -1,86 +1,67 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SnapMine\Entity\Variant;
 
-use Aternos\Nbt\Tag\IntTag;
-use Aternos\Nbt\Tag\StringTag;
+use SnapMine\Codec\Codec;
+use SnapMine\Codec\CodecProvider;
+use SnapMine\Codec\Codecs;
+use SnapMine\Codec\Field;
+use SnapMine\Codec\RecordCodec;
 use SnapMine\Component\TextComponent;
-use SnapMine\Nbt\NbtCompound;
-use SnapMine\Nbt\NbtTag;
-use SnapMine\NbtSerializable;
 use SnapMine\Registry\RegistryData;
 
-class PaintingVariant extends RegistryData implements NbtSerializable
+/**
+ * @extends RegistryData<PaintingVariant>
+ */
+final class PaintingVariant extends RegistryData implements CodecProvider
 {
-    #[NbtTag(StringTag::class, 'asset_id')]
-    private string $assetId;
+    public function __construct(
+        private readonly string $assetId,
+        private readonly int $height,
+        private readonly int $width,
+        private readonly TextComponent $title,
+        private readonly ?TextComponent $author = null,
+    ) {
+    }
 
-    #[NbtTag(IntTag::class, 'height')]
-    private int $height;
+    public static function codec(): Codec
+    {
+        static $codec;
 
-    #[NbtTag(IntTag::class, 'width')]
-    private int $width;
+        return $codec ??= RecordCodec::of(
+            self::class,
+            Field::required('asset_id', Codecs::string(), fn (self $v) => $v->assetId),
+            Field::required('height', Codecs::int(), fn (self $v) => $v->height),
+            Field::required('width', Codecs::int(), fn (self $v) => $v->width),
+            Field::required('title', TextComponent::codec(), fn (self $v) => $v->title),
+            Field::optional('author', TextComponent::codec(), fn (self $v) => $v->author),
+        );
+    }
 
-    #[NbtCompound('author')]
-    private ?TextComponent $author = null;
-
-    #[NbtCompound('title')]
-    private TextComponent $title;
-
-    /**
-     * @return string
-     */
     public function getAssetId(): string
     {
         return $this->assetId;
     }
 
-    /**
-     * @return int
-     */
     public function getHeight(): int
     {
         return $this->height;
     }
 
-    /**
-     * @return TextComponent|null
-     */
-    public function getAuthor(): ?TextComponent
+    public function getWidth(): int
     {
-        return $this->author;
+        return $this->width;
     }
 
-    /**
-     * @return TextComponent
-     */
     public function getTitle(): TextComponent
     {
         return $this->title;
     }
 
-    public function setAssetId(string $assetId): void
+    public function getAuthor(): ?TextComponent
     {
-        $this->assetId = $assetId;
-    }
-
-    public function setHeight(int $height): void
-    {
-        $this->height = $height;
-    }
-
-    public function setWidth(int $width): void
-    {
-        $this->width = $width;
-    }
-
-    public function setAuthor(?TextComponent $author): void
-    {
-        $this->author = $author;
-    }
-
-    public function setTitle(TextComponent $title): void
-    {
-        $this->title = $title;
+        return $this->author;
     }
 }

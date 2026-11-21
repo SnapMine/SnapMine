@@ -2,6 +2,7 @@
 
 namespace SnapMine\Registry;
 
+use SnapMine\Codec\Codec;
 use SnapMine\Keyed;
 
 /**
@@ -14,6 +15,13 @@ abstract class RegistryData implements Keyed
 
     protected string $key;
     protected int $id;
+
+    /**
+     * The codec of the implementing registry data class.
+     *
+     * @return Codec<mixed>
+     */
+    abstract public static function codec(): Codec;
 
     /**
      * @param string $name

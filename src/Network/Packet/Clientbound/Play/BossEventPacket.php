@@ -6,7 +6,7 @@ use SnapMine\BossBar\BossBar;
 use SnapMine\BossBar\BossBarAction;
 use SnapMine\Network\Packet\Clientbound\ClientboundPacket;
 use SnapMine\Network\Serializer\PacketSerializer;
-use SnapMine\Utils\Nbt;
+use SnapMine\Codec\Io\NbtIO;
 
 class BossEventPacket extends ClientboundPacket
 {
@@ -23,7 +23,7 @@ class BossEventPacket extends ClientboundPacket
             ->putVarInt($this->action->value);
 
         if ($this->action == BossBarAction::ADD) {
-            $serializer->putNBT(Nbt::toNbt($this->bossBar->getTitle()))
+            $serializer->putNBT(NbtIO::toTag($this->bossBar->getTitle()::codec(), $this->bossBar->getTitle()))
                 ->putFloat($this->bossBar->getHealth())
                 ->putVarInt($this->bossBar->getColor()->value)
                 ->putVarInt($this->bossBar->getDivision()->value)
@@ -33,7 +33,7 @@ class BossEventPacket extends ClientboundPacket
             $serializer->putFloat($this->bossBar->getHealth());
 
         } else if ($this->action == BossBarAction::UPDATE_TITLE) {
-            $serializer->putNBT(Nbt::toNbt($this->bossBar->getTitle()));
+            $serializer->putNBT(NbtIO::toTag($this->bossBar->getTitle()::codec(), $this->bossBar->getTitle()));
 
         } else if ($this->action == BossBarAction::UPDATE_STYLE) {
             $serializer->putVarInt($this->bossBar->getColor()->value)

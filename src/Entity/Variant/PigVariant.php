@@ -1,65 +1,59 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SnapMine\Entity\Variant;
 
-use Aternos\Nbt\Tag\StringTag;
-use SnapMine\Nbt\NbtList;
-use SnapMine\Nbt\NbtTag;
-use SnapMine\NbtSerializable;
+use SnapMine\Codec\Codec;
+use SnapMine\Codec\CodecProvider;
+use SnapMine\Codec\Codecs;
+use SnapMine\Codec\Field;
+use SnapMine\Codec\RecordCodec;
 use SnapMine\Registry\RegistryData;
 
 /**
+ * @extends RegistryData<PigVariant>
+ *
  * @method static PigVariant COLD()
  * @method static PigVariant TEMPERATE()
  * @method static PigVariant WARM()
  */
-class PigVariant extends RegistryData implements NbtSerializable
+final class PigVariant extends RegistryData implements CodecProvider
 {
-    #[NbtTag(StringTag::class, 'asset_id')]
-    private string $assetId;
+    public function __construct(
+        private readonly string $assetId,
+        private readonly array $spawnConditions,
+        private readonly ?string $model = null,
+    ) {
+    }
 
-    #[NbtTag(StringTag::class)]
-    private ?string $model = null;
+    public static function codec(): Codec
+    {
+        static $codec;
 
-    #[NbtList('spawn_conditions', SpawnConditions::class, true)]
-    private array $spawnConditions = [];
+        return $codec ??= RecordCodec::of(
+            self::class,
+            Field::required('asset_id', Codecs::string(), fn (self $v) => $v->assetId),
+            Field::required('spawn_conditions', Codecs::listOf(SpawnConditions::codec()), fn (self $v) => $v->spawnConditions),
+            Field::optional('model', Codecs::string(), fn (self $v) => $v->model),
+        );
+    }
 
-    /**
-     * @return string
-     */
     public function getAssetId(): string
     {
         return $this->assetId;
     }
 
     /**
-     * @return string|null
-     */
-    public function getModel(): ?string
-    {
-        return $this->model;
-    }
-
-    /**
-     * @return array
+     * @return SpawnConditions[]
      */
     public function getSpawnConditions(): array
     {
         return $this->spawnConditions;
     }
 
-    public function setAssetId(string $assetId): void
+    public function getModel(): ?string
     {
-        $this->assetId = $assetId;
-    }
-
-    public function setModel(?string $model): void
-    {
-        $this->model = $model;
-    }
-
-    public function setSpawnConditions(array $spawnConditions): void
-    {
-        $this->spawnConditions = $spawnConditions;
+        return $this->model;
     }
 }

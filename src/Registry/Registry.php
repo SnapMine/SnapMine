@@ -2,6 +2,7 @@
 
 namespace SnapMine\Registry;
 
+use SnapMine\Codec\Io\JsonIO;
 use SnapMine\Entity\Variant\CatVariant;
 use SnapMine\Entity\Variant\ChickenVariant;
 use SnapMine\Entity\Variant\CowVariant;
@@ -10,7 +11,6 @@ use SnapMine\Entity\Variant\PaintingVariant;
 use SnapMine\Entity\Variant\PigVariant;
 use SnapMine\Entity\Variant\WolfSoundVariant;
 use SnapMine\Entity\Variant\WolfVariant;
-use SnapMine\Utils\NbtJson;
 use SnapMine\World\Biome;
 use SnapMine\World\DimensionType;
 
@@ -43,14 +43,14 @@ enum Registry: string
                 $pattern =  $dirPath . strtolower($value->name) . '/*.json';
             }
 
-            /** @var RegistryData $registryData */
+            /** @var class-string<RegistryData> $registryData */
             $registryData = $value->value;
 
             foreach (glob($pattern) as $entry) {
                 $filename = basename($entry, ".json");
                 $data = json_decode(file_get_contents($entry), true);
 
-                $registryData::register($filename, 'minecraft:' . $filename, NbtJson::fromJson($data, $value->value));
+                $registryData::register($filename, 'minecraft:' . $filename, JsonIO::decode($registryData::codec(), $data));
             }
         }
     }

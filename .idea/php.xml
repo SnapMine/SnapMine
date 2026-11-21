@@ -12,7 +12,7 @@
   </component>
   <component name="PhpCodeSniffer">
     <phpcs_settings>
-      <phpcs_by_interpreter asDefaultInterpreter="true" interpreter_id="dd451198-230c-4627-a4da-e7245954c426" timeout="30000" />
+      <PhpCSConfiguration asDefaultInterpreter="true" timeout="30000" />
     </phpcs_settings>
   </component>
   <component name="PhpIncludePathManager">
@@ -110,6 +110,7 @@
       <path value="$PROJECT_DIR$/vendor/react/async" />
       <path value="$PROJECT_DIR$/vendor/revolt/event-loop-adapter-react" />
       <path value="$PROJECT_DIR$/vendor/ramsey/collection" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php85" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2">
