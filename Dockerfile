@@ -1,4 +1,4 @@
-FROM dunglas/frankenphp
+FROM dunglas/frankenphp:1.14.0-php8.5
 
 RUN install-php-extensions \
     parallel \
